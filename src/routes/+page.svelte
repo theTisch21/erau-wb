@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { writable } from "svelte/store"
-	import { lookup, type Aircraft } from "./aircraft"	
+	import { lookup, type Aircraft } from "../lib/aircraft"	
 	import { empty } from "svelte/internal"
     let a: string = ""
     let aircraftName = writable("")
