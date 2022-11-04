@@ -44,8 +44,16 @@
         land: 0
     }
     input.subscribe(i => {
+        //Convert weight strings into numbers
+        //TODO
+        //Calculate total weights
+        //TODO
+        //Calculate total moments
         calculatedMoment = calcMoment(i)
         totalMoments.empty = aircraftData.moment + calculatedMoment.frontSeats + calculatedMoment.rearSeats + calculatedMoment.frontBag + calculatedMoment.rearBag
+        totalMoments.ramp = totalMoments.empty + calculatedMoment.fuel
+        totalMoments.takeoff = totalMoments.ramp - calculatedMoment.taxiBurn
+        totalMoments.land = totalMoments.takeoff - calculatedMoment.flightBurn
     })
 
 </script>
@@ -116,7 +124,7 @@
                         <td>Ramp weight</td>
                         <td></td>
                         <td></td>
-                        <td></td>
+                        <td>{totalMoments.ramp}</td>
                     </tr>
                     <tr>
                         <td>Burn in taxi</td>
@@ -128,7 +136,7 @@
                         <td>Takeoff weight</td>
                         <td></td>
                         <td></td>
-                        <td></td>
+                        <td>{totalMoments.takeoff}</td>
                     </tr>
                     <tr>
                         <td>Burn in flight</td>
@@ -140,7 +148,7 @@
                         <td>Landing weight</td>
                         <td></td>
                         <td></td>
-                        <td></td>
+                        <td>{totalMoments.land}</td>
                     </tr>
                 </tbody>
             </table>
