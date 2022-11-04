@@ -3,15 +3,15 @@
 	import { lookup, type Aircraft } from "./aircraft"	
 	import { empty } from "svelte/internal"
     let a: string = ""
-    let aircraft = writable("")
+    let aircraftName = writable("")
     let inputFail = false
-    let plane: Aircraft = {name: "", weight: 0, arm: 0, moment: 0}
-    aircraft.subscribe(async a => {
+    let aircraftData: Aircraft = {name: "", weight: 0, arm: 0, moment: 0}
+    aircraftName.subscribe(async a => {
         console.log(a)
         let newPlane = await lookup(a)
         if(newPlane != null) {
             inputFail = false
-            plane = newPlane
+            aircraftData = newPlane
         } else {
             inputFail = true
         }
@@ -29,7 +29,7 @@
         </div>
         <div id="calc">
             <h2>Aircraft:</h2>
-            <input type="text" placeholder="Copy from ETA" title="Aircraft" bind:value={$aircraft} style="font-size: large;" class={inputFail ? ($aircraft != "" ? "fail" : "empty") : "empty"}/>
+            <input type="text" placeholder="Copy from ETA" title="Aircraft" bind:value={$aircraftName} style="font-size: large;" class={inputFail ? ($aircraftName != "" ? "fail" : "empty") : "empty"}/>
             <table>
                 <thead>
                     <th>Item</th>
@@ -40,9 +40,9 @@
                 <tbody>
                     <tr>
                         <td>Empty</td>
-                        <td>{plane.weight}</td>
-                        <td>{plane.arm}</td>
-                        <td>{plane.moment}</td>
+                        <td>{aircraftData.weight}</td>
+                        <td>{aircraftData.arm}</td>
+                        <td>{aircraftData.moment}</td>
                     </tr>
                     <tr>
                         <td>Front seats</td>
