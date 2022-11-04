@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { writable } from "svelte/store"
-	import { lookup, type Aircraft } from "../lib/aircraft"
+	import { writable, type Writable } from "svelte/store"
+	import { lookup, type Aircraft } from "$lib/aircraft"
+	import { calcMoment, type MomentInput, type MomentOutput } from "$lib/momentCalc"
     
-    let input = writable({
+    let input: Writable<MomentInput> = writable({
         frontSeats: "",
         rearSeats: "",
         frontBag: "17",
@@ -10,6 +11,20 @@
         fuel: "",
         taxiBurn: "",
         flightBurn: ""
+    })
+
+    let calculatedMoment: MomentOutput = {
+        frontSeats: 0,
+        rearSeats: 0,
+        frontBag: 0,
+        rearBag: 0,
+        fuel: 0,
+        taxiBurn: 0,
+        flightBurn: 0,
+    }
+
+    input.subscribe(i => {
+        calculatedMoment = calcMoment(i)
     })
 
     let aircraftName = writable("")
@@ -57,25 +72,25 @@
                         <td>Front seats</td>
                         <td><input type="text" bind:value={$input.frontSeats} class={$input.frontSeats == "" ? "empty" : "success"}></td>
                         <td>37</td>
-                        <td></td>
+                        <td>{calculatedMoment.frontSeats}</td>
                     </tr>
                     <tr>
                         <td>Rear seat</td>
                         <td><input type="text" bind:value={$input.rearSeats} class={$input.rearSeats == "" ? "empty" : "success"}></td>
                         <td>73</td>
-                        <td></td>
+                        <td>{calculatedMoment.rearSeats}</td>
                     </tr>
                     <tr>
                         <td>Forward bag</td>
                         <td><input type="text" bind:value={$input.frontBag} class={$input.frontBag == "" ? "empty" : "success"}></td>
                         <td>95</td>
-                        <td></td>
+                        <td>{calculatedMoment.frontBag}</td>
                     </tr>
                     <tr>
                         <td>Aft bag</td>
                         <td><input type="text" bind:value={$input.rearBag} class={$input.rearBag == "" ? "empty" : "success"}></td>
                         <td>123</td>
-                        <td></td>
+                        <td>{calculatedMoment.rearBag}</td>
                     </tr>
                     <tr class="output">
                         <td>Empty weight</td>
@@ -87,7 +102,7 @@
                         <td>Ramp fuel</td>
                         <td><input type="text" bind:value={$input.fuel} class={$input.fuel == "" ? "empty" : "success"}></td>
                         <td>48</td>
-                        <td></td>
+                        <td>{calculatedMoment.fuel}</td>
                     </tr>
                     <tr class="output">
                         <td>Ramp weight</td>
@@ -99,7 +114,7 @@
                         <td>Burn in taxi</td>
                         <td><input type="text" bind:value={$input.taxiBurn} class={$input.taxiBurn == "" ? "empty" : "success"}></td>
                         <td>48</td>
-                        <td></td>
+                        <td>{calculatedMoment.taxiBurn}</td>
                     </tr>
                     <tr class="output">
                         <td>Takeoff weight</td>
@@ -111,7 +126,7 @@
                         <td>Burn in flight</td>
                         <td><input type="text" bind:value={$input.flightBurn} class={$input.flightBurn == "" ? "empty" : "success"}></td>
                         <td>48</td>
-                        <td></td>
+                        <td>{calculatedMoment.flightBurn}</td>
                     </tr>
                     <tr class="output">
                         <td>Landing weight</td>
