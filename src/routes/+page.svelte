@@ -1,5 +1,14 @@
 <script lang="ts">
     let a = 0
+    
+	import { lookup, type Aircraft } from "$lib/aircraft"
+	import { writable } from "svelte/store"
+    let aircraft = writable("")
+    let plane: Aircraft | null = null
+    aircraft.subscribe(async a => {
+        console.log(a)
+        plane = await lookup(a)
+    })
 </script>
 
 <main>
@@ -42,3 +51,4 @@
         background-color: lime;
     }
 </style>
+
