@@ -1,10 +1,10 @@
 //This file is simply to parse the CSV data from ETA and excel to convert it to a format we can use
 
-import type { Aircraft } from "./aircraft"
+import type { Aircraft } from "../routes/aircraft"
 
 export async function parse() {
 	//A CSV in this format: Name, N#, Empty weight, Arm, Moment, Useful Load, Max Gross Weight
-	let input = `E1,N31ER,1225,39258,32.0473,535,1760
+	const input = `E1,N31ER,1225,39258,32.0473,535,1760
 E2,N42ER,1200.04,37501.25,31.25,559.96,1760
 R- 1,N912MA,1325.72,16460.72,12.4164,474.28,1800
 R- 2,N602ER,1707.7,70137,41.071,850.3,2558
@@ -77,11 +77,11 @@ R-96,N596ER,3269.8179,312061.61,95.437,1137.1821,4407
 R-97,N597ER,3269.82,312583.43,95.5965,1137.18,4407
 R-98,N598ER,3249.98,309921.96,95.3612,1157.02,4407
 R-99,N599ER,3274.23,312876.17,95.5572,1132.77,4407`
-	let output: Aircraft[] = []
-	let array: string[] = input.split(/\n/)
+	const output: Aircraft[] = []
+	const array: string[] = input.split(/\n/)
 	for (let i = 0; i < array.length; i++) {
-		let a = array[i]
-		let aircraftArray = a.split(/,/)
+		const a = array[i]
+		const aircraftArray = a.split(/,/)
 		output.push({
 			name: aircraftArray[0],
 			weight: Number(aircraftArray[2]),
