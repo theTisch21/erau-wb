@@ -2,7 +2,21 @@
 	import { writable, type Writable } from "svelte/store"
 	import { lookup, type Aircraft } from "$lib/aircraft"
 	import { calcMoment, type MomentInput, type MomentOutput } from "$lib/momentCalc"
-    
+
+    let aircraftName = writable("")
+    let inputFail = false
+    let aircraftData: Aircraft = {name: "", weight: 0, arm: 0, moment: 0}
+    aircraftName.subscribe(async a => {
+        console.log(a)
+        let newPlane = await lookup(a)
+        if(newPlane != null) {
+            inputFail = false
+            aircraftData = newPlane
+        } else {
+            inputFail = true
+        }
+    })
+
     let input: Writable<MomentInput> = writable({
         frontSeats: "",
         rearSeats: "",
@@ -23,23 +37,17 @@
         flightBurn: 0,
     }
 
+    let totalMoments = {
+        empty: 0,
+        ramp: 0,
+        takeoff: 0,
+        land: 0
+    }
     input.subscribe(i => {
         calculatedMoment = calcMoment(i)
+        totalMoments.empty = aircraftData.moment + calculatedMoment.frontSeats + calculatedMoment.rearSeats + calculatedMoment.frontBag + calculatedMoment.rearBag
     })
 
-    let aircraftName = writable("")
-    let inputFail = false
-    let aircraftData: Aircraft = {name: "", weight: 0, arm: 0, moment: 0}
-    aircraftName.subscribe(async a => {
-        console.log(a)
-        let newPlane = await lookup(a)
-        if(newPlane != null) {
-            inputFail = false
-            aircraftData = newPlane
-        } else {
-            inputFail = true
-        }
-    })
 </script>
 
 <main>
@@ -96,7 +104,7 @@
                         <td>Empty weight</td>
                         <td></td>
                         <td></td>
-                        <td></td>
+                        <td>{totalMoments.empty}</td>
                     </tr>
                     <tr>
                         <td>Ramp fuel</td>
