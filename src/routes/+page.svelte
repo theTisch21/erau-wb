@@ -1,13 +1,20 @@
 <script lang="ts">
-    let a = 0
-    
-	import { lookup, type Aircraft } from "$lib/aircraft"
 	import { writable } from "svelte/store"
+	import { lookup, type Aircraft } from "./aircraft"	
+	import { empty } from "svelte/internal"
+    let a: string = ""
     let aircraft = writable("")
-    let plane: Aircraft | null = null
+    let inputFail = false
+    let plane: Aircraft = {name: "", weight: 0, arm: 0, moment: 0}
     aircraft.subscribe(async a => {
         console.log(a)
-        plane = await lookup(a)
+        let newPlane = await lookup(a)
+        if(newPlane != null) {
+            inputFail = false
+            plane = newPlane
+        } else {
+            inputFail = true
+        }
     })
 </script>
 
@@ -21,6 +28,8 @@
             <p>Fill out the info below to calculate weight and balance for your aircraft!</p>    
         </div>
         <div id="calc">
+            <h2>Aircraft:</h2>
+            <input type="text" placeholder="Copy from ETA" title="Aircraft" bind:value={$aircraft} style="font-size: large;" class={inputFail ? ($aircraft != "" ? "fail" : "empty") : "empty"}/>
             <table>
                 <thead>
                     <th>Item</th>
@@ -30,10 +39,76 @@
                 </thead>
                 <tbody>
                     <tr>
+                        <td>Empty</td>
+                        <td>{plane.weight}</td>
+                        <td>{plane.arm}</td>
+                        <td>{plane.moment}</td>
+                    </tr>
+                    <tr>
+                        <td>Front seats</td>
                         <td><input type="text" bind:value={a}></td>
-                        <td>{Number(a) + 2}</td>
-                        <td>c</td>
-                        <td>d</td>
+                        <td>{a}</td>
+                        <td>{a}</td>
+                    </tr>
+                    <tr>
+                        <td>Rear seat</td>
+                        <td><input type="text" bind:value={a}></td>
+                        <td>{a}</td>
+                        <td>{a}</td>
+                    </tr>
+                    <tr>
+                        <td>Forward bag</td>
+                        <td><input type="text" bind:value={a} class={a == "" ? "empty" : "success"}></td>
+                        <td>{a}</td>
+                        <td>{a}</td>
+                    </tr>
+                    <tr>
+                        <td>Aft bag</td>
+                        <td><input type="text" bind:value={a}></td>
+                        <td>{a}</td>
+                        <td>{a}</td>
+                    </tr>
+                    <tr class="output">
+                        <td>Empty weight</td>
+                        <td></td>
+                        <td>{a}</td>
+                        <td>{a}</td>
+                    </tr>
+                    <tr>
+                        <td>Ramp fuel</td>
+                        <td><input type="text" bind:value={a}></td>
+                        <td>{a}</td>
+                        <td>{a}</td>
+                    </tr>
+                    <tr class="output">
+                        <td>Ramp weight</td>
+                        <td></td>
+                        <td>{a}</td>
+                        <td>{a}</td>
+                    </tr>
+                    <tr>
+                        <td>Burn in taxi</td>
+                        <td><input type="text" bind:value={a}></td>
+                        <td>{a}</td>
+                        <td>{a}</td>
+                    </tr>
+                    <tr class="output">
+                        <td>Takeoff weight</td>
+                        <td></td>
+                        <td>{a}</td>
+                        <td>{a}</td>
+                    </tr>
+                    <tr>
+                        <td>Burn in flight</td>
+                        <td><input type="text" bind:value={a}></td>
+                        <td>{a}</td>
+                        <td>{a}</td>
+                    </tr>
+                    <tr class="output">
+                        <td>Landing weight</td>
+                        <td></td>
+                        <td>{a}</td>
+                        <td>{a}</td>
                     </tr>
                 </tbody>
             </table>
@@ -48,7 +123,28 @@
         border-collapse: collapse;
     }
     input {
+        transition: all .5s;
+    }
+    .empty {
         background-color: lime;
+    }
+    .success {
+        background-color: white;
+    }
+    .fail {
+        background-color: red;
+    }
+    table input {
+        box-sizing: content-box;
+        width: 70px;
+        margin: 5px;
+    }
+    td {
+        width: 100px;
+        height: 30px
+    }
+    table .output {
+        background-color: #ccccff;
     }
 </style>
 

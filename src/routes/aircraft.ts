@@ -5,7 +5,7 @@ export type Aircraft = {
 	moment: number
 }
 
-let list: Aircraft[] = [
+const list: Aircraft[] = [
     { name: 'E1', weight: 1225, arm: 39258, moment: 32.0473 },
     { name: 'E2', weight: 1200.04, arm: 37501.25, moment: 31.25 },
     { name: 'R- 1', weight: 1325.72, arm: 16460.72, moment: 12.4164 },
