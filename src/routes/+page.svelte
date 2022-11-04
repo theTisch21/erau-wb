@@ -1,8 +1,17 @@
 <script lang="ts">
 	import { writable } from "svelte/store"
-	import { lookup, type Aircraft } from "../lib/aircraft"	
-	import { empty } from "svelte/internal"
-    let a: string = ""
+	import { lookup, type Aircraft } from "../lib/aircraft"
+    
+    let input = writable({
+        frontSeats: "",
+        rearSeats: "",
+        frontBag: "17",
+        rearBag: "",
+        fuel: "",
+        taxiBurn: "",
+        flightBurn: ""
+    })
+
     let aircraftName = writable("")
     let inputFail = false
     let aircraftData: Aircraft = {name: "", weight: 0, arm: 0, moment: 0}
@@ -46,69 +55,69 @@
                     </tr>
                     <tr>
                         <td>Front seats</td>
-                        <td><input type="text" bind:value={a}></td>
-                        <td>{a}</td>
-                        <td>{a}</td>
+                        <td><input type="text" bind:value={$input.frontSeats} class={$input.frontSeats == "" ? "empty" : "success"}></td>
+                        <td>37</td>
+                        <td></td>
                     </tr>
                     <tr>
                         <td>Rear seat</td>
-                        <td><input type="text" bind:value={a}></td>
-                        <td>{a}</td>
-                        <td>{a}</td>
+                        <td><input type="text" bind:value={$input.rearSeats} class={$input.rearSeats == "" ? "empty" : "success"}></td>
+                        <td>73</td>
+                        <td></td>
                     </tr>
                     <tr>
                         <td>Forward bag</td>
-                        <td><input type="text" bind:value={a} class={a == "" ? "empty" : "success"}></td>
-                        <td>{a}</td>
-                        <td>{a}</td>
+                        <td><input type="text" bind:value={$input.frontBag} class={$input.frontBag == "" ? "empty" : "success"}></td>
+                        <td>95</td>
+                        <td></td>
                     </tr>
                     <tr>
                         <td>Aft bag</td>
-                        <td><input type="text" bind:value={a}></td>
-                        <td>{a}</td>
-                        <td>{a}</td>
+                        <td><input type="text" bind:value={$input.rearBag} class={$input.rearBag == "" ? "empty" : "success"}></td>
+                        <td>123</td>
+                        <td></td>
                     </tr>
                     <tr class="output">
                         <td>Empty weight</td>
                         <td></td>
-                        <td>{a}</td>
-                        <td>{a}</td>
+                        <td></td>
+                        <td></td>
                     </tr>
                     <tr>
                         <td>Ramp fuel</td>
-                        <td><input type="text" bind:value={a}></td>
-                        <td>{a}</td>
-                        <td>{a}</td>
+                        <td><input type="text" bind:value={$input.fuel} class={$input.fuel == "" ? "empty" : "success"}></td>
+                        <td>48</td>
+                        <td></td>
                     </tr>
                     <tr class="output">
                         <td>Ramp weight</td>
                         <td></td>
-                        <td>{a}</td>
-                        <td>{a}</td>
+                        <td></td>
+                        <td></td>
                     </tr>
                     <tr>
                         <td>Burn in taxi</td>
-                        <td><input type="text" bind:value={a}></td>
-                        <td>{a}</td>
-                        <td>{a}</td>
+                        <td><input type="text" bind:value={$input.taxiBurn} class={$input.taxiBurn == "" ? "empty" : "success"}></td>
+                        <td>48</td>
+                        <td></td>
                     </tr>
                     <tr class="output">
                         <td>Takeoff weight</td>
                         <td></td>
-                        <td>{a}</td>
-                        <td>{a}</td>
+                        <td></td>
+                        <td></td>
                     </tr>
                     <tr>
                         <td>Burn in flight</td>
-                        <td><input type="text" bind:value={a}></td>
-                        <td>{a}</td>
-                        <td>{a}</td>
+                        <td><input type="text" bind:value={$input.flightBurn} class={$input.flightBurn == "" ? "empty" : "success"}></td>
+                        <td>48</td>
+                        <td></td>
                     </tr>
                     <tr class="output">
                         <td>Landing weight</td>
                         <td></td>
-                        <td>{a}</td>
-                        <td>{a}</td>
+                        <td></td>
+                        <td></td>
                     </tr>
                 </tbody>
             </table>
