@@ -1,16 +1,17 @@
 export function calcLimits(weight: number, moment: number): {result: boolean, comment: string} {
+    const arm = moment/weight
     //Max gross weight
-    if(weight > 2550) return {result: false, comment: "Overweight"}
+    if(weight > 2550) return {result: false, comment: `Overweight by ${(weight - 2550).toFixed(2)}lbs or ${((weight - 2550)/6).toFixed(2)} gallons of fuel`}
     //CG Limits
-    if(moment > 47.2) return {result: false, comment: "CG Too far aft"}
-    if(moment < 35) return {result: false, comment: "CG Too far forward"}
+    if(arm > 47.2) return {result: false, comment: "CG Too far aft"}
+    if(arm < 35) return {result: false, comment: "CG Too far forward"}
     //Got this equation from this regression: https://www.desmos.com/calculator/nakx2n6pby
-    if(weight <= (100 * moment - 1550)) {
+    if(weight <= (100 * arm - 1550)) {
         //Test utility category
-        if(moment <= 40.5 && weight <= 2200) {
+        if(arm <= 40.5 && weight <= 2200) {
             return {result: true, comment: "Utility category"}
         } else {
-            return {result: true, comment: "Normal category"}
+            return {result: true, comment: "Within normal limits"}
         }
     }
     //Because of how the graph is shaped, if it is outside of the range above we know it's going to be too far forward

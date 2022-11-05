@@ -1,23 +1,24 @@
 <script lang="ts">
 	import { writable, type Writable } from "svelte/store"
 	import { lookup, type Aircraft } from "$lib/aircraft"
-	import { calcMoment, type MomentInput, type MomentOutput } from "$lib/momentCalc"
+	import { calcMoment, type LineItems } from "$lib/momentCalc"
+	import { calcLimits } from "$lib/limitCalc"
 
     let aircraftName = writable("")
     let inputFail = false
     let aircraftData: Aircraft = {name: "", weight: 0, arm: 0, moment: 0}
     aircraftName.subscribe(async a => {
-        console.log(a)
         let newPlane = await lookup(a)
         if(newPlane != null) {
             inputFail = false
             aircraftData = newPlane
+            refresh()
         } else {
             inputFail = true
         }
     })
 
-    let input: Writable<MomentInput> = writable({
+    let input: Writable<LineItems<string>> = writable({
         frontSeats: "",
         rearSeats: "",
         frontBag: "17",
@@ -27,7 +28,29 @@
         flightBurn: ""
     })
 
-    let calculatedMoment: MomentOutput = {
+    let numberInput = {
+            frontSeats: Number($input.frontSeats),
+            rearSeats: Number($input.rearSeats),
+            frontBag: Number($input.frontBag),
+            rearBag: Number($input.rearBag),
+            fuel: Number($input.fuel),
+            taxiBurn: Number($input.taxiBurn),
+            flightBurn: Number($input.flightBurn),
+        }
+
+    let fuelInput = writable({
+        ramp: "53",
+        taxiBurn: "1.33",
+        flightBurn: ""
+    })
+
+    fuelInput.subscribe(fuelInput => {
+        $input.fuel = (Number(fuelInput.ramp) * 6).toFixed(2)
+        $input.taxiBurn = (Number(fuelInput.taxiBurn) * 6).toFixed(2)
+        $input.flightBurn = (Number(fuelInput.flightBurn) * 6).toFixed(2)
+    })
+
+    let calculatedMoment: LineItems<number> = {
         frontSeats: 0,
         rearSeats: 0,
         frontBag: 0,
@@ -43,18 +66,48 @@
         takeoff: 0,
         land: 0
     }
-    input.subscribe(i => {
-        //Convert weight strings into numbers
-        //TODO
-        //Calculate total weights
-        //TODO
-        //Calculate total moments
-        calculatedMoment = calcMoment(i)
-        totalMoments.empty = aircraftData.moment + calculatedMoment.frontSeats + calculatedMoment.rearSeats + calculatedMoment.frontBag + calculatedMoment.rearBag
-        totalMoments.ramp = totalMoments.empty + calculatedMoment.fuel
-        totalMoments.takeoff = totalMoments.ramp - calculatedMoment.taxiBurn
-        totalMoments.land = totalMoments.takeoff - calculatedMoment.flightBurn
+
+    let totalWeights = {
+        empty: 0,
+        ramp: 0,
+        takeoff: 0,
+        land: 0
+    }    
+
+    let validationResult: {result: boolean, comment: string} = {
+        result: false,
+        comment: "No data entered"
+    }
+
+    input.subscribe(() => {
+        refresh()
     })
+
+    function refresh() {
+        //Convert weight strings into numbers
+        let numberInput: LineItems<number> = {
+            frontSeats: Number($input.frontSeats),
+            rearSeats: Number($input.rearSeats),
+            frontBag: Number($input.frontBag),
+            rearBag: Number($input.rearBag),
+            fuel: Number($input.fuel),
+            taxiBurn: Number($input.taxiBurn),
+            flightBurn: Number($input.flightBurn),
+        }
+        //Calculate total weights
+        totalWeights.empty = Number((aircraftData.weight + numberInput.frontSeats + numberInput.rearSeats + numberInput.frontBag + numberInput.rearBag).toFixed(2))
+        totalWeights.ramp = Number((totalWeights.empty + numberInput.fuel).toFixed(2))
+        totalWeights.takeoff = Number((totalWeights.ramp - numberInput.taxiBurn).toFixed(2))
+        totalWeights.land = Number((totalWeights.takeoff - numberInput.flightBurn).toFixed(2))
+        //Calculate total moments
+        calculatedMoment = calcMoment(numberInput)
+        totalMoments.empty = Number((aircraftData.moment + calculatedMoment.frontSeats + calculatedMoment.rearSeats + calculatedMoment.frontBag + calculatedMoment.rearBag).toFixed(2))
+        totalMoments.ramp = Number((totalMoments.empty + calculatedMoment.fuel).toFixed(2))
+        totalMoments.takeoff = Number((totalMoments.ramp - calculatedMoment.taxiBurn).toFixed(2))
+        totalMoments.land = Number((totalMoments.takeoff - calculatedMoment.flightBurn).toFixed(2))
+        //Validate
+        validationResult = calcLimits(totalWeights.takeoff, totalMoments.takeoff)
+    }
 
 </script>
 
@@ -70,12 +123,14 @@
         <div id="calc">
             <h2>Aircraft:</h2>
             <input type="text" placeholder="Copy from ETA" title="Aircraft" bind:value={$aircraftName} style="font-size: large;" class={inputFail ? ($aircraftName != "" ? "fail" : "empty") : "empty"}/>
+            <button on:click={()=>{aircraftName.set("R-73")}}>Set to heaviest aircraft</button>
             <table>
                 <thead>
                     <th>Item</th>
-                    <th>Weight</th>
+                    <th>Weight (lbs)</th>
                     <th>Arm</th>
                     <th>Moment</th>
+                    <th>Fuel (gal)</th>
                 </thead>
                 <tbody>
                     <tr>
@@ -110,49 +165,55 @@
                     </tr>
                     <tr class="output">
                         <td>Empty weight</td>
-                        <td></td>
-                        <td></td>
+                        <td>{totalWeights.empty}</td>
+                        <td>{(totalMoments.empty/totalWeights.empty).toFixed(2)}</td>
                         <td>{totalMoments.empty}</td>
                     </tr>
                     <tr>
                         <td>Ramp fuel</td>
-                        <td><input type="text" bind:value={$input.fuel} class={$input.fuel == "" ? "empty" : "success"}></td>
+                        <td>{$input.fuel}</td>
                         <td>48</td>
                         <td>{calculatedMoment.fuel}</td>
+                        <td><input type="text" bind:value={$fuelInput.ramp} class={$fuelInput.ramp == "" ? "empty" : "success"}></td>
                     </tr>
                     <tr class="output">
                         <td>Ramp weight</td>
-                        <td></td>
-                        <td></td>
+                        <td>{totalWeights.ramp}</td>
+                        <td>{(totalMoments.ramp/totalWeights.ramp).toFixed(2)}</td>
                         <td>{totalMoments.ramp}</td>
                     </tr>
                     <tr>
                         <td>Burn in taxi</td>
-                        <td><input type="text" bind:value={$input.taxiBurn} class={$input.taxiBurn == "" ? "empty" : "success"}></td>
+                        <td>-{$input.taxiBurn}</td>
                         <td>48</td>
-                        <td>{calculatedMoment.taxiBurn}</td>
+                        <td>-{calculatedMoment.taxiBurn}</td>
+                        <td>-<input type="text" bind:value={$fuelInput.taxiBurn} class={$fuelInput.taxiBurn == "" ? "empty" : "success"}></td>
                     </tr>
                     <tr class="output">
                         <td>Takeoff weight</td>
-                        <td></td>
-                        <td></td>
+                        <td>{totalWeights.takeoff}</td>
+                        <td>{(totalMoments.takeoff/totalWeights.takeoff).toFixed(2)}</td>
                         <td>{totalMoments.takeoff}</td>
                     </tr>
                     <tr>
                         <td>Burn in flight</td>
-                        <td><input type="text" bind:value={$input.flightBurn} class={$input.flightBurn == "" ? "empty" : "success"}></td>
+                        <td>-{$input.flightBurn}</td>
                         <td>48</td>
-                        <td>{calculatedMoment.flightBurn}</td>
+                        <td>-{calculatedMoment.flightBurn}</td>
+                        <td>-<input type="text" bind:value={$fuelInput.flightBurn} class={$fuelInput.flightBurn == "" ? "empty" : "success"}></td>
                     </tr>
                     <tr class="output">
                         <td>Landing weight</td>
-                        <td></td>
-                        <td></td>
+                        <td>{totalWeights.land}</td>
+                        <td>{(totalMoments.land/totalWeights.land).toFixed(2)}</td>
                         <td>{totalMoments.land}</td>
                     </tr>
                 </tbody>
             </table>
             
+        </div>
+        <div id="validation" class={validationResult.result ? "good" : "bad"}>
+            <h1>{validationResult.comment}</h1>
         </div>
     </body>
 </main>
@@ -185,6 +246,28 @@
     }
     table .output {
         background-color: #ccccff;
+    }
+    button {
+        text-align: center;
+        background-color: aqua;
+        border-radius: 50px;
+        font-size: large;
+        transition: all .25s;
+    }
+    button:hover {
+        background-color: rgb(0, 155, 155);
+    }
+    #validation {
+        margin: 5px;
+        padding: 50px;
+        width: fit-content;
+    }
+    #validation.good {
+        background-color: green;
+    }
+    #validation.bad {
+        background-color: red;
+        color: white;
     }
 </style>
 
