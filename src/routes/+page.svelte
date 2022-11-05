@@ -79,10 +79,37 @@
         comment: "No data entered"
     }
 
+    //
+    // Change in aircraft
+    //
+    let newAircraft = false
+    let newAircraftInputFail = false
+    let newAircraftName = writable("")
+    let newAircraftData: Aircraft = {name: "", weight: 0, arm: 0, moment: 0}
+    let newAircraftTotals = {
+        takeoffWeight: 0,
+        takeoffMoment: 0,
+        landWeight: 0,
+        landMoment: 0
+    }
+    newAircraftName.subscribe(async a => {
+        let newPlane = await lookup(a)
+        if(newPlane != null) {
+            newAircraftInputFail = false
+            newAircraftData = newPlane
+            refresh()
+        } else {
+            newAircraftInputFail = true
+        }
+    })
+
     input.subscribe(() => {
         refresh()
     })
 
+    //
+    // Refresh
+    //
     function refresh() {
         //Convert weight strings into numbers
         let numberInput: LineItems<number> = {
@@ -105,10 +132,19 @@
         totalMoments.ramp = Number((totalMoments.empty + calculatedMoment.fuel).toFixed(2))
         totalMoments.takeoff = Number((totalMoments.ramp - calculatedMoment.taxiBurn).toFixed(2))
         totalMoments.land = Number((totalMoments.takeoff - calculatedMoment.flightBurn).toFixed(2))
-        //Validate
-        validationResult = calcLimits(totalWeights.takeoff, totalMoments.takeoff)
+        //New aircraft
+        if(newAircraft) {
+            newAircraftTotals.takeoffWeight = Number((totalWeights.takeoff - (aircraftData.weight - newAircraftData.weight)).toFixed(2))
+            newAircraftTotals.landWeight = Number((totalWeights.land - (aircraftData.weight - newAircraftData.weight)).toFixed(2))
+            newAircraftTotals.takeoffMoment = Number((totalMoments.takeoff - (aircraftData.moment - newAircraftData.moment)).toFixed(2))
+            newAircraftTotals.landMoment = Number((totalMoments.land - (aircraftData.moment - newAircraftData.moment)).toFixed(2))
+            //Validate
+            validationResult = calcLimits(newAircraftTotals.takeoffWeight, newAircraftTotals.takeoffMoment)
+        } else {
+            //Validate
+            validationResult = calcLimits(totalWeights.takeoff, totalMoments.takeoff)
+        }
     }
-
 </script>
 
 <main>
@@ -210,7 +246,32 @@
                     </tr>
                 </tbody>
             </table>
-            
+            <button hidden={newAircraft} on:click={()=>{newAircraft = true}}>Change in aircraft</button>
+        </div>
+        <div id="newAircraft" hidden={!newAircraft}>
+            <input type="text" placeholder="Copy from ETA" title="Aircraft" bind:value={$newAircraftName} style="font-size: large;" class={newAircraftInputFail ? ($newAircraftName != "" ? "fail" : "empty") : "empty"}/>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Difference</td>
+                        <td>-{(aircraftData.weight - newAircraftData.weight).toFixed(2)}</td>
+                        <td>{(aircraftData.arm - newAircraftData.arm).toFixed(2)}</td>
+                        <td>-{(aircraftData.moment - newAircraftData.moment).toFixed(2)}</td>
+                    </tr>
+                    <tr class="output">
+                        <td>New Takeoff weight</td>
+                        <td>{newAircraftTotals.takeoffWeight}</td>
+                        <td>{(newAircraftTotals.takeoffMoment/newAircraftTotals.takeoffWeight).toFixed(2)}</td>
+                        <td>{newAircraftTotals.takeoffMoment}</td>
+                    </tr>
+                    <tr class="output">
+                        <td>New Landing weight</td>
+                        <td>{newAircraftTotals.landWeight}</td>
+                        <td>{(newAircraftTotals.landMoment/newAircraftTotals.landWeight).toFixed(2)}</td>
+                        <td>{newAircraftTotals.landMoment}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         <div id="validation" class={validationResult.result ? "good" : "bad"}>
             <h1>{validationResult.comment}</h1>
