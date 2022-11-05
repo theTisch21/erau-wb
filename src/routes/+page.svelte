@@ -40,7 +40,7 @@
 
     let fuelInput = writable({
         ramp: "53",
-        taxiBurn: "1.33",
+        taxiBurn: "1.4",
         flightBurn: ""
     })
 
@@ -222,7 +222,7 @@
                         <td>Burn in taxi</td>
                         <td>-{$input.taxiBurn}</td>
                         <td>48</td>
-                        <td>-{calculatedMoment.taxiBurn}</td>
+                        <td>-{calculatedMoment.taxiBurn.toFixed(2)}</td>
                         <td>-<input type="text" bind:value={$fuelInput.taxiBurn} class={$fuelInput.taxiBurn == "" ? "empty" : "success"}></td>
                     </tr>
                     <tr class="output">
