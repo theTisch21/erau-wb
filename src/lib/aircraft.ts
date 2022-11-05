@@ -82,12 +82,9 @@ const list: Aircraft[] = [
   ]
 
 export async function lookup(name: string): Promise<Aircraft | null> {
-    for (const plane in list) {
-        if (Object.prototype.hasOwnProperty.call(list, plane)) {
-            const element = list[plane];
-            if(element.name == name)
-            return element
-        }
-    }
-    return null
+    let out = null
+    list.forEach(plane => {
+        if(plane.name == name) out = plane
+    })
+    return out
 }
