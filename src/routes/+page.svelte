@@ -177,7 +177,7 @@
                     </tr>
                     <tr>
                         <td>Front seats</td>
-                        <td><input id="fs-weight" type="text" bind:value={$input.frontSeats} class={$input.frontSeats == "" ? "empty" : "success"}></td>
+                        <td id="fs-weight"><input  type="text" bind:value={$input.frontSeats} class={$input.frontSeats == "" ? "empty" : "success"}></td>
                         <td id="fs-arm">37</td>
                         <td id="fs-moment">{calculatedMoment.frontSeats}</td>
                     </tr>
