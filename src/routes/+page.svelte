@@ -249,7 +249,7 @@
             <button id="new-aircraft-button" hidden={newAircraft} on:click={()=>{newAircraft = true}}>Change in aircraft</button>
         </div>
         <div id="newAircraft" hidden={!newAircraft}>
-            <input type="text" placeholder="Copy from ETA" title="Aircraft" bind:value={$newAircraftName} style="font-size: large;" class={newAircraftInputFail ? ($newAircraftName != "" ? "fail" : "empty") : "empty"}/>
+            <input type="text" id="new-aircraft-input" placeholder="Copy from ETA" title="Aircraft" bind:value={$newAircraftName} style="font-size: large;" class={newAircraftInputFail ? ($newAircraftName != "" ? "fail" : "empty") : "empty"}/>
             <table>
                 <tbody>
                     <tr>
