@@ -171,9 +171,9 @@
                 <tbody>
                     <tr>
                         <td>Empty</td>
-                        <td id="empty-weight">{aircraftData.weight}</td>
-                        <td id="empty-arm">{aircraftData.arm}</td>
-                        <td id="empty-moment">{aircraftData.moment}</td>
+                        <td id="aircraft-weight">{aircraftData.weight}</td>
+                        <td id="aircraft-arm">{aircraftData.arm}</td>
+                        <td id="aircraft-moment">{aircraftData.moment}</td>
                     </tr>
                     <tr>
                         <td>Front seats</td>
