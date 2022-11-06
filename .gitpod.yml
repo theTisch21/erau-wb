@@ -1,5 +1,7 @@
 
 tasks:
+  - init: sudo yarn playwright install-deps
+  - init: yarn playwright install
   - init: yarn install && yarn run build
     command: yarn run dev
 

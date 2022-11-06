@@ -158,7 +158,7 @@
         </div>
         <div id="calc">
             <h2>Aircraft:</h2>
-            <input type="text" placeholder="Copy from ETA" title="Aircraft" bind:value={$aircraftName} style="font-size: large;" class={inputFail ? ($aircraftName != "" ? "fail" : "empty") : "empty"}/>
+            <input id="aircraft-input" type="text" placeholder="Copy from ETA" title="Aircraft" bind:value={$aircraftName} style="font-size: large;" class={inputFail ? ($aircraftName != "" ? "fail" : "empty") : "empty"}/>
             <button on:click={()=>{aircraftName.set("R-73")}}>Set to heaviest aircraft</button>
             <table>
                 <thead>
@@ -171,82 +171,82 @@
                 <tbody>
                     <tr>
                         <td>Empty</td>
-                        <td>{aircraftData.weight}</td>
-                        <td>{aircraftData.arm}</td>
-                        <td>{aircraftData.moment}</td>
+                        <td id="empty-weight">{aircraftData.weight}</td>
+                        <td id="empty-arm">{aircraftData.arm}</td>
+                        <td id="empty-moment">{aircraftData.moment}</td>
                     </tr>
                     <tr>
                         <td>Front seats</td>
-                        <td><input type="text" bind:value={$input.frontSeats} class={$input.frontSeats == "" ? "empty" : "success"}></td>
-                        <td>37</td>
-                        <td>{calculatedMoment.frontSeats}</td>
+                        <td><input id="fs-weight" type="text" bind:value={$input.frontSeats} class={$input.frontSeats == "" ? "empty" : "success"}></td>
+                        <td id="fs-arm">37</td>
+                        <td id="fs-moment">{calculatedMoment.frontSeats}</td>
                     </tr>
                     <tr>
                         <td>Rear seat</td>
-                        <td><input type="text" bind:value={$input.rearSeats} class={$input.rearSeats == "" ? "empty" : "success"}></td>
-                        <td>73</td>
-                        <td>{calculatedMoment.rearSeats}</td>
+                        <td><input id="rs-weight" type="text" bind:value={$input.rearSeats} class={$input.rearSeats == "" ? "empty" : "success"}></td>
+                        <td id="rs-arm">73</td>
+                        <td id="rs-moment">{calculatedMoment.rearSeats}</td>
                     </tr>
                     <tr>
                         <td>Forward bag</td>
-                        <td><input type="text" bind:value={$input.frontBag} class={$input.frontBag == "" ? "empty" : "success"}></td>
-                        <td>95</td>
-                        <td>{calculatedMoment.frontBag}</td>
+                        <td><input id="fb-weight" type="text" bind:value={$input.frontBag} class={$input.frontBag == "" ? "empty" : "success"}></td>
+                        <td id="fb-arm">95</td>
+                        <td id="fb-moment">{calculatedMoment.frontBag}</td>
                     </tr>
                     <tr>
                         <td>Aft bag</td>
-                        <td><input type="text" bind:value={$input.rearBag} class={$input.rearBag == "" ? "empty" : "success"}></td>
-                        <td>123</td>
-                        <td>{calculatedMoment.rearBag}</td>
+                        <td><input id="aft-weight" type="text" bind:value={$input.rearBag} class={$input.rearBag == "" ? "empty" : "success"}></td>
+                        <td id="aft-arm">123</td>
+                        <td id="aft-moment">{calculatedMoment.rearBag}</td>
                     </tr>
                     <tr class="output">
                         <td>Empty weight</td>
-                        <td>{totalWeights.empty}</td>
-                        <td>{(totalMoments.empty/totalWeights.empty).toFixed(2)}</td>
-                        <td>{totalMoments.empty}</td>
+                        <td id="empty-weight">{totalWeights.empty}</td>
+                        <td id="empty-arm">{(totalMoments.empty/totalWeights.empty).toFixed(2)}</td>
+                        <td id="empty-moment">{totalMoments.empty}</td>
                     </tr>
                     <tr>
                         <td>Ramp fuel</td>
-                        <td>{$input.fuel}</td>
-                        <td>48</td>
-                        <td>{calculatedMoment.fuel}</td>
-                        <td><input type="text" bind:value={$fuelInput.ramp} class={$fuelInput.ramp == "" ? "empty" : "success"}></td>
+                        <td id="rampFuel-weight">{$input.fuel}</td>
+                        <td id="rampFuel-arm">48</td>
+                        <td id="rampFuel-moment">{calculatedMoment.fuel}</td>
+                        <td><input id="rampFuel-gallon" type="text" bind:value={$fuelInput.ramp} class={$fuelInput.ramp == "" ? "empty" : "success"}></td>
                     </tr>
                     <tr class="output">
                         <td>Ramp weight</td>
-                        <td>{totalWeights.ramp}</td>
-                        <td>{(totalMoments.ramp/totalWeights.ramp).toFixed(2)}</td>
-                        <td>{totalMoments.ramp}</td>
+                        <td id="ramp-weight">{totalWeights.ramp}</td>
+                        <td id="ramp-arm">{(totalMoments.ramp/totalWeights.ramp).toFixed(2)}</td>
+                        <td id="ramp-moment">{totalMoments.ramp}</td>
                     </tr>
                     <tr>
                         <td>Burn in taxi</td>
-                        <td>-{$input.taxiBurn}</td>
-                        <td>48</td>
-                        <td>-{calculatedMoment.taxiBurn.toFixed(2)}</td>
-                        <td>-<input type="text" bind:value={$fuelInput.taxiBurn} class={$fuelInput.taxiBurn == "" ? "empty" : "success"}></td>
+                        <td id="taxi-weight">-{$input.taxiBurn}</td>
+                        <td id="taxi-arm">48</td>
+                        <td id="taxi-moment">-{calculatedMoment.taxiBurn.toFixed(2)}</td>
+                        <td>-<input id="taxi-input" type="text" bind:value={$fuelInput.taxiBurn} class={$fuelInput.taxiBurn == "" ? "empty" : "success"}></td>
                     </tr>
                     <tr class="output">
                         <td>Takeoff weight</td>
-                        <td>{totalWeights.takeoff}</td>
-                        <td>{(totalMoments.takeoff/totalWeights.takeoff).toFixed(2)}</td>
-                        <td>{totalMoments.takeoff}</td>
+                        <td id="takeoff-weight">{totalWeights.takeoff}</td>
+                        <td id="takeoff-arm">{(totalMoments.takeoff/totalWeights.takeoff).toFixed(2)}</td>
+                        <td id="takeoff-moment">{totalMoments.takeoff}</td>
                     </tr>
                     <tr>
                         <td>Burn in flight</td>
-                        <td>-{$input.flightBurn}</td>
-                        <td>48</td>
-                        <td>-{calculatedMoment.flightBurn}</td>
-                        <td>-<input type="text" bind:value={$fuelInput.flightBurn} class={$fuelInput.flightBurn == "" ? "empty" : "success"}></td>
+                        <td id="flight-weight">-{$input.flightBurn}</td>
+                        <td id="flight-arm">48</td>
+                        <td id="flight-moment">-{calculatedMoment.flightBurn}</td>
+                        <td>-<input id="flight-input" type="text" bind:value={$fuelInput.flightBurn} class={$fuelInput.flightBurn == "" ? "empty" : "success"}></td>
                     </tr>
                     <tr class="output">
                         <td>Landing weight</td>
-                        <td>{totalWeights.land}</td>
-                        <td>{(totalMoments.land/totalWeights.land).toFixed(2)}</td>
-                        <td>{totalMoments.land}</td>
+                        <td id="land-weight">{totalWeights.land}</td>
+                        <td id="land-arm">{(totalMoments.land/totalWeights.land).toFixed(2)}</td>
+                        <td id="land-moment">{totalMoments.land}</td>
                     </tr>
                 </tbody>
             </table>
-            <button hidden={newAircraft} on:click={()=>{newAircraft = true}}>Change in aircraft</button>
+            <button id="new-aircraft-button" hidden={newAircraft} on:click={()=>{newAircraft = true}}>Change in aircraft</button>
         </div>
         <div id="newAircraft" hidden={!newAircraft}>
             <input type="text" placeholder="Copy from ETA" title="Aircraft" bind:value={$newAircraftName} style="font-size: large;" class={newAircraftInputFail ? ($newAircraftName != "" ? "fail" : "empty") : "empty"}/>
@@ -254,21 +254,21 @@
                 <tbody>
                     <tr>
                         <td>Difference</td>
-                        <td>-{(aircraftData.weight - newAircraftData.weight).toFixed(2)}</td>
-                        <td>{(aircraftData.arm - newAircraftData.arm).toFixed(2)}</td>
-                        <td>-{(aircraftData.moment - newAircraftData.moment).toFixed(2)}</td>
+                        <td id="diff-weight">-{(aircraftData.weight - newAircraftData.weight).toFixed(2)}</td>
+                        <td id="diff-arm">{(aircraftData.arm - newAircraftData.arm).toFixed(2)}</td>
+                        <td id="diff-moment">-{(aircraftData.moment - newAircraftData.moment).toFixed(2)}</td>
                     </tr>
                     <tr class="output">
                         <td>New Takeoff weight</td>
-                        <td>{newAircraftTotals.takeoffWeight}</td>
-                        <td>{(newAircraftTotals.takeoffMoment/newAircraftTotals.takeoffWeight).toFixed(2)}</td>
-                        <td>{newAircraftTotals.takeoffMoment}</td>
+                        <td id="new-takeoff-weight">{newAircraftTotals.takeoffWeight}</td>
+                        <td id="new-takeoff-arm">{(newAircraftTotals.takeoffMoment/newAircraftTotals.takeoffWeight).toFixed(2)}</td>
+                        <td id="new-takeoff-moment">{newAircraftTotals.takeoffMoment}</td>
                     </tr>
                     <tr class="output">
                         <td>New Landing weight</td>
-                        <td>{newAircraftTotals.landWeight}</td>
-                        <td>{(newAircraftTotals.landMoment/newAircraftTotals.landWeight).toFixed(2)}</td>
-                        <td>{newAircraftTotals.landMoment}</td>
+                        <td id="new-land-weight">{newAircraftTotals.landWeight}</td>
+                        <td id="new-land-arm">{(newAircraftTotals.landMoment/newAircraftTotals.landWeight).toFixed(2)}</td>
+                        <td id="new-land-moment">{newAircraftTotals.landMoment}</td>
                     </tr>
                 </tbody>
             </table>

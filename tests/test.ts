@@ -33,7 +33,17 @@ import { expect, test } from '@playwright/test';
 	expect(calcLimits(2400,47.1).result).toBe(true)
 })*/
 
-test('index page has expected h1', async ({ page }) => {
+test('index page has expected title', async ({ page }) => {
 	await page.goto('/');
-	expect(await page.textContent('h1')).toBe('Welcome to SvelteKit');
+	expect(await page.textContent('h1')).toBe('Welcome to Sam\'s ERAU Cessna 172 Weight and Balance Calculator!');
 });
+test('Test sheet 1', async ({page}) => {
+	await page.goto('/')
+	const promiseArray = []
+	promiseArray.push(page.fill("#aircraft-input", "R-68"))
+	promiseArray.push(page.fill("#fs-weight", "350"))
+	promiseArray.push(page.fill("#rs-weight", "20"))
+	await Promise.all(promiseArray)
+	expect(await page.textContent("#fs-moment")).toBe("12950")
+	expect(await page.textContent("#rs-moment")).toBe("1460")
+})
