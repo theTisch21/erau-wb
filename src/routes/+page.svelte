@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { writable, type Writable } from "svelte/store"
 	import { lookup, type Aircraft } from "$lib/aircraft"
-	import { calcMoment, type LineItems } from "$lib/momentCalc"
 	import { calcLimits } from "$lib/limitCalc"
+	import Line from "$lib/Line.svelte"
+	import FuelLine from "$lib/Lines/FuelLine.svelte"
+	import OutputLine from "$lib/OutputLine.svelte"
 
     let aircraftName = writable("")
     let inputFail = false
@@ -18,25 +20,15 @@
         }
     })
 
-    let input: Writable<LineItems<string>> = writable({
-        frontSeats: "",
-        rearSeats: "",
-        frontBag: "17",
-        rearBag: "",
-        fuel: "",
-        taxiBurn: "",
-        flightBurn: ""
-    })
-
-    let numberInput = {
-            frontSeats: Number($input.frontSeats),
-            rearSeats: Number($input.rearSeats),
-            frontBag: Number($input.frontBag),
-            rearBag: Number($input.rearBag),
-            fuel: Number($input.fuel),
-            taxiBurn: Number($input.taxiBurn),
-            flightBurn: Number($input.flightBurn),
-        }
+    let input = {
+        frontSeats: writable(new App.LineItem(37)),
+        rearSeats: writable(new App.LineItem(73)),
+        frontBag: writable(new App.LineItem(95)),
+        rearBag: writable(new App.LineItem(123)),
+        fuel: writable(new App.LineItem(48)),
+        taxiBurn: writable(new App.LineItem(48)),
+        flightBurn: writable(new App.LineItem(48))
+    }
 
     let fuelInput = writable({
         ramp: "53",
@@ -44,13 +36,7 @@
         flightBurn: ""
     })
 
-    fuelInput.subscribe(fuelInput => {
-        $input.fuel = (Number(fuelInput.ramp) * 6).toFixed(2)
-        $input.taxiBurn = (Number(fuelInput.taxiBurn) * 6).toFixed(2)
-        $input.flightBurn = (Number(fuelInput.flightBurn) * 6).toFixed(2)
-    })
-
-    let calculatedMoment: LineItems<number> = {
+    let calculatedMoment: App.LineItems<number> = {
         frontSeats: 0,
         rearSeats: 0,
         frontBag: 0,
@@ -112,7 +98,7 @@
     //
     function refresh() {
         //Convert weight strings into numbers
-        let numberInput: LineItems<number> = {
+        let numberInput: App.LineItems<number> = {
             frontSeats: Number($input.frontSeats),
             rearSeats: Number($input.rearSeats),
             frontBag: Number($input.frontBag),
@@ -169,49 +155,19 @@
                     <th>Fuel (gal)</th>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Empty</td>
-                        <td id="aircraft-weight">{aircraftData.weight}</td>
-                        <td id="aircraft-arm">{aircraftData.arm}</td>
-                        <td id="aircraft-moment">{aircraftData.moment}</td>
-                    </tr>
-                    <tr>
-                        <td>Front seats</td>
-                        <td id="fs-weight"><input  type="text" bind:value={$input.frontSeats} class={$input.frontSeats == "" ? "empty" : "success"}></td>
-                        <td id="fs-arm">37</td>
-                        <td id="fs-moment">{calculatedMoment.frontSeats}</td>
-                    </tr>
-                    <tr>
-                        <td>Rear seat</td>
-                        <td><input id="rs-weight" type="text" bind:value={$input.rearSeats} class={$input.rearSeats == "" ? "empty" : "success"}></td>
-                        <td id="rs-arm">73</td>
-                        <td id="rs-moment">{calculatedMoment.rearSeats}</td>
-                    </tr>
-                    <tr>
-                        <td>Forward bag</td>
-                        <td><input id="fb-weight" type="text" bind:value={$input.frontBag} class={$input.frontBag == "" ? "empty" : "success"}></td>
-                        <td id="fb-arm">95</td>
-                        <td id="fb-moment">{calculatedMoment.frontBag}</td>
-                    </tr>
-                    <tr>
-                        <td>Aft bag</td>
-                        <td><input id="aft-weight" type="text" bind:value={$input.rearBag} class={$input.rearBag == "" ? "empty" : "success"}></td>
-                        <td id="aft-arm">123</td>
-                        <td id="aft-moment">{calculatedMoment.rearBag}</td>
-                    </tr>
-                    <tr class="output">
-                        <td>Empty weight</td>
-                        <td id="empty-weight">{totalWeights.empty}</td>
-                        <td id="empty-arm">{(totalMoments.empty/totalWeights.empty).toFixed(2)}</td>
-                        <td id="empty-moment">{totalMoments.empty}</td>
-                    </tr>
-                    <tr>
-                        <td>Ramp fuel</td>
-                        <td id="rampFuel-weight">{$input.fuel}</td>
-                        <td id="rampFuel-arm">48</td>
-                        <td id="rampFuel-moment">{calculatedMoment.fuel}</td>
-                        <td><input id="rampFuel-gallon" type="text" bind:value={$fuelInput.ramp} class={$fuelInput.ramp == "" ? "empty" : "success"}></td>
-                    </tr>
+                    <OutputLine data={aircraftData} name="Aircraft" testTag="aircraft"/>
+                    
+                    <Line data={input.frontSeats} name="Front Seats" testTag="fs" />
+                
+                    <Line data={input.rearSeats} name="Rear seats" testTag="rs" />
+                
+                    <Line data={input.frontBag} name="Front Bags" testTag="fb" />
+                
+                    <Line data={input.rearBag} name="Aft bag" testTag="aft" />
+                 
+                    <OutputLine data={a} name="Empty weight" testTag="empty"/>
+
+                    <FuelLine data={input.f} name="Ramp Fuel" testTag="ramp" />
                     <tr class="output">
                         <td>Ramp weight</td>
                         <td id="ramp-weight">{totalWeights.ramp}</td>
