@@ -1,38 +1,8 @@
-# create-svelte
+# About this
+Hello! I'm Sam (he/him), a student studying Aeronautical Science Fixed Wing at Embry-Riddle Aeronautical University in Prescott. Let's be honest, weight and balance is **hard**. I created an excel sheet a while back to make it easier. Over time, I kept adding new features, like the ability to automatically pull the empty weight and moment from each aircraft, and the ability to easily do the change aircraft calculations. I've gotten a lot of requests for the sheet, and not everyone is excel-savvy, so I created this web tool to make it easy to use. Using a web tool also allows me to do things like validate that the aircraft is not overweight, check that the moment is within limits, and it can work on any device without setup.
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+Link to the site: https://wb.tisch.network
 
-## Creating a project
+This site is hosted on [Microsoft Azure](https://azure.microsoft.com). It's built off of [SvelteKit](https://kit.svelte.dev) and runs with [NodeJS](https://nodejs.org). 
 
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+Bug reports, pull requests, feature requests, and other contributions are welcome and appreciated! If you're unfamiliar with GitHub but want to make a suggestion/bug report, send me an email at: [tischaes@my.erau.edu](mailto:tischaes@my.erau.edu)
