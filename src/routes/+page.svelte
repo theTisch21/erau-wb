@@ -159,7 +159,7 @@
         <div class="warning">
             <h1>ATTENTION</h1>
             <h2>We're moving!</h2>
-            <p>Starting Monday November 11th at 1200, you'll now be able to access this site through https://erauwb.com!</p>
+            <p>Starting Monday November 14th at 1200, you'll now be able to access this site through https://erauwb.com!</p>
             <p>This site will go down on Monday November 14th at 1000 MST (UTC-7). After that point, you will no longer be able to access this site from https://wb.tisch.network. I will work to have the new site up as soon as possible, but plan on it being down until at least 1200.</p>
             <p>If you have any questions or concerns, please email Sam at <a href="mailto:tischaes@my.erau.edu">tischaes@my.erau.edu</a></p>
         </div>
