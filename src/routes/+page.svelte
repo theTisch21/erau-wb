@@ -156,13 +156,6 @@
             <h1>Welcome to Sam's ERAU Cessna 172 Weight and Balance Calculator!</h1>
             <p>Fill out the info below to calculate weight and balance for your aircraft!</p>    
         </div>
-        <div class="warning">
-            <h1>ATTENTION</h1>
-            <h2>We're moving!</h2>
-            <p>Starting Monday November 14th at 1200, you'll now be able to access this site through https://erauwb.com!</p>
-            <p>This site will go down on Monday November 14th at 1000 MST (UTC-7). After that point, you will no longer be able to access this site from https://wb.tisch.network. I will work to have the new site up as soon as possible, but plan on it being down until at least 1200.</p>
-            <p>If you have any questions or concerns, please email Sam at <a href="mailto:tischaes@my.erau.edu">tischaes@my.erau.edu</a></p>
-        </div>
         <div id="calc">
             <h2>Aircraft:</h2>
             <input id="aircraft-input" type="text" placeholder="Copy from ETA" title="Aircraft" bind:value={$aircraftName} style="font-size: large;" class={inputFail ? ($aircraftName != "" ? "fail" : "empty") : "empty"}/>
@@ -333,12 +326,9 @@
     #validation.good {
         background-color: green;
     }
-    #validation.bad, .warning {
+    #validation.bad {
         background-color: red;
         color: white;
-    }
-    .warning {
-        padding: 2em;
     }
 </style>
 
