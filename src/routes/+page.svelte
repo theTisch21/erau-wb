@@ -254,9 +254,9 @@
                 <tbody>
                     <tr>
                         <td>Difference</td>
-                        <td id="diff-weight">-{(aircraftData.weight - newAircraftData.weight).toFixed(2)}</td>
+                        <td id="diff-weight">{(newAircraftData.weight - aircraftData.weight).toFixed(2)}</td>
                         <td id="diff-arm">{(aircraftData.arm - newAircraftData.arm).toFixed(2)}</td>
-                        <td id="diff-moment">-{(aircraftData.moment - newAircraftData.moment).toFixed(2)}</td>
+                        <td id="diff-moment">{(newAircraftData.moment - aircraftData.moment).toFixed(2)}</td>
                     </tr>
                     <tr class="output">
                         <td>New Takeoff weight</td>
