@@ -1,8 +1,11 @@
 <script lang="ts">
 	import { writable, type Writable } from "svelte/store"
 	import { lookup, type Aircraft } from "$lib/aircraft"
-	import { calcMoment, type LineItems } from "$lib/momentCalc"
 	import { calcLimits } from "$lib/limitCalc"
+	import Line from "$lib/Lines/Line.svelte"
+	import FuelLine from "$lib/Lines/FuelLine.svelte"
+	import OutputLine from "$lib/Lines/OutputLine.svelte"
+	import { FuelLineItem, LineItem, type CalculatedLine, type LineItems, type OutputLineItems } from "$lib/classes"
 
     let aircraftName = writable("")
     let inputFail = false
@@ -18,61 +21,46 @@
         }
     })
 
-    let input: Writable<LineItems<string>> = writable({
-        frontSeats: "",
-        rearSeats: "",
-        frontBag: "17",
-        rearBag: "",
-        fuel: "",
-        taxiBurn: "",
-        flightBurn: ""
-    })
-
-    let numberInput = {
-            frontSeats: Number($input.frontSeats),
-            rearSeats: Number($input.rearSeats),
-            frontBag: Number($input.frontBag),
-            rearBag: Number($input.rearBag),
-            fuel: Number($input.fuel),
-            taxiBurn: Number($input.taxiBurn),
-            flightBurn: Number($input.flightBurn),
-        }
-
-    let fuelInput = writable({
-        ramp: "53",
-        taxiBurn: "1.4",
-        flightBurn: ""
-    })
-
-    fuelInput.subscribe(fuelInput => {
-        $input.fuel = (Number(fuelInput.ramp) * 6).toFixed(2)
-        $input.taxiBurn = (Number(fuelInput.taxiBurn) * 6).toFixed(2)
-        $input.flightBurn = (Number(fuelInput.flightBurn) * 6).toFixed(2)
-    })
-
-    let calculatedMoment: LineItems<number> = {
-        frontSeats: 0,
-        rearSeats: 0,
-        frontBag: 0,
-        rearBag: 0,
-        fuel: 0,
-        taxiBurn: 0,
-        flightBurn: 0,
+    let input = {
+        frontSeats: new LineItem(37),
+        rearSeats: new LineItem(73),
+        frontBag: new LineItem(95),
+        rearBag: new LineItem(123),
+        rampFuel: new FuelLineItem(48),
+        taxiBurn: new FuelLineItem(48),
+        flightBurn: new FuelLineItem(48)
     }
 
-    let totalMoments = {
-        empty: 0,
-        ramp: 0,
-        takeoff: 0,
-        land: 0
-    }
+    input.frontSeats.subscribeToMoment(refresh)
+    input.rearSeats.subscribeToMoment(refresh)
+    input.frontBag.subscribeToMoment(refresh)
+    input.rearBag.subscribeToMoment(refresh)
+    input.rampFuel.subscribeToMoment(refresh)
+    input.taxiBurn.subscribeToMoment(refresh)
+    input.flightBurn.subscribeToMoment(refresh)
 
-    let totalWeights = {
-        empty: 0,
-        ramp: 0,
-        takeoff: 0,
-        land: 0
-    }    
+    let output: OutputLineItems<CalculatedLine> = {
+        empty: {
+            weight: 0,
+            arm: 0,
+            moment: 0
+        },
+        ramp: {
+            weight: 0,
+            arm: 0,
+            moment: 0
+        },
+        takeoff: {
+            weight: 0,
+            arm: 0,
+            moment: 0
+        },
+        land: {
+            weight: 0,
+            arm: 0,
+            moment: 0
+        },
+    }
 
     let validationResult: {result: boolean, comment: string} = {
         result: false,
@@ -103,46 +91,36 @@
         }
     })
 
-    input.subscribe(() => {
-        refresh()
-    })
-
     //
     // Refresh
     //
     function refresh() {
-        //Convert weight strings into numbers
-        let numberInput: LineItems<number> = {
-            frontSeats: Number($input.frontSeats),
-            rearSeats: Number($input.rearSeats),
-            frontBag: Number($input.frontBag),
-            rearBag: Number($input.rearBag),
-            fuel: Number($input.fuel),
-            taxiBurn: Number($input.taxiBurn),
-            flightBurn: Number($input.flightBurn),
-        }
         //Calculate total weights
-        totalWeights.empty = Number((aircraftData.weight + numberInput.frontSeats + numberInput.rearSeats + numberInput.frontBag + numberInput.rearBag).toFixed(2))
-        totalWeights.ramp = Number((totalWeights.empty + numberInput.fuel).toFixed(2))
-        totalWeights.takeoff = Number((totalWeights.ramp - numberInput.taxiBurn).toFixed(2))
-        totalWeights.land = Number((totalWeights.takeoff - numberInput.flightBurn).toFixed(2))
+        output.empty.weight = Number((aircraftData.weight + input.frontSeats.weight + input.rearSeats.weight + input.frontBag.weight + input.rearBag.weight).toFixed(2))
+        output.ramp.weight = Number((output.empty.weight + input.rampFuel.weight).toFixed(2))
+        output.takeoff.weight = Number((output.ramp.weight + input.taxiBurn.weight).toFixed(2))
+        output.land.weight = Number((output.takeoff.weight + input.flightBurn.weight).toFixed(2))
         //Calculate total moments
-        calculatedMoment = calcMoment(numberInput)
-        totalMoments.empty = Number((aircraftData.moment + calculatedMoment.frontSeats + calculatedMoment.rearSeats + calculatedMoment.frontBag + calculatedMoment.rearBag).toFixed(2))
-        totalMoments.ramp = Number((totalMoments.empty + calculatedMoment.fuel).toFixed(2))
-        totalMoments.takeoff = Number((totalMoments.ramp - calculatedMoment.taxiBurn).toFixed(2))
-        totalMoments.land = Number((totalMoments.takeoff - calculatedMoment.flightBurn).toFixed(2))
+        output.empty.moment = Number((aircraftData.moment + input.frontSeats.moment + input.rearSeats.moment + input.frontBag.moment + input.rearBag.moment).toFixed(2))
+        output.ramp.moment = Number((output.empty.moment + input.rampFuel.moment).toFixed(2))
+        output.takeoff.moment = Number((output.ramp.moment + input.taxiBurn.moment).toFixed(2))
+        output.land.moment = Number((output.takeoff.moment + input.flightBurn.moment).toFixed(2))
+        //Calculate arms
+        output.empty.arm = Number((output.empty.moment / output.empty.weight).toFixed(2))
+        output.ramp.arm = Number((output.ramp.moment / output.ramp.weight).toFixed(2))
+        output.takeoff.arm = Number((output.takeoff.moment / output.takeoff.weight).toFixed(2))
+        output.land.arm = Number((output.land.moment / output.land.weight).toFixed(2))
         //New aircraft
         if(newAircraft) {
-            newAircraftTotals.takeoffWeight = Number((totalWeights.takeoff - (aircraftData.weight - newAircraftData.weight)).toFixed(2))
-            newAircraftTotals.landWeight = Number((totalWeights.land - (aircraftData.weight - newAircraftData.weight)).toFixed(2))
-            newAircraftTotals.takeoffMoment = Number((totalMoments.takeoff - (aircraftData.moment - newAircraftData.moment)).toFixed(2))
-            newAircraftTotals.landMoment = Number((totalMoments.land - (aircraftData.moment - newAircraftData.moment)).toFixed(2))
+            newAircraftTotals.takeoffWeight = Number((output.takeoff.weight - (aircraftData.weight - newAircraftData.weight)).toFixed(2))
+            newAircraftTotals.landWeight = Number((output.land.weight - (aircraftData.weight - newAircraftData.weight)).toFixed(2))
+            newAircraftTotals.takeoffMoment = Number((output.takeoff.moment - (aircraftData.moment - newAircraftData.moment)).toFixed(2))
+            newAircraftTotals.landMoment = Number((output.land.moment - (aircraftData.moment - newAircraftData.moment)).toFixed(2))
             //Validate
             validationResult = calcLimits(newAircraftTotals.takeoffWeight, newAircraftTotals.takeoffMoment)
         } else {
             //Validate
-            validationResult = calcLimits(totalWeights.takeoff, totalMoments.takeoff)
+            validationResult = calcLimits(output.takeoff.weight, output.takeoff.moment)
         }
     }
 </script>
@@ -154,7 +132,8 @@
     <body>
         <div id="header">
             <h1>Welcome to Sam's ERAU Cessna 172 Weight and Balance Calculator!</h1>
-            <p>Fill out the info below to calculate weight and balance for your aircraft!</p>    
+            <p>Fill out the info below to calculate weight and balance for your aircraft!</p> 
+            <p>Please note: Except for the data from ETA, all numbers are rounded UP to the nearest whole number or to 2 decimal places. This includes fuel burn during taxi, if you put in -1.4 gallons it will round to -8 pounds up from -8.4</p>   
         </div>
         <div id="calc">
             <h2>Aircraft:</h2>
@@ -169,81 +148,18 @@
                     <th>Fuel (gal)</th>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Empty</td>
-                        <td id="aircraft-weight">{aircraftData.weight}</td>
-                        <td id="aircraft-arm">{aircraftData.arm}</td>
-                        <td id="aircraft-moment">{aircraftData.moment}</td>
-                    </tr>
-                    <tr>
-                        <td>Front seats</td>
-                        <td id="fs-weight"><input  type="text" bind:value={$input.frontSeats} class={$input.frontSeats == "" ? "empty" : "success"}></td>
-                        <td id="fs-arm">37</td>
-                        <td id="fs-moment">{calculatedMoment.frontSeats}</td>
-                    </tr>
-                    <tr>
-                        <td>Rear seat</td>
-                        <td><input id="rs-weight" type="text" bind:value={$input.rearSeats} class={$input.rearSeats == "" ? "empty" : "success"}></td>
-                        <td id="rs-arm">73</td>
-                        <td id="rs-moment">{calculatedMoment.rearSeats}</td>
-                    </tr>
-                    <tr>
-                        <td>Forward bag</td>
-                        <td><input id="fb-weight" type="text" bind:value={$input.frontBag} class={$input.frontBag == "" ? "empty" : "success"}></td>
-                        <td id="fb-arm">95</td>
-                        <td id="fb-moment">{calculatedMoment.frontBag}</td>
-                    </tr>
-                    <tr>
-                        <td>Aft bag</td>
-                        <td><input id="aft-weight" type="text" bind:value={$input.rearBag} class={$input.rearBag == "" ? "empty" : "success"}></td>
-                        <td id="aft-arm">123</td>
-                        <td id="aft-moment">{calculatedMoment.rearBag}</td>
-                    </tr>
-                    <tr class="output">
-                        <td>Empty weight</td>
-                        <td id="empty-weight">{totalWeights.empty}</td>
-                        <td id="empty-arm">{(totalMoments.empty/totalWeights.empty).toFixed(2)}</td>
-                        <td id="empty-moment">{totalMoments.empty}</td>
-                    </tr>
-                    <tr>
-                        <td>Ramp fuel</td>
-                        <td id="rampFuel-weight">{$input.fuel}</td>
-                        <td id="rampFuel-arm">48</td>
-                        <td id="rampFuel-moment">{calculatedMoment.fuel}</td>
-                        <td><input id="rampFuel-gallon" type="text" bind:value={$fuelInput.ramp} class={$fuelInput.ramp == "" ? "empty" : "success"}></td>
-                    </tr>
-                    <tr class="output">
-                        <td>Ramp weight</td>
-                        <td id="ramp-weight">{totalWeights.ramp}</td>
-                        <td id="ramp-arm">{(totalMoments.ramp/totalWeights.ramp).toFixed(2)}</td>
-                        <td id="ramp-moment">{totalMoments.ramp}</td>
-                    </tr>
-                    <tr>
-                        <td>Burn in taxi</td>
-                        <td id="taxi-weight">-{$input.taxiBurn}</td>
-                        <td id="taxi-arm">48</td>
-                        <td id="taxi-moment">-{calculatedMoment.taxiBurn.toFixed(2)}</td>
-                        <td>-<input id="taxi-input" type="text" bind:value={$fuelInput.taxiBurn} class={$fuelInput.taxiBurn == "" ? "empty" : "success"}></td>
-                    </tr>
-                    <tr class="output">
-                        <td>Takeoff weight</td>
-                        <td id="takeoff-weight">{totalWeights.takeoff}</td>
-                        <td id="takeoff-arm">{(totalMoments.takeoff/totalWeights.takeoff).toFixed(2)}</td>
-                        <td id="takeoff-moment">{totalMoments.takeoff}</td>
-                    </tr>
-                    <tr>
-                        <td>Burn in flight</td>
-                        <td id="flight-weight">-{$input.flightBurn}</td>
-                        <td id="flight-arm">48</td>
-                        <td id="flight-moment">-{calculatedMoment.flightBurn}</td>
-                        <td>-<input id="flight-input" type="text" bind:value={$fuelInput.flightBurn} class={$fuelInput.flightBurn == "" ? "empty" : "success"}></td>
-                    </tr>
-                    <tr class="output">
-                        <td>Landing weight</td>
-                        <td id="land-weight">{totalWeights.land}</td>
-                        <td id="land-arm">{(totalMoments.land/totalWeights.land).toFixed(2)}</td>
-                        <td id="land-moment">{totalMoments.land}</td>
-                    </tr>
+                    <OutputLine data={aircraftData} name="Aircraft" testTag="aircraft" />                    
+                    <Line data={input.frontSeats} name="Front Seats" testTag="fs" />                
+                    <Line data={input.rearSeats} name="Rear seats" testTag="rs" />
+                    <Line data={input.frontBag} name="Front Bags" testTag="fb" defaultValue=17 />
+                    <Line data={input.rearBag} name="Aft bag" testTag="aft" defaultValue=0 />                 
+                    <OutputLine data={output.empty} name="Empty weight" testTag="empty"/>
+                    <FuelLine data={input.rampFuel} name="Ramp Fuel" testTag="rampFuel" defaultValue=53 />
+                    <OutputLine data={output.ramp} name="Ramp weight" testTag="ramp" />
+                    <FuelLine data={input.taxiBurn} name="Burn in taxi" testTag="taxi" subtract defaultValue=1.4 />
+                    <OutputLine data={output.takeoff} name="Takeoff weight" testTag="takeoff" />
+                    <FuelLine data={input.flightBurn} name="Burn in flight" testTag="flight" subtract defaultValue=15 />
+                    <OutputLine data={output.land} name="Landing weight" testTag="land" />
                 </tbody>
             </table>
             <button id="new-aircraft-button" hidden={newAircraft} on:click={()=>{newAircraft = true}}>Change in aircraft</button>
@@ -287,15 +203,6 @@
     input {
         transition: all .5s;
     }
-    .empty {
-        background-color: lime;
-    }
-    .success {
-        background-color: white;
-    }
-    .fail {
-        background-color: red;
-    }
     table input {
         box-sizing: content-box;
         width: 70px;
@@ -307,6 +214,15 @@
     }
     table .output {
         background-color: #ccccff;
+    }
+    .empty {
+        background-color: lime;
+    }
+    .success {
+        background-color: white;
+    }
+    .fail {
+        background-color: red;
     }
     button {
         text-align: center;
