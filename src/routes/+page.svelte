@@ -21,7 +21,15 @@
         }
     })
 
-    let input = {
+    let input: {
+        frontSeats: LineItem
+        rearSeats: LineItem
+        frontBag: LineItem
+        rearBag: LineItem
+        rampFuel: FuelLineItem
+        taxiBurn: FuelLineItem
+        flightBurn: FuelLineItem
+    } = {
         frontSeats: new LineItem(37),
         rearSeats: new LineItem(73),
         frontBag: new LineItem(95),
@@ -117,10 +125,10 @@
             newAircraftTotals.takeoffMoment = Number((output.takeoff.moment - (aircraftData.moment - newAircraftData.moment)).toFixed(2))
             newAircraftTotals.landMoment = Number((output.land.moment - (aircraftData.moment - newAircraftData.moment)).toFixed(2))
             //Validate
-            validationResult = calcLimits(newAircraftTotals.takeoffWeight, newAircraftTotals.takeoffMoment)
+            validationResult = calcLimits(newAircraftTotals.takeoffWeight, newAircraftTotals.takeoffMoment, input)
         } else {
             //Validate
-            validationResult = calcLimits(output.takeoff.weight, output.takeoff.moment)
+            validationResult = calcLimits(output.takeoff.weight, output.takeoff.moment, input)
         }
     }
 </script>
