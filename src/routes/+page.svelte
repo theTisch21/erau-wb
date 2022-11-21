@@ -190,15 +190,6 @@
     input {
         transition: all .5s;
     }
-    .empty {
-        background-color: lime;
-    }
-    .success {
-        background-color: white;
-    }
-    .fail {
-        background-color: red;
-    }
     table input {
         box-sizing: content-box;
         width: 70px;
@@ -210,6 +201,15 @@
     }
     table .output {
         background-color: #ccccff;
+    }
+    .empty {
+        background-color: lime;
+    }
+    .success {
+        background-color: white;
+    }
+    .fail {
+        background-color: red;
     }
     button {
         text-align: center;

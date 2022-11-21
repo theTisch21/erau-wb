@@ -24,4 +24,23 @@
 	.success {
 		background-color: white;
 	}
+    table, th, td {
+        border: 2px solid;
+        border-collapse: collapse;
+    }
+    input {
+        transition: all .5s;
+    }
+    table input {
+        box-sizing: content-box;
+        width: 70px;
+        margin: 5px;
+    }
+    td {
+        width: 100px;
+        height: 30px
+    }
+    table .output {
+        background-color: #ccccff;
+    }
 </style>
