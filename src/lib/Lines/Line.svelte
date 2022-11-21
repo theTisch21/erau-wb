@@ -5,7 +5,7 @@
     export let data: LineItem
     export let name: string
     export let testTag: string
-    let input = writable(0)
+    let input = writable("")
     input.subscribe(weight => {
         data.setWeight(weight)
     })
