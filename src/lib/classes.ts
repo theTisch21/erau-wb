@@ -20,7 +20,7 @@ export class LineItem {
             newWeight = Number(newWeight)
         }
         this.weight = newWeight
-        this.moment = newWeight * this.arm
+        this.moment = Math.ceil(newWeight * this.arm)
         this.callbacks.forEach(callback => {
             callback(this.moment)
         })
@@ -53,8 +53,8 @@ export class FuelLineItem {
             newGallons = Number(newGallons)
         }
         this.gallons = newGallons
-        this.weight = this.gallons * 6
-        this.moment = this.weight * this.arm
+        this.weight = Math.ceil(this.gallons * 6)
+        this.moment = Math.ceil(this.weight * this.arm)
         this.callbacks.forEach(callback => {
             callback(this.moment)
         })

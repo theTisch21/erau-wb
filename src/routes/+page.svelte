@@ -31,6 +31,14 @@
         flightBurn: new FuelLineItem(48)
     }
 
+    input.frontSeats.subscribeToMoment(refresh)
+    input.rearSeats.subscribeToMoment(refresh)
+    input.frontBag.subscribeToMoment(refresh)
+    input.rearBag.subscribeToMoment(refresh)
+    input.rampFuel.subscribeToMoment(refresh)
+    input.taxiBurn.subscribeToMoment(refresh)
+    input.flightBurn.subscribeToMoment(refresh)
+
     let output: OutputLineItems<CalculatedLine> = {
         empty: {
             weight: 0,
@@ -88,27 +96,31 @@
     //
     function refresh() {
         //Calculate total weights
-        totalWeights.empty = Number((aircraftData.weight + input.frontSeats.weight + numberInput.rearSeats + numberInput.frontBag + numberInput.rearBag).toFixed(2))
-        totalWeights.ramp = Number((totalWeights.empty + numberInput.fuel).toFixed(2))
-        totalWeights.takeoff = Number((totalWeights.ramp - numberInput.taxiBurn).toFixed(2))
-        totalWeights.land = Number((totalWeights.takeoff - numberInput.flightBurn).toFixed(2))
+        output.empty.weight = Number((aircraftData.weight + input.frontSeats.weight + input.rearSeats.weight + input.frontBag.weight + input.rearBag.weight).toFixed(2))
+        output.ramp.weight = Number((output.empty.weight + input.rampFuel.weight).toFixed(2))
+        output.takeoff.weight = Number((output.ramp.weight + input.taxiBurn.weight).toFixed(2))
+        output.land.weight = Number((output.takeoff.weight + input.flightBurn.weight).toFixed(2))
         //Calculate total moments
-        calculatedMoment = calcMoment(numberInput)
-        totalMoments.empty = Number((aircraftData.moment + calculatedMoment.frontSeats + calculatedMoment.rearSeats + calculatedMoment.frontBag + calculatedMoment.rearBag).toFixed(2))
-        totalMoments.ramp = Number((totalMoments.empty + calculatedMoment.fuel).toFixed(2))
-        totalMoments.takeoff = Number((totalMoments.ramp - calculatedMoment.taxiBurn).toFixed(2))
-        totalMoments.land = Number((totalMoments.takeoff - calculatedMoment.flightBurn).toFixed(2))
+        output.empty.moment = Number((aircraftData.moment + input.frontSeats.moment + input.rearSeats.moment + input.frontBag.moment + input.rearBag.moment).toFixed(2))
+        output.ramp.moment = Number((output.empty.moment + input.rampFuel.moment).toFixed(2))
+        output.takeoff.moment = Number((output.ramp.moment + input.taxiBurn.moment).toFixed(2))
+        output.land.moment = Number((output.takeoff.moment + input.flightBurn.moment).toFixed(2))
+        //Calculate arms
+        output.empty.arm = Number((output.empty.moment / output.empty.weight).toFixed(2))
+        output.ramp.arm = Number((output.ramp.moment / output.ramp.weight).toFixed(2))
+        output.takeoff.arm = Number((output.takeoff.moment / output.takeoff.weight).toFixed(2))
+        output.land.arm = Number((output.land.moment / output.land.weight).toFixed(2))
         //New aircraft
         if(newAircraft) {
-            newAircraftTotals.takeoffWeight = Number((totalWeights.takeoff - (aircraftData.weight - newAircraftData.weight)).toFixed(2))
-            newAircraftTotals.landWeight = Number((totalWeights.land - (aircraftData.weight - newAircraftData.weight)).toFixed(2))
-            newAircraftTotals.takeoffMoment = Number((totalMoments.takeoff - (aircraftData.moment - newAircraftData.moment)).toFixed(2))
-            newAircraftTotals.landMoment = Number((totalMoments.land - (aircraftData.moment - newAircraftData.moment)).toFixed(2))
+            newAircraftTotals.takeoffWeight = Number((output.takeoff.weight - (aircraftData.weight - newAircraftData.weight)).toFixed(2))
+            newAircraftTotals.landWeight = Number((output.land.weight - (aircraftData.weight - newAircraftData.weight)).toFixed(2))
+            newAircraftTotals.takeoffMoment = Number((output.takeoff.moment - (aircraftData.moment - newAircraftData.moment)).toFixed(2))
+            newAircraftTotals.landMoment = Number((output.land.moment - (aircraftData.moment - newAircraftData.moment)).toFixed(2))
             //Validate
             validationResult = calcLimits(newAircraftTotals.takeoffWeight, newAircraftTotals.takeoffMoment)
         } else {
             //Validate
-            validationResult = calcLimits(totalWeights.takeoff, totalMoments.takeoff)
+            validationResult = calcLimits(output.takeoff.weight, output.takeoff.moment)
         }
     }
 </script>
@@ -120,7 +132,8 @@
     <body>
         <div id="header">
             <h1>Welcome to Sam's ERAU Cessna 172 Weight and Balance Calculator!</h1>
-            <p>Fill out the info below to calculate weight and balance for your aircraft!</p>    
+            <p>Fill out the info below to calculate weight and balance for your aircraft!</p> 
+            <p>Please note: Except for the data from ETA, all numbers are rounded UP to the nearest whole number or to 2 decimal places. This includes fuel burn during taxi, if you put in -1.4 gallons it will round to -8 pounds up from -8.4</p>   
         </div>
         <div id="calc">
             <h2>Aircraft:</h2>
@@ -137,15 +150,15 @@
                 <tbody>
                     <OutputLine data={aircraftData} name="Aircraft" testTag="aircraft" />                    
                     <Line data={input.frontSeats} name="Front Seats" testTag="fs" />                
-                    <Line data={input.rearSeats} name="Rear seats" testTag="rs" />                
-                    <Line data={input.frontBag} name="Front Bags" testTag="fb" />                
-                    <Line data={input.rearBag} name="Aft bag" testTag="aft" />                 
+                    <Line data={input.rearSeats} name="Rear seats" testTag="rs" />
+                    <Line data={input.frontBag} name="Front Bags" testTag="fb" defaultValue=17 />
+                    <Line data={input.rearBag} name="Aft bag" testTag="aft" defaultValue=0 />                 
                     <OutputLine data={output.empty} name="Empty weight" testTag="empty"/>
-                    <FuelLine data={input.rampFuel} name="Ramp Fuel" testTag="ramp" />
+                    <FuelLine data={input.rampFuel} name="Ramp Fuel" testTag="rampFuel" defaultValue=53 />
                     <OutputLine data={output.ramp} name="Ramp weight" testTag="ramp" />
-                    <FuelLine data={input.taxiBurn} name="Burn in taxi" testTag="taxi" />
+                    <FuelLine data={input.taxiBurn} name="Burn in taxi" testTag="taxi" subtract defaultValue=1.4 />
                     <OutputLine data={output.takeoff} name="Takeoff weight" testTag="takeoff" />
-                    <FuelLine data={input.flightBurn} name="Burn in flight" testTag="flight" />
+                    <FuelLine data={input.flightBurn} name="Burn in flight" testTag="flight" subtract defaultValue=15 />
                     <OutputLine data={output.land} name="Landing weight" testTag="land" />
                 </tbody>
             </table>
