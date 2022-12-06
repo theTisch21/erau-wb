@@ -75,17 +75,17 @@ describe('Example sheets', () => {
     
     //cy.get("#taxi-input").type("1")
     cy.get("#taxi-weight").should("contain.text", "-8")
-    cy.get("#taxi-moment").should("contain.text", "-384")
+    cy.get("#taxi-moment").should("contain.text", "-402")
     cy.get("#takeoff-weight").should("contain.text", "2409")
     cy.get("#takeoff-arm").should("contain.text", "41")
-    cy.get("#takeoff-moment").should("contain.text", "100799")
+    cy.get("#takeoff-moment").should("contain.text", "100780")
     
     //cy.get("#flight-gallon").type("15")
     cy.get("#flight-weight").should("contain.text", "-90")
     cy.get("#flight-moment").should("contain.text", "-4320")
     cy.get("#land-weight").should("contain.text", "2319")
     cy.get("#land-arm").should("contain.text", "41")
-    cy.get("#land-moment").should("contain.text", "96479")
+    cy.get("#land-moment").should("contain.text", "96460")
   })
   it("2", () => {
     cy.get("#aircraft-input").type("R-68")
@@ -112,17 +112,17 @@ describe('Example sheets', () => {
     
     //cy.get("#taxi-input").type("1")
     cy.get("#taxi-weight").should("contain.text", "-8")
-    cy.get("#taxi-moment").should("contain.text", "-384")
+    cy.get("#taxi-moment").should("contain.text", "-402")
     cy.get("#takeoff-weight").should("contain.text", "2403")
     cy.get("#takeoff-arm").should("contain.text", "42")
-    cy.get("#takeoff-moment").should("contain.text", "101680")
+    cy.get("#takeoff-moment").should("contain.text", "101661")
     
     //cy.get("#flight-gallon").type("15")
     cy.get("#flight-weight").should("contain.text", "-90")
     cy.get("#flight-moment").should("contain.text", "-4320")
     cy.get("#land-weight").should("contain.text", "2313")
     cy.get("#land-arm").should("contain.text", "42")
-    cy.get("#land-moment").should("contain.text", "97360")
+    cy.get("#land-moment").should("contain.text", "97341")
   })
   it("3", () => {
     cy.get("#aircraft-input").type("R-57")
@@ -149,17 +149,17 @@ describe('Example sheets', () => {
     
     //cy.get("#taxi-input").type("1")
     cy.get("#taxi-weight").should("contain.text", "-8")
-    cy.get("#taxi-moment").should("contain.text", "-384")
+    cy.get("#taxi-moment").should("contain.text", "-402")
     cy.get("#takeoff-weight").should("contain.text", "2420")
     cy.get("#takeoff-arm").should("contain.text", "42")
-    cy.get("#takeoff-moment").should("contain.text", "102581")
+    cy.get("#takeoff-moment").should("contain.text", "102562")
     
     //cy.get("#flight-gallon").type("15")
     cy.get("#flight-weight").should("contain.text", "-90")
     cy.get("#flight-moment").should("contain.text", "-4320")
     cy.get("#land-weight").should("contain.text", "2330")
     cy.get("#land-arm").should("contain.text", "42")
-    cy.get("#land-moment").should("contain.text", "98261")
+    cy.get("#land-moment").should("contain.text", "98242")
     
     //Change in aircraft
     cy.get("#new-aircraft-button").click()
@@ -171,10 +171,10 @@ describe('Example sheets', () => {
 
     cy.get("#new-takeoff-weight").should("contain.text", "2404")
     cy.get("#new-takeoff-arm").should("contain.text", "42")
-    cy.get("#new-takeoff-moment").should("contain.text", "101042")
+    cy.get("#new-takeoff-moment").should("contain.text", "101023")
 
     cy.get("#new-land-weight").should("contain.text", "2314")
     cy.get("#new-land-arm").should("contain.text", "41")
-    cy.get("#new-land-moment").should("contain.text", "96722")
+    cy.get("#new-land-moment").should("contain.text", "96703")
   })
 })
