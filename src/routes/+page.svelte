@@ -150,12 +150,6 @@
             <p>Expect the site to be unavailable during this time.</p>
             <p>If you have any questions or concerns, please email Sam at <a href="mailto:tischaes@my.erau.edu">tischaes@my.erau.edu</a></p>
         </div>
-        <div class="warning">
-            <h1>ATTENTION</h1>
-            <p>This site will undergo maintenance on Wednesday December 7th at 2000 MST (UTC-7) until 2100.</p>
-            <p>Expect the site to be unavailable during this time.</p>
-            <p>If you have any questions or concerns, please email Sam at <a href="mailto:tischaes@my.erau.edu">tischaes@my.erau.edu</a></p>
-        </div>
         <div id="calc">
             <h2>Aircraft:</h2>
             <input id="aircraft-input" type="text" placeholder="Copy from ETA" title="Aircraft" bind:value={$aircraftName} style="font-size: large;" class={inputFail ? ($aircraftName != "" ? "fail" : "empty") : "empty"}/>
