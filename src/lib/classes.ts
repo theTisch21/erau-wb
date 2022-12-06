@@ -1,4 +1,5 @@
 import { writable, type Writable } from "svelte/store";
+import { round } from "./round";
 
 export class LineItem {
     weight: number;
@@ -20,7 +21,7 @@ export class LineItem {
             newWeight = Number(newWeight)
         }
         this.weight = newWeight
-        this.moment = Math.ceil(newWeight * this.arm)
+        this.moment = round(newWeight * this.arm)
         this.callbacks.forEach(callback => {
             callback(this.moment)
         })
@@ -53,8 +54,8 @@ export class FuelLineItem {
             newGallons = Number(newGallons)
         }
         this.gallons = newGallons
-        this.weight = Math.ceil(this.gallons * 6)
-        this.moment = Math.ceil(this.weight * this.arm)
+        this.weight = round(this.gallons * 6)
+        this.moment = round(this.weight * this.arm)
         this.callbacks.forEach(callback => {
             callback(this.moment)
         })

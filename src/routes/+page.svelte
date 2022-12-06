@@ -6,6 +6,7 @@
 	import FuelLine from "$lib/Lines/FuelLine.svelte"
 	import OutputLine from "$lib/Lines/OutputLine.svelte"
 	import { FuelLineItem, LineItem, type CalculatedLine, type LineItems, type OutputLineItems } from "$lib/classes"
+	import { round } from "$lib/round"
 
     let aircraftName = writable("")
     let inputFail = false
@@ -104,26 +105,26 @@
     //
     function refresh() {
         //Calculate total weights
-        output.empty.weight = Number((aircraftData.weight + input.frontSeats.weight + input.rearSeats.weight + input.frontBag.weight + input.rearBag.weight).toFixed(2))
-        output.ramp.weight = Number((output.empty.weight + input.rampFuel.weight).toFixed(2))
-        output.takeoff.weight = Number((output.ramp.weight + input.taxiBurn.weight).toFixed(2))
-        output.land.weight = Number((output.takeoff.weight + input.flightBurn.weight).toFixed(2))
+        output.empty.weight = round(aircraftData.weight + input.frontSeats.weight + input.rearSeats.weight + input.frontBag.weight + input.rearBag.weight)
+        output.ramp.weight = round(output.empty.weight + input.rampFuel.weight)
+        output.takeoff.weight = round(output.ramp.weight + input.taxiBurn.weight)
+        output.land.weight = round(output.takeoff.weight + input.flightBurn.weight)
         //Calculate total moments
-        output.empty.moment = Number((aircraftData.moment + input.frontSeats.moment + input.rearSeats.moment + input.frontBag.moment + input.rearBag.moment).toFixed(2))
-        output.ramp.moment = Number((output.empty.moment + input.rampFuel.moment).toFixed(2))
-        output.takeoff.moment = Number((output.ramp.moment + input.taxiBurn.moment).toFixed(2))
-        output.land.moment = Number((output.takeoff.moment + input.flightBurn.moment).toFixed(2))
+        output.empty.moment = round(aircraftData.moment + input.frontSeats.moment + input.rearSeats.moment + input.frontBag.moment + input.rearBag.moment)
+        output.ramp.moment = round(output.empty.moment + input.rampFuel.moment)
+        output.takeoff.moment = round(output.ramp.moment + input.taxiBurn.moment)
+        output.land.moment = round(output.takeoff.moment + input.flightBurn.moment)
         //Calculate arms
-        output.empty.arm = Number((output.empty.moment / output.empty.weight).toFixed(2))
-        output.ramp.arm = Number((output.ramp.moment / output.ramp.weight).toFixed(2))
-        output.takeoff.arm = Number((output.takeoff.moment / output.takeoff.weight).toFixed(2))
-        output.land.arm = Number((output.land.moment / output.land.weight).toFixed(2))
+        output.empty.arm = round(output.empty.moment / output.empty.weight)
+        output.ramp.arm = round(output.ramp.moment / output.ramp.weight)
+        output.takeoff.arm = round(output.takeoff.moment / output.takeoff.weight)
+        output.land.arm = round(output.land.moment / output.land.weight)
         //New aircraft
         if(newAircraft) {
-            newAircraftTotals.takeoffWeight = Number((output.takeoff.weight - (aircraftData.weight - newAircraftData.weight)).toFixed(2))
-            newAircraftTotals.landWeight = Number((output.land.weight - (aircraftData.weight - newAircraftData.weight)).toFixed(2))
-            newAircraftTotals.takeoffMoment = Number((output.takeoff.moment - (aircraftData.moment - newAircraftData.moment)).toFixed(2))
-            newAircraftTotals.landMoment = Number((output.land.moment - (aircraftData.moment - newAircraftData.moment)).toFixed(2))
+            newAircraftTotals.takeoffWeight = round(output.takeoff.weight - (aircraftData.weight - newAircraftData.weight))
+            newAircraftTotals.landWeight = round(output.land.weight - (aircraftData.weight - newAircraftData.weight))
+            newAircraftTotals.takeoffMoment = round(output.takeoff.moment - (aircraftData.moment - newAircraftData.moment))
+            newAircraftTotals.landMoment = round(output.land.moment - (aircraftData.moment - newAircraftData.moment))
             //Validate
             validationResult = calcLimits(newAircraftTotals.takeoffWeight, newAircraftTotals.takeoffMoment, input)
         } else {
@@ -142,6 +143,12 @@
             <h1>Welcome to Sam's ERAU Cessna 172 Weight and Balance Calculator!</h1>
             <p>Fill out the info below to calculate weight and balance for your aircraft!</p> 
             <p>Please note: Except for the data from ETA, all numbers are rounded UP to the nearest whole number or to 2 decimal places. This includes fuel burn during taxi, if you put in -1.4 gallons it will round to -8 pounds up from -8.4</p>   
+        </div>
+        <div class="warning">
+            <h1>ATTENTION</h1>
+            <p>This site will undergo maintenance on Wednesday December 7th at 2000 MST (UTC-7) until 2100.</p>
+            <p>Expect the site to be unavailable during this time.</p>
+            <p>If you have any questions or concerns, please email Sam at <a href="mailto:tischaes@my.erau.edu">tischaes@my.erau.edu</a></p>
         </div>
         <div id="calc">
             <h2>Aircraft:</h2>
@@ -178,20 +185,20 @@
                 <tbody>
                     <tr>
                         <td>Difference</td>
-                        <td id="diff-weight">{(newAircraftData.weight - aircraftData.weight).toFixed(2)}</td>
-                        <td id="diff-arm">{(aircraftData.arm - newAircraftData.arm).toFixed(2)}</td>
-                        <td id="diff-moment">{(newAircraftData.moment - aircraftData.moment).toFixed(2)}</td>
+                        <td id="diff-weight">{round(newAircraftData.weight - aircraftData.weight)}</td>
+                        <td id="diff-arm">{round(aircraftData.arm - newAircraftData.arm)}</td>
+                        <td id="diff-moment">{round(newAircraftData.moment - aircraftData.moment)}</td>
                     </tr>
                     <tr class="output">
                         <td>New Takeoff weight</td>
                         <td id="new-takeoff-weight">{newAircraftTotals.takeoffWeight}</td>
-                        <td id="new-takeoff-arm">{(newAircraftTotals.takeoffMoment/newAircraftTotals.takeoffWeight).toFixed(2)}</td>
+                        <td id="new-takeoff-arm">{round(newAircraftTotals.takeoffMoment/newAircraftTotals.takeoffWeight)}</td>
                         <td id="new-takeoff-moment">{newAircraftTotals.takeoffMoment}</td>
                     </tr>
                     <tr class="output">
                         <td>New Landing weight</td>
                         <td id="new-land-weight">{newAircraftTotals.landWeight}</td>
-                        <td id="new-land-arm">{(newAircraftTotals.landMoment/newAircraftTotals.landWeight).toFixed(2)}</td>
+                        <td id="new-land-arm">{round(newAircraftTotals.landMoment/newAircraftTotals.landWeight)}</td>
                         <td id="new-land-moment">{newAircraftTotals.landMoment}</td>
                     </tr>
                 </tbody>
@@ -250,9 +257,12 @@
     #validation.good {
         background-color: green;
     }
-    #validation.bad {
+    #validation.bad, .warning {
         background-color: red;
         color: white;
+    }
+    .warning {
+        padding: 2em;
     }
 </style>
 
