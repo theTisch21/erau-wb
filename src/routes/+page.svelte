@@ -6,6 +6,7 @@
 	import FuelLine from "$lib/Lines/FuelLine.svelte"
 	import OutputLine from "$lib/Lines/OutputLine.svelte"
 	import { FuelLineItem, LineItem, type CalculatedLine, type LineItems, type OutputLineItems } from "$lib/classes"
+	import PressureAlt from "$lib/Calculators/PressureAlt.svelte"
 
     let aircraftName = writable("")
     let inputFail = false
@@ -197,6 +198,7 @@
                 </tbody>
             </table>
         </div>
+        <PressureAlt></PressureAlt>
         <div id="validation" class={validationResult.result ? "good" : "bad"}>
             <h1>{validationResult.comment}</h1>
         </div>
