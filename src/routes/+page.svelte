@@ -21,6 +21,8 @@
         }
     })
 
+    let Va = 0
+
     let input: {
         frontSeats: LineItem
         rearSeats: LineItem
@@ -130,6 +132,7 @@
             //Validate
             validationResult = calcLimits(output.takeoff.weight, output.takeoff.moment, input)
         }
+        Va = Math.ceil(Math.sqrt(output.land.weight / 2550) * 105)
     }
 </script>
 
@@ -199,6 +202,9 @@
         </div>
         <div id="validation" class={validationResult.result ? "good" : "bad"}>
             <h1>{validationResult.comment}</h1>
+        </div>
+        <div id="Va">
+            <p>Va = {Va} kts</p>
         </div>
     </body>
 </main>
