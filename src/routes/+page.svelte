@@ -7,6 +7,7 @@
 	import OutputLine from "$lib/Lines/OutputLine.svelte"
 	import { FuelLineItem, LineItem, type CalculatedLine, type LineItems, type OutputLineItems } from "$lib/classes"
 	import { round } from "$lib/round"
+	import PressureAlt from "$lib/Calculators/PressureAlt.svelte"
 
     let aircraftName = writable("")
     let inputFail = false
@@ -21,6 +22,8 @@
             inputFail = true
         }
     })
+
+    let Va = 0
 
     let input: {
         frontSeats: LineItem
@@ -127,9 +130,11 @@
             newAircraftTotals.landMoment = round(output.land.moment - (aircraftData.moment - newAircraftData.moment))
             //Validate
             validationResult = calcLimits(newAircraftTotals.takeoffWeight, newAircraftTotals.takeoffMoment, input)
+        Va = Math.ceil(Math.sqrt(newAircraftTotals.landWeight / 2550) * 105)
         } else {
             //Validate
             validationResult = calcLimits(output.takeoff.weight, output.takeoff.moment, input)
+        Va = Math.ceil(Math.sqrt(output.land.weight / 2550) * 105)
         }
     }
 </script>
@@ -155,7 +160,7 @@
         <div id="calc">
             <h2>Aircraft:</h2>
             <input id="aircraft-input" type="text" placeholder="Copy from ETA" title="Aircraft" bind:value={$aircraftName} style="font-size: large;" class={inputFail ? ($aircraftName != "" ? "fail" : "empty") : "empty"}/>
-            <button on:click={()=>{aircraftName.set("R-73")}}>Set to heaviest aircraft</button>
+            <button on:click={()=>{aircraftName.set("R-55")}}>Set to heaviest aircraft</button>
             <table>
                 <thead>
                     <th>Item</th>
@@ -209,6 +214,11 @@
         <div id="validation" class={validationResult.result ? "good" : "bad"}>
             <h1>{validationResult.comment}</h1>
         </div>
+        <div id="Va">
+            <h2>Maneuvering speed:</h2>
+            <p>Va = {Va} kts</p>
+        </div>
+        <PressureAlt />
     </body>
 </main>
 
