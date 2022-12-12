@@ -14,7 +14,7 @@
 
 <main>
     <h2>Pressure Altitude:</h2>
-    <input bind:value={$fieldElevation} placeholder="Field Elevation">
-    <input bind:value={$currentAltimiter} placeholder="Current Altimiter">
-    <p>{pressureAltitude}ft</p>
+    <input id="pa-fieldElevation" bind:value={$fieldElevation} placeholder="Field Elevation">
+    <input id="pa-currentAltimiter" bind:value={$currentAltimiter} placeholder="Current Altimiter">
+    <p id="pa-result">{pressureAltitude}ft</p>
 </main>
