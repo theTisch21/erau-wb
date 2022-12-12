@@ -198,10 +198,10 @@
                 </tbody>
             </table>
         </div>
-        <PressureAlt></PressureAlt>
         <div id="validation" class={validationResult.result ? "good" : "bad"}>
             <h1>{validationResult.comment}</h1>
         </div>
+        <PressureAlt />
     </body>
 </main>
 
