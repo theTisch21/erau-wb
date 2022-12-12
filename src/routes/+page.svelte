@@ -6,6 +6,7 @@
 	import FuelLine from "$lib/Lines/FuelLine.svelte"
 	import OutputLine from "$lib/Lines/OutputLine.svelte"
 	import { FuelLineItem, LineItem, type CalculatedLine, type LineItems, type OutputLineItems } from "$lib/classes"
+	import PressureAlt from "$lib/Calculators/PressureAlt.svelte"
 
     let aircraftName = writable("")
     let inputFail = false
@@ -208,6 +209,7 @@
             <h2>Maneuvering speed:</h2>
             <p>Va = {Va} kts</p>
         </div>
+        <PressureAlt />
     </body>
 </main>
 
