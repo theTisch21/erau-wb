@@ -54,8 +54,8 @@ export class FuelLineItem {
             newGallons = Number(newGallons)
         }
         this.gallons = newGallons
-        this.weight = round(this.gallons * 6)
-        this.moment = round(this.weight * this.arm)
+        this.weight = round(this.gallons * 6, true)
+        this.moment = round(this.weight * this.arm, true)
         this.callbacks.forEach(callback => {
             callback(this.moment)
         })
