@@ -128,11 +128,12 @@
             newAircraftTotals.landMoment = Number((output.land.moment - (aircraftData.moment - newAircraftData.moment)).toFixed(2))
             //Validate
             validationResult = calcLimits(newAircraftTotals.takeoffWeight, newAircraftTotals.takeoffMoment, input)
+        Va = Math.ceil(Math.sqrt(newAircraftTotals.landWeight / 2550) * 105)
         } else {
             //Validate
             validationResult = calcLimits(output.takeoff.weight, output.takeoff.moment, input)
-        }
         Va = Math.ceil(Math.sqrt(output.land.weight / 2550) * 105)
+        }
     }
 </script>
 
@@ -204,6 +205,7 @@
             <h1>{validationResult.comment}</h1>
         </div>
         <div id="Va">
+            <h2>Maneuvering speed:</h2>
             <p>Va = {Va} kts</p>
         </div>
     </body>
