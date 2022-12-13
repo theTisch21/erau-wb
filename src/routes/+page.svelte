@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { writable, type Writable } from "svelte/store"
-	import { lookup, type Aircraft } from "$lib/aircraft"
+	import { lookupAircraft, type Aircraft } from "$lib/Lookups/Aircraft/aircraft"
 	import { calcLimits } from "$lib/limitCalc"
 	import Line from "$lib/Lines/Line.svelte"
 	import FuelLine from "$lib/Lines/FuelLine.svelte"
@@ -8,12 +8,13 @@
 	import { FuelLineItem, LineItem, type CalculatedLine, type LineItems, type OutputLineItems } from "$lib/classes"
 	import { round } from "$lib/round"
 	import PressureAlt from "$lib/Calculators/PressureAlt.svelte"
+	import { calculatePerformanceData, type PerformanceOutput } from "$lib/Lookups/Performance/Landing/performance"
 
     let aircraftName = writable("")
     let inputFail = false
     let aircraftData: Aircraft = {name: "", weight: 0, arm: 0, moment: 0}
     aircraftName.subscribe(async a => {
-        let newPlane = await lookup(a)
+        let newPlane = await lookupAircraft(a)
         if(newPlane != null) {
             inputFail = false
             aircraftData = newPlane
@@ -74,11 +75,6 @@
         },
     }
 
-    let validationResult: {result: boolean, comment: string} = {
-        result: false,
-        comment: "No data entered"
-    }
-
     //
     // Change in aircraft
     //
@@ -93,7 +89,7 @@
         landMoment: 0
     }
     newAircraftName.subscribe(async a => {
-        let newPlane = await lookup(a)
+        let newPlane = await lookupAircraft(a)
         if(newPlane != null) {
             newAircraftInputFail = false
             newAircraftData = newPlane
@@ -106,7 +102,25 @@
     //
     // Refresh
     //
+    let validationResult: {result: boolean, comment: string} = {
+        result: false,
+        comment: "No data entered"
+    }
+    let performanceResult: { out: PerformanceOutput; downOption: boolean; notes?: string }
+    let performanceData: PerformanceOutput = {
+        takeoffRoll: 0,
+        takeoffFifty: 0,
+        landRoll: 0,
+        landFifty: 0
+    }
+    let isRoundingDown = writable(false)
+    isRoundingDown.subscribe(refresh)
+    let currentPressureAltitude = writable("")
+    currentPressureAltitude.subscribe(refresh)
+    let currentTemp = writable("")
+    currentTemp.subscribe(refresh)
     function refresh() {
+        console.log("Refreshing data")
         //Calculate total weights
         output.empty.weight = round(aircraftData.weight + input.frontSeats.weight + input.rearSeats.weight + input.frontBag.weight + input.rearBag.weight)
         output.ramp.weight = round(output.empty.weight + input.rampFuel.weight)
@@ -128,10 +142,16 @@
             newAircraftTotals.landWeight = round(output.land.weight - (aircraftData.weight - newAircraftData.weight))
             newAircraftTotals.takeoffMoment = round(output.takeoff.moment - (aircraftData.moment - newAircraftData.moment))
             newAircraftTotals.landMoment = round(output.land.moment - (aircraftData.moment - newAircraftData.moment))
+            //Performance
+            performanceResult = calculatePerformanceData(newAircraftTotals.takeoffWeight,Number($currentPressureAltitude),Number($currentTemp), $isRoundingDown)
+            performanceData = performanceResult.out
             //Validate
             validationResult = calcLimits(newAircraftTotals.takeoffWeight, newAircraftTotals.takeoffMoment, input)
         Va = Math.ceil(Math.sqrt(newAircraftTotals.landWeight / 2550) * 105)
         } else {
+            //Performance
+            performanceResult = calculatePerformanceData(output.takeoff.weight,Number($currentPressureAltitude),Number($currentTemp), $isRoundingDown)
+            performanceData = performanceResult.out
             //Validate
             validationResult = calcLimits(output.takeoff.weight, output.takeoff.moment, input)
         Va = Math.ceil(Math.sqrt(output.land.weight / 2550) * 105)
@@ -218,7 +238,19 @@
             <h2>Maneuvering speed:</h2>
             <p>Va = {Va} kts</p>
         </div>
-        <PressureAlt />
+        <PressureAlt pressureAltitude={currentPressureAltitude} />
+        <div id="Performance">
+            <h2>Performance data</h2>
+            <input type="text" id="perf-temp-input" placeholder="Current Temperature °C" title="Aircraft" bind:value={$currentTemp} >
+            <p>Takeoff roll: {performanceData.takeoffRoll}</p>
+            <p>Takeoff 50ft: {performanceData.takeoffFifty}</p>
+            <p>Land roll: {performanceData.landRoll}</p>
+            <p>Land 50ft: {performanceData.landFifty}</p>
+            {#if performanceResult.downOption}
+            <h3>{performanceResult.notes}</h3>
+            <input type="checkbox" bind:checked={$isRoundingDown}>
+            {/if}
+        </div>
     </body>
 </main>
 

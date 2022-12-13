@@ -81,7 +81,7 @@ const list: Aircraft[] = [
     { name: 'R-99', weight: 3274.23, moment: 312876.17, arm: 95.5572 }
   ]
 
-export async function lookup(name: string): Promise<Aircraft | null> {
+export async function lookupAircraft(name: string): Promise<Aircraft | null> {
     let out = null
     list.forEach(plane => {
         if(plane.name == name) out = plane
