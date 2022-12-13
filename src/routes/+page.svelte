@@ -106,12 +106,15 @@
         result: false,
         comment: "No data entered"
     }
+    let performanceResult: { out: PerformanceOutput; downOption: boolean; notes?: string }
     let performanceData: PerformanceOutput = {
         takeoffRoll: 0,
         takeoffFifty: 0,
         landRoll: 0,
         landFifty: 0
     }
+    let isRoundingDown = writable(false)
+    isRoundingDown.subscribe(refresh)
     let currentPressureAltitude = writable("")
     currentPressureAltitude.subscribe(refresh)
     let currentTemp = writable("")
@@ -140,13 +143,15 @@
             newAircraftTotals.takeoffMoment = round(output.takeoff.moment - (aircraftData.moment - newAircraftData.moment))
             newAircraftTotals.landMoment = round(output.land.moment - (aircraftData.moment - newAircraftData.moment))
             //Performance
-            performanceData = calculatePerformanceData(newAircraftTotals.takeoffWeight,Number($currentPressureAltitude),Number($currentTemp))
+            performanceResult = calculatePerformanceData(newAircraftTotals.takeoffWeight,Number($currentPressureAltitude),Number($currentTemp), $isRoundingDown)
+            performanceData = performanceResult.out
             //Validate
             validationResult = calcLimits(newAircraftTotals.takeoffWeight, newAircraftTotals.takeoffMoment, input)
         Va = Math.ceil(Math.sqrt(newAircraftTotals.landWeight / 2550) * 105)
         } else {
             //Performance
-            performanceData = calculatePerformanceData(output.takeoff.weight,Number($currentPressureAltitude),Number($currentTemp))
+            performanceResult = calculatePerformanceData(output.takeoff.weight,Number($currentPressureAltitude),Number($currentTemp), $isRoundingDown)
+            performanceData = performanceResult.out
             //Validate
             validationResult = calcLimits(output.takeoff.weight, output.takeoff.moment, input)
         Va = Math.ceil(Math.sqrt(output.land.weight / 2550) * 105)
@@ -241,6 +246,10 @@
             <p>Takeoff 50ft: {performanceData.takeoffFifty}</p>
             <p>Land roll: {performanceData.landRoll}</p>
             <p>Land 50ft: {performanceData.landFifty}</p>
+            {#if performanceResult.downOption}
+            <h3>{performanceResult.notes}</h3>
+            <input type="checkbox" bind:checked={$isRoundingDown}>
+            {/if}
         </div>
     </body>
 </main>

@@ -451,16 +451,33 @@ export type PerformanceOutput = {
     landFifty: number
 }
 
-export function calculatePerformanceData(TOWeight: number, altitude: number, temp: number): PerformanceOutput {
+export function calculatePerformanceData(TOWeight: number, altitude: number, temp: number, down=false): {out: PerformanceOutput, notes: string, downOption: boolean} {
+    let notes = ""
+    let downOption = false
     const out:PerformanceOutput = {takeoffRoll: 0, takeoffFifty: 0, landRoll: 0, landFifty: 0}
     out.landRoll = findNumberFromTable(landingGroundRoll, altitude, temp)
     out.landFifty = findNumberFromTable(landingFiftyFeet, altitude, temp)
+    //If the user has requested to round down
+    if(down) {
+        //By subtracting, we automatically move it to the next lower category.
+        TOWeight -= 50
+        notes = "Ok, we've rounded down."
+        downOption = true
+    }
     if(TOWeight > 2400) {
         //Use 2550 tables
+        if(TOWeight - 2400 < 50) {
+            notes += "The takeoff weight is close to 2400, but we've rounded up to 2550 for safety. Click the box to round down" 
+            downOption = true
+        }
         out.takeoffRoll = findNumberFromTable(takeoff2550ground, altitude, temp)
         out.takeoffFifty = findNumberFromTable(takeoff2550fifty, altitude, temp)
     } else if (TOWeight > 2200) {
         //Use 2400 tables
+        if(TOWeight - 2200 < 50) {
+            notes += "The takeoff weight is close to 2200, but we've rounded up to 2400 for safety. Click the box to round down" 
+            downOption = true
+        }
         out.takeoffRoll = findNumberFromTable(takeoff2400ground, altitude, temp)
         out.takeoffFifty = findNumberFromTable(takeoff2400fifty, altitude, temp)
     } else {
@@ -469,5 +486,5 @@ export function calculatePerformanceData(TOWeight: number, altitude: number, tem
         out.takeoffFifty = findNumberFromTable(takeoff2200fifty, altitude, temp)
     }
 
-    return out
+    return {out: out, notes: notes, downOption: downOption}
 }
