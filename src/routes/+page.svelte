@@ -167,7 +167,9 @@
         <div id="header">
             <h1>Welcome to Sam's ERAU Cessna 172 Weight and Balance Calculator!</h1>
             <p>Fill out the info below to calculate weight and balance for your aircraft!</p> 
-            <p>Please note: All numbers are rounded UP to 2 decimal places, except for the data from ETA</p>   
+            <p><strong>Please note:</strong> All numbers are rounded UP to 2 decimal places, except for the data from ETA</p>   
+            <p><strong>Please note again:</strong> These numbers from ETA are up to date as of November 4, 2022, but may not be completely up to date. <br>Please double-check with the POH during your preflight or check with the numbers on ETA to ensure accurate calculations.</p>
+            <p>Notice something out of date? Send me an email: <a href="mailto:tischaes@my.erau.edu">tischaes@my.erau.edu</a></p>
         </div>
         <!--
             <div class="warning">
