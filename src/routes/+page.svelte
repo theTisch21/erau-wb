@@ -12,7 +12,7 @@
 
     let aircraftName = writable("")
     let inputFail = false
-    let aircraftData: Aircraft = {name: "", weight: 0, arm: 0, moment: 0}
+    let aircraftData: Aircraft = {name: "", tailNumber: "", weight: 0, arm: 0, moment: 0}
     aircraftName.subscribe(async a => {
         let newPlane = await lookupAircraft(a)
         if(newPlane != null) {
@@ -81,7 +81,7 @@
     let newAircraft = false
     let newAircraftInputFail = false
     let newAircraftName = writable("")
-    let newAircraftData: Aircraft = {name: "", weight: 0, arm: 0, moment: 0}
+    let newAircraftData: Aircraft = {name: "", tailNumber: "", weight: 0, arm: 0, moment: 0}
     let newAircraftTotals = {
         takeoffWeight: 0,
         takeoffMoment: 0,
@@ -182,6 +182,7 @@
         <div id="calc">
             <h2>Aircraft:</h2>
             <input id="aircraft-input" type="text" placeholder="Copy from ETA" title="Aircraft" bind:value={$aircraftName} style="font-size: large;" class={inputFail ? ($aircraftName != "" ? "fail" : "empty") : "empty"}/>
+            <p>Tail number: {aircraftData.tailNumber}</p>
             <button on:click={()=>{aircraftName.set("R-55")}}>Set to heaviest aircraft</button>
             <table>
                 <thead>

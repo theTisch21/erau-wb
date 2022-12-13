@@ -84,6 +84,7 @@ R-99,N599ER,3274.23,312876.17,95.5572,1132.77,4407`
 		const aircraftArray = a.split(/,/)
 		output.push({
 			name: aircraftArray[0],
+			tailNumber: aircraftArray[1],
 			weight: Number(aircraftArray[2]),
 			arm: Number(aircraftArray[3]),
 			moment: Number(aircraftArray[4])
@@ -92,7 +93,7 @@ R-99,N599ER,3274.23,312876.17,95.5572,1132.77,4407`
 	return output
 }
 
-/* To actually execute the parsing code above
+// To actually execute the parsing code above
 parse().then((a) => {
 	console.log(a)
-})*/
+})
