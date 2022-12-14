@@ -3,7 +3,7 @@
 	import type { Writable } from 'svelte/store'
 
 	export let data: CalculatedLine
-	export let name: string;
+	export let name: string
 	export let testTag: string
 </script>
 
