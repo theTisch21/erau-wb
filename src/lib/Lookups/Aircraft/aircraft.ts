@@ -83,9 +83,9 @@ const list: Aircraft[] = [
 ]
 
 export async function lookupAircraft(name: string): Promise<Aircraft | null> {
-    let out = null
-    list.forEach(plane => {
-        if(plane.name == name) out = plane
-    })
-    return out
+	let out = null
+	list.forEach((plane) => {
+		if (plane.name == name) out = plane
+	})
+	return out
 }

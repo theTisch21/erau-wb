@@ -1,5 +1,5 @@
-import { interpolate } from "$lib/interpolate"
-import { roundToPrecision } from "$lib/round"
+import { interpolate } from '$lib/interpolate'
+import { roundToPrecision } from '$lib/round'
 
 export type AltitudeLine = {
 	altitude: number
@@ -411,80 +411,87 @@ const takeoff2550fifty: AltitudeLine[] = [
 ]
 
 function findNumberFromTable(table: AltitudeLine[], altitude: number, temp: number): number {
-    //Get line
-    let line: AltitudeLine  = {altitude: -1, c0: -1, c10: -1, c20: -1, c30: -1, c40: -1}
-    altitude = roundToPrecision(altitude, .001)
-    table.forEach(newLine => {
-        if(newLine.altitude == altitude) line = newLine
-    })
-    if(line.altitude == -1) {
-        return findNumberFromTable(table, 8000, temp)
-        //throw Error("Could not find altitude data")
-    }
-    //Interpolate for temperature
-    if(temp > 40) {
-        return findNumberFromTable(table, altitude, 40)
-        //throw Error("Temperature out of range, cannot continue")
-    } else if(temp >= 30) {
-        //Using the 30-40 block
-        return interpolate(line.c30, line.c40, ((temp-30)/10))
-    } else if(temp >= 20) {
-        //Using the 20-30 block
-        return interpolate(line.c20, line.c30, ((temp-20)/10))        
-    } else if(temp >= 10) {
-        //Using the 10-20 block
-        return interpolate(line.c10, line.c20, ((temp-10)/10))        
-    } else if(temp > 0) {
-        //Using the 0-10 block
-        return interpolate(line.c0, line.c10, ((temp)/10))
-    } else {
-        //Using the 0 line
-        return line.c0
-    }
-    return line.c0
+	//Get line
+	let line: AltitudeLine = { altitude: -1, c0: -1, c10: -1, c20: -1, c30: -1, c40: -1 }
+	altitude = roundToPrecision(altitude, 0.001)
+	table.forEach((newLine) => {
+		if (newLine.altitude == altitude) line = newLine
+	})
+	if (line.altitude == -1) {
+		return findNumberFromTable(table, 8000, temp)
+		//throw Error("Could not find altitude data")
+	}
+	//Interpolate for temperature
+	if (temp > 40) {
+		return findNumberFromTable(table, altitude, 40)
+		//throw Error("Temperature out of range, cannot continue")
+	} else if (temp >= 30) {
+		//Using the 30-40 block
+		return interpolate(line.c30, line.c40, (temp - 30) / 10)
+	} else if (temp >= 20) {
+		//Using the 20-30 block
+		return interpolate(line.c20, line.c30, (temp - 20) / 10)
+	} else if (temp >= 10) {
+		//Using the 10-20 block
+		return interpolate(line.c10, line.c20, (temp - 10) / 10)
+	} else if (temp > 0) {
+		//Using the 0-10 block
+		return interpolate(line.c0, line.c10, temp / 10)
+	} else {
+		//Using the 0 line
+		return line.c0
+	}
+	return line.c0
 }
 
 export type PerformanceOutput = {
-    takeoffRoll: number,
-    takeoffFifty: number,
-    landRoll: number,
-    landFifty: number
+	takeoffRoll: number
+	takeoffFifty: number
+	landRoll: number
+	landFifty: number
 }
 
-export function calculatePerformanceData(TOWeight: number, altitude: number, temp: number, down=false): {out: PerformanceOutput, notes: string, downOption: boolean} {
-    let notes = ""
-    let downOption = false
-    const out:PerformanceOutput = {takeoffRoll: 0, takeoffFifty: 0, landRoll: 0, landFifty: 0}
-    out.landRoll = findNumberFromTable(landingGroundRoll, altitude, temp)
-    out.landFifty = findNumberFromTable(landingFiftyFeet, altitude, temp)
-    //If the user has requested to round down
-    if(down) {
-        //By subtracting, we automatically move it to the next lower category.
-        TOWeight -= 50
-        notes = "Ok, we've rounded down."
-        downOption = true
-    }
-    if(TOWeight > 2400) {
-        //Use 2550 tables
-        if(TOWeight - 2400 < 50) {
-            notes += "The takeoff weight is close to 2400, but we've rounded up to 2550 for safety. Click the box to round down" 
-            downOption = true
-        }
-        out.takeoffRoll = findNumberFromTable(takeoff2550ground, altitude, temp)
-        out.takeoffFifty = findNumberFromTable(takeoff2550fifty, altitude, temp)
-    } else if (TOWeight > 2200) {
-        //Use 2400 tables
-        if(TOWeight - 2200 < 50) {
-            notes += "The takeoff weight is close to 2200, but we've rounded up to 2400 for safety. Click the box to round down" 
-            downOption = true
-        }
-        out.takeoffRoll = findNumberFromTable(takeoff2400ground, altitude, temp)
-        out.takeoffFifty = findNumberFromTable(takeoff2400fifty, altitude, temp)
-    } else {
-        //Use 2200 tables
-        out.takeoffRoll = findNumberFromTable(takeoff2200ground, altitude, temp)
-        out.takeoffFifty = findNumberFromTable(takeoff2200fifty, altitude, temp)
-    }
+export function calculatePerformanceData(
+	TOWeight: number,
+	altitude: number,
+	temp: number,
+	down = false
+): { out: PerformanceOutput; notes: string; downOption: boolean } {
+	let notes = ''
+	let downOption = false
+	const out: PerformanceOutput = { takeoffRoll: 0, takeoffFifty: 0, landRoll: 0, landFifty: 0 }
+	out.landRoll = findNumberFromTable(landingGroundRoll, altitude, temp)
+	out.landFifty = findNumberFromTable(landingFiftyFeet, altitude, temp)
+	//If the user has requested to round down
+	if (down) {
+		//By subtracting, we automatically move it to the next lower category.
+		TOWeight -= 50
+		notes = "Ok, we've rounded down."
+		downOption = true
+	}
+	if (TOWeight > 2400) {
+		//Use 2550 tables
+		if (TOWeight - 2400 < 50) {
+			notes +=
+				"The takeoff weight is close to 2400, but we've rounded up to 2550 for safety. Click the box to round down"
+			downOption = true
+		}
+		out.takeoffRoll = findNumberFromTable(takeoff2550ground, altitude, temp)
+		out.takeoffFifty = findNumberFromTable(takeoff2550fifty, altitude, temp)
+	} else if (TOWeight > 2200) {
+		//Use 2400 tables
+		if (TOWeight - 2200 < 50) {
+			notes +=
+				"The takeoff weight is close to 2200, but we've rounded up to 2400 for safety. Click the box to round down"
+			downOption = true
+		}
+		out.takeoffRoll = findNumberFromTable(takeoff2400ground, altitude, temp)
+		out.takeoffFifty = findNumberFromTable(takeoff2400fifty, altitude, temp)
+	} else {
+		//Use 2200 tables
+		out.takeoffRoll = findNumberFromTable(takeoff2200ground, altitude, temp)
+		out.takeoffFifty = findNumberFromTable(takeoff2200fifty, altitude, temp)
+	}
 
-    return {out: out, notes: notes, downOption: downOption}
+	return { out: out, notes: notes, downOption: downOption }
 }

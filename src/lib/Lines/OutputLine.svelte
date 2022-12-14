@@ -1,28 +1,28 @@
 <script lang="ts">
-	import type { CalculatedLine } from "$lib/classes"
-	import type { Writable } from "svelte/store"
+	import type { CalculatedLine } from '$lib/classes'
+	import type { Writable } from 'svelte/store'
 
-    export let data: CalculatedLine
-    export let name: string
-    export let testTag: string
+	export let data: CalculatedLine
+	export let name: string;
+	export let testTag: string
 </script>
 
-    <tr class="output">
-        <td>{name}</td>
-        <td id="{testTag}-weight">{data.weight}</td>
-        <td id="{testTag}-arm">{data.arm}</td>
-        <td id="{testTag}-moment">{data.moment}</td>
-    </tr>
+<tr class="output">
+	<td>{name}</td>
+	<td id="{testTag}-weight">{data.weight}</td>
+	<td id="{testTag}-arm">{data.arm}</td>
+	<td id="{testTag}-moment">{data.moment}</td>
+</tr>
 
-<style>        
-    .output {
-        background-color: #ccccff;
-    }
-    td {
-        width: 100px;
-        height: 30px
-    }
-    /*    
+<style>
+	.output {
+		background-color: #ccccff;
+	}
+	td {
+		width: 100px;
+		height: 30px;
+	}
+	/*    
     input {
         transition: all .5s;
     }

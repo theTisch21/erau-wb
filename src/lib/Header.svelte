@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/stores'
 </script>
 
 <header>
@@ -13,7 +13,7 @@
 		</svg>
 		<ul>
 			<li class:active={$page.url.pathname === '/'}><a sveltekit:prefetch href="/">W&B</a></li>
-			<li class:active={$page.url.pathname.includes("/about")}>
+			<li class:active={$page.url.pathname.includes('/about')}>
 				<a sveltekit:prefetch href="/about">About</a>
 			</li>
 		</ul>

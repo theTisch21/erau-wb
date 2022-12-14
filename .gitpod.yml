@@ -1,4 +1,3 @@
-
 tasks:
   - init: sudo yarn playwright install-deps
   - init: yarn playwright install

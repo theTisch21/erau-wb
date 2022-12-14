@@ -1,11 +1,10 @@
-
 //This file is simply to parse CSV data to convert it to a format we can use
 
-import type { AltitudeLine } from "./performance"
+import type { AltitudeLine } from './performance'
 
 export async function parse() {
 	//A CSV in this format: Altitude, 0c, 10c, 20c, 30c, 40c
-    const input = `0,1465,1575,1690,1810,1945
+	const input = `0,1465,1575,1690,1810,1945
 	1000,1600,1720,1850,1990,2135
 	2000,1755,1890,2035,2190,2355
 	3000,1925,2080,2240,2420,2605
@@ -26,7 +25,7 @@ export async function parse() {
 			c10: Number(currentLineArray[2]),
 			c20: Number(currentLineArray[3]),
 			c30: Number(currentLineArray[4]),
-			c40: Number(currentLineArray[5]),
+			c40: Number(currentLineArray[5])
 		})
 	}
 	return output

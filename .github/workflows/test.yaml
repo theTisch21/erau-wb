@@ -1,24 +1,25 @@
 name: Test
-on:
-  push
+on: push
 
 jobs:
-    Test:
-      runs-on: ubuntu-20.04
-  
-      steps:
-        - uses: actions/checkout@v3
-        
-        - uses: actions/setup-node@v3
-          with:
-            node-version: 16
+  Test:
+    runs-on: ubuntu-20.04
 
-        - name: Install dependancies
-          run: yarn
+    steps:
+      - uses: actions/checkout@v3
 
-        - name: Build server
-          run: yarn build
-          
-        - name: Run tests
-          run: yarn test
-  
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install dependancies
+        run: yarn
+      
+      - name: Check Formatting
+        run: yarn format-check
+
+      - name: Build server
+        run: yarn build
+
+      - name: Run tests
+        run: yarn test

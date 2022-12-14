@@ -1,23 +1,23 @@
 <script lang="ts">
-	import type { FuelLineItem } from "$lib/classes"
-	import { writable, type Writable } from "svelte/store"
+	import type { FuelLineItem } from '$lib/classes'
+	import { writable, type Writable } from 'svelte/store'
 
 	export let data: FuelLineItem
 	export let name: string
 	export let testTag: string
 	export let subtract: boolean = false
-    export let defaultValue: number | string | null = null
-    let input = writable("")
-    input.subscribe(gallons => {
-        data.setGallons(subtract ? -gallons : gallons)
-    })
-    let output = 0
+	export let defaultValue: number | string | null = null
+	let input = writable('')
+	input.subscribe((gallons) => {
+		data.setGallons(subtract ? -gallons : gallons)
+	})
+	let output = 0
 	let weight = 0
-    data.subscribeToMoment(moment => {
+	data.subscribeToMoment((moment) => {
 		weight = data.weight
-        output = moment
-    })
-	if(defaultValue != null) {
+		output = moment
+	})
+	if (defaultValue != null) {
 		input.set(defaultValue.toString())
 	}
 </script>
@@ -28,8 +28,13 @@
 	<td id="{testTag}-arm">{data.arm}</td>
 	<td id="{testTag}-moment">{output}</td>
 	<td>
-        {#if subtract}-{/if}<input id="{testTag}-gallon" type="text" bind:value={$input} class={$input == "" ? 'empty' : 'success'}/>
-    </td>
+		{#if subtract}-{/if}<input
+			id="{testTag}-gallon"
+			type="text"
+			bind:value={$input}
+			class={$input == '' ? 'empty' : 'success'}
+		/>
+	</td>
 </tr>
 
 <style>
@@ -39,23 +44,23 @@
 	.success {
 		background-color: white;
 	}
-    td {
-        border: 2px solid;
-        border-collapse: collapse;
-    }
-    input {
-        transition: all .5s;
-    }
-    td {
-        width: 100px;
-        height: 30px
-    }
-    input {
-        box-sizing: content-box;
-        width: 70px;
-        margin: 5px;
-    }
-    /*
+	td {
+		border: 2px solid;
+		border-collapse: collapse;
+	}
+	input {
+		transition: all 0.5s;
+	}
+	td {
+		width: 100px;
+		height: 30px;
+	}
+	input {
+		box-sizing: content-box;
+		width: 70px;
+		margin: 5px;
+	}
+	/*
     table, th {
         border: 2px solid;
         border-collapse: collapse;

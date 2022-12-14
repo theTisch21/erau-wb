@@ -1,6 +1,6 @@
 //This file is simply to parse the CSV data from ETA and excel to convert it to a format we can use
 
-import type { Aircraft } from "./aircraft"
+import type { Aircraft } from './aircraft'
 
 export async function parse() {
 	//A CSV in this format: Name, N#, Empty weight, Moment, Arm, Useful Load, Max Gross Weight
