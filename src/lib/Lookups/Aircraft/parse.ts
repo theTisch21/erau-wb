@@ -3,7 +3,7 @@
 import type { Aircraft } from "./aircraft"
 
 export async function parse() {
-	//A CSV in this format: Name, N#, Empty weight, Arm, Moment, Useful Load, Max Gross Weight
+	//A CSV in this format: Name, N#, Empty weight, Moment, Arm, Useful Load, Max Gross Weight
 	const input = `E1,N31ER,1225,39258,32.0473,535,1760
 E2,N42ER,1200.04,37501.25,31.25,559.96,1760
 R- 1,N912MA,1325.72,16460.72,12.4164,474.28,1800
@@ -86,8 +86,8 @@ R-99,N599ER,3274.23,312876.17,95.5572,1132.77,4407`
 			name: aircraftArray[0],
 			tailNumber: aircraftArray[1],
 			weight: Number(aircraftArray[2]),
-			arm: Number(aircraftArray[3]),
-			moment: Number(aircraftArray[4])
+			arm: Number(aircraftArray[4]),
+			moment: Number(aircraftArray[3])
 		})
 	}
 	return output
