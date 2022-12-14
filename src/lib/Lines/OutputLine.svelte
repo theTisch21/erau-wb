@@ -5,7 +5,6 @@
     export let data: CalculatedLine
     export let name: string
     export let testTag: string
-    export let exact: boolean = false
 </script>
 
     <tr class="output">
@@ -19,10 +18,11 @@
     .output {
         background-color: #ccccff;
     }
-    table, th, td {
-        border: 2px solid;
-        border-collapse: collapse;
+    td {
+        width: 100px;
+        height: 30px
     }
+    /*    
     input {
         transition: all .5s;
     }
@@ -31,11 +31,8 @@
         width: 70px;
         margin: 5px;
     }
-    td {
-        width: 100px;
-        height: 30px
-    }
-    table .output {
-        background-color: #ccccff;
-    }
+    table, th, td {
+        border: 2px solid;
+        border-collapse: collapse;
+    }*/
 </style>

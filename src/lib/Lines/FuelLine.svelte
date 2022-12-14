@@ -39,28 +39,34 @@
 	.success {
 		background-color: white;
 	}
-    table, th, td {
+    td {
         border: 2px solid;
         border-collapse: collapse;
     }
     input {
         transition: all .5s;
     }
-    table input {
-        box-sizing: content-box;
-        width: 70px;
-        margin: 5px;
-    }
     td {
         width: 100px;
         height: 30px
-    }
-    .output {
-        background-color: #ccccff;
     }
     input {
         box-sizing: content-box;
         width: 70px;
         margin: 5px;
     }
+    /*
+    table, th {
+        border: 2px solid;
+        border-collapse: collapse;
+    }
+    table input {
+        box-sizing: content-box;
+        width: 70px;
+        margin: 5px;
+    }
+    .output {
+        background-color: #ccccff;
+    }
+    */
 </style>

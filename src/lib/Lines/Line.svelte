@@ -34,7 +34,7 @@
     .success {
         background-color: white;
     }
-    table, th, td {
+     td {
         border: 2px solid;
         border-collapse: collapse;
     }
@@ -50,7 +50,13 @@
         width: 100px;
         height: 30px
     }
+    /*
+    table, th {
+        border: 2px solid;
+        border-collapse: collapse;
+    }
     .output {
         background-color: #ccccff;
     }
+    */
 </style>

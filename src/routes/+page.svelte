@@ -120,7 +120,6 @@
     let currentTemp = writable("")
     currentTemp.subscribe(refresh)
     function refresh() {
-        console.log("Refreshing data")
         //Calculate total weights
         output.empty.weight = round(aircraftData.weight + input.frontSeats.weight + input.rearSeats.weight + input.frontBag.weight + input.rearBag.weight)
         output.ramp.weight = round(output.empty.weight + input.rampFuel.weight)
@@ -265,11 +264,6 @@
     input {
         transition: all .5s;
     }
-    table input {
-        box-sizing: content-box;
-        width: 70px;
-        margin: 5px;
-    }
     td {
         width: 100px;
         height: 30px
@@ -279,9 +273,6 @@
     }
     .empty {
         background-color: lime;
-    }
-    .success {
-        background-color: white;
     }
     .fail {
         background-color: red;
@@ -304,12 +295,16 @@
     #validation.good {
         background-color: green;
     }
-    #validation.bad, .warning {
+    #validation.bad {
         background-color: red;
         color: white;
     }
+    /*
     .warning {
         padding: 2em;
+        background-color: red;
+        color: white;
     }
+    */
 </style>
 
