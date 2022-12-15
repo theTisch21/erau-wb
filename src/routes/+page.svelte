@@ -123,7 +123,7 @@
 	//
 	// Climb rate
 	//
-	let climbRate: {rate: number, altitude: number} = {rate: 0, altitude: 0}
+	let climbRate: { rate: number; altitude: number } = { rate: 0, altitude: 0 }
 
 	//
 	// Land/Takeoff Performance
@@ -141,7 +141,6 @@
 	currentPressureAltitude.subscribe(refresh)
 	let currentTemp = writable('')
 	currentTemp.subscribe(refresh)
-
 
 	//
 	// Refresh
@@ -175,12 +174,13 @@
 		output.takeoff.arm = round(output.takeoff.moment / output.takeoff.weight)
 		output.land.arm = round(output.land.moment / output.land.weight)
 		//Climb rate
-		if($currentPressureAltitude != undefined) { //If it hasn't been set yet, just skip it
+		if ($currentPressureAltitude != undefined) {
+			//If it hasn't been set yet, just skip it
 			//Due to how it's setup, a bad input can cause an infinite loop. We catch that here
 			try {
 				climbRate = getClimbRate(Number($currentPressureAltitude), Number($currentTemp))
 			} catch (error) {
-				console.log("Bad input to climb calculator")
+				console.log('Bad input to climb calculator')
 				console.log(error)
 			}
 		}

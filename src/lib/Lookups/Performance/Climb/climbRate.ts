@@ -20,45 +20,45 @@ const climbRateList: ClimbLine[] = [
 	{ altitude: 12000, climbSpeed: 72, cm20: 255, c0: 195, c20: 135, c40: NaN }
 ]
 export function getClimbLine(altitude: number): ClimbLine {
-	
-	altitude = roundToPrecision(altitude, .001, false) //Round to next thousand up
+	altitude = roundToPrecision(altitude, 0.001, false) //Round to next thousand up
 
-	if(altitude / 1000 % 2 != 0) { //If thousand is not even
+	if ((altitude / 1000) % 2 != 0) {
+		//If thousand is not even
 		altitude += 1000
 	}
 
-	if(altitude > 12000) {
+	if (altitude > 12000) {
 		return getClimbLine(12000)
 	}
 	let out = null
 	climbRateList.forEach((line) => {
 		if (line.altitude == altitude) out = line
 	})
-	if(out == null) {
+	if (out == null) {
 		return getClimbLine(altitude + 2000) //Go to next thousand
 	}
 	return out
 }
 
-export function getClimbRate(altitude:number, temp: number): {rate: number, altitude: number} {
+export function getClimbRate(altitude: number, temp: number): { rate: number; altitude: number } {
 	const line: ClimbLine = getClimbLine(altitude)
 	//There's no data for 12000 and 40, so check for that
-	if(altitude > 10000 && temp > 20) {
+	if (altitude > 10000 && temp > 20) {
 		//TODO warn user
 	}
-	if(temp < -20) {
-		return {rate: line.cm20, altitude: line.altitude}
-	} else if(temp < 0) {
+	if (temp < -20) {
+		return { rate: line.cm20, altitude: line.altitude }
+	} else if (temp < 0) {
 		//Use -20 - 0
-		return {rate: interpolate(line.cm20, line.c0, (temp * -1)/20), altitude: line.altitude}
-	} else if(temp < 20) {
+		return { rate: interpolate(line.cm20, line.c0, (temp * -1) / 20), altitude: line.altitude }
+	} else if (temp < 20) {
 		//Use 0-20
-		return {rate: interpolate(line.c0, line.c20, (temp/20)), altitude: line.altitude}
-	} else if(temp < 40) {
+		return { rate: interpolate(line.c0, line.c20, temp / 20), altitude: line.altitude }
+	} else if (temp < 40) {
 		//Use 20 - 40
-		return {rate: interpolate(line.c20, line.c40, ((temp - 20)/20)), altitude: line.altitude}
+		return { rate: interpolate(line.c20, line.c40, (temp - 20) / 20), altitude: line.altitude }
 	} else {
 		//Use 40
-		return {rate: line.c40, altitude: line.altitude}
+		return { rate: line.c40, altitude: line.altitude }
 	}
 }
