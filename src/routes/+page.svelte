@@ -18,6 +18,18 @@
 		calculatePerformanceData,
 		type PerformanceOutput
 	} from '$lib/Lookups/Performance/Landing/performance'
+	import { getClimbLine, getClimbRate } from '$lib/Lookups/Performance/Climb/climbRate'
+
+	//
+	// Validation results
+	let validationResult: { result: boolean; comment: string } = {
+		result: false,
+		comment: 'No data entered'
+	}
+
+	//
+	// Aircraft lookups
+	//
 
 	let aircraftName = writable('')
 	let inputFail = false
@@ -109,12 +121,13 @@
 	})
 
 	//
-	// Refresh
+	// Climb rate
 	//
-	let validationResult: { result: boolean; comment: string } = {
-		result: false,
-		comment: 'No data entered'
-	}
+	let climbRate: { rate: number; altitude: number } = { rate: 0, altitude: 0 }
+
+	//
+	// Land/Takeoff Performance
+	//
 	let performanceResult: { out: PerformanceOutput; downOption: boolean; notes?: string }
 	let performanceData: PerformanceOutput = {
 		takeoffRoll: 0,
@@ -128,6 +141,10 @@
 	currentPressureAltitude.subscribe(refresh)
 	let currentTemp = writable('')
 	currentTemp.subscribe(refresh)
+
+	//
+	// Refresh
+	//
 	function refresh() {
 		//Calculate total weights
 		output.empty.weight = round(
@@ -156,6 +173,17 @@
 		output.ramp.arm = round(output.ramp.moment / output.ramp.weight)
 		output.takeoff.arm = round(output.takeoff.moment / output.takeoff.weight)
 		output.land.arm = round(output.land.moment / output.land.weight)
+		//Climb rate
+		if ($currentPressureAltitude != undefined) {
+			//If it hasn't been set yet, just skip it
+			//Due to how it's setup, a bad input can cause an infinite loop. We catch that here
+			try {
+				climbRate = getClimbRate(Number($currentPressureAltitude), Number($currentTemp))
+			} catch (error) {
+				console.log('Bad input to climb calculator')
+				console.log(error)
+			}
+		}
 		//New aircraft
 		if (newAircraft) {
 			newAircraftTotals.takeoffWeight = round(
@@ -348,6 +376,7 @@
 			/>
 			<p>Takeoff roll: {performanceData.takeoffRoll}</p>
 			<p>Takeoff 50ft: {performanceData.takeoffFifty}</p>
+			<p>Climb rate: {climbRate.rate} @ {climbRate.altitude}ft</p>
 			<p>Land roll: {performanceData.landRoll}</p>
 			<p>Land 50ft: {performanceData.landFifty}</p>
 			{#if performanceResult.downOption}
