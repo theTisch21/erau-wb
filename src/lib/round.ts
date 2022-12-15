@@ -1,4 +1,4 @@
-// 10 = 1 decimal place, 100 = 2, 0.1 = 10s place, 1 = whole number
+// 10 = 1 decimal place (.1), 100 = 2 (.01), 0.1 = 10s place, 1 = whole number
 export const RoundingConstant = 100
 export function round(input: number, down = false): number {
 	if (down) {
