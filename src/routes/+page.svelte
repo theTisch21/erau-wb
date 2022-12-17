@@ -212,7 +212,7 @@
 				newAircraftTotals.takeoffMoment,
 				input
 			)
-			Va = Math.ceil(Math.sqrt(newAircraftTotals.landWeight / 2550) * 105)
+			Va = Math.floor(Math.sqrt(newAircraftTotals.landWeight / 2550) * 105)
 		} else {
 			//Performance
 			performanceResult = calculatePerformanceData(
@@ -224,7 +224,7 @@
 			performanceData = performanceResult.out
 			//Validate
 			validationResult = calcLimits(output.takeoff.weight, output.takeoff.moment, input)
-			Va = Math.ceil(Math.sqrt(output.land.weight / 2550) * 105)
+			Va = Math.floor(Math.sqrt(output.land.weight / 2550) * 105)
 		}
 	}
 </script>
