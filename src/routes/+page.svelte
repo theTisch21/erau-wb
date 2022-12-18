@@ -252,13 +252,13 @@
 				>
 			</p>
 		</div>
-		
+		<!--
             <div class="warning">
                 <h1>ATTENTION</h1>
                 <p>The numbers for takeoff roll over 50 ft. obstacle (Total ft on weight and balance sheet) are INNACURATE. Do not use them!!</p>
                 <p>Reminder, double check all these numbers before using them. There's always a chance of a bug I didn't catch (Like this one!)</p>
             </div>
-        
+        -->
 		<div id="calc">
 			<h2>Aircraft:</h2>
 			<input
