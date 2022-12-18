@@ -366,6 +366,7 @@
 		<PressureAlt pressureAltitude={currentPressureAltitude} />
 		<div id="Performance">
 			<h2>Performance data</h2>
+			<p>These DO NOT factor in winds. Reference the PIM if you have headwind equal or greater than 9kts or tailwind equal or greater than 2kts</p>
 			<input
 				type="text"
 				id="perf-temp-input"
