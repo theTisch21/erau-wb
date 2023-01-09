@@ -22,6 +22,16 @@
 		type PerformanceOutput
 	} from '$lib/Lookups/Performance/Landing/performance'
 	import { getClimbLine, getClimbRate } from '$lib/Lookups/Performance/Climb/climbRate'
+	import { decodeMetar } from '$lib/Calculators/metar'
+	import { onMount } from 'svelte'
+
+	//
+	// Data
+	//
+
+	//METAR data
+	export let data: import('./$types').PageServerData
+	const metar = data.metar
 
 	//
 	// Variables
@@ -231,6 +241,23 @@
 		)
 		Va = Math.floor(Math.sqrt(p.landWeight / 2550) * 105)
 	}
+
+	//
+	// Loading
+	//
+
+	//Wait, why are we calling onMount down here?
+	//By now, the variables have had a chance to initialize, so we can safely modify them here. This is mostly to load user and METAR data into the input boxes. We also call refresh() at the start and end to ensure data is always accurate.
+	onMount(() => {
+		refresh()
+		
+		//METAR
+		//decodeMetar(metar)
+
+		//User data
+		//Coming soon:tm:
+		refresh()
+	})
 </script>
 
 <main>
@@ -239,6 +266,7 @@
 	</head>
 	<body>
 		<div id="header">
+			<h1>{metar}</h1>
 			<h1>Welcome to Sam's ERAU Cessna 172 Weight and Balance Calculator!</h1>
 			<p>Fill out the info below to calculate weight and balance for your aircraft!</p>
 			<p>
