@@ -1,4 +1,7 @@
 <script lang="ts">
+	//
+	// Imports
+	//
 	import { writable, type Writable } from 'svelte/store'
 	import { lookupAircraft, type Aircraft } from '$lib/Lookups/Aircraft/aircraft'
 	import { calcLimits } from '$lib/limitCalc'
@@ -21,32 +24,16 @@
 	import { getClimbLine, getClimbRate } from '$lib/Lookups/Performance/Climb/climbRate'
 
 	//
-	// Validation results
+	// Variables
+	//
+
+	//Validation
 	let validationResult: { result: boolean; comment: string } = {
 		result: false,
 		comment: 'No data entered'
 	}
 
-	//
-	// Aircraft lookups
-	//
-
-	let aircraftName = writable('')
-	let inputFail = false
-	let aircraftData: Aircraft = { name: '', tailNumber: '', weight: 0, arm: 0, moment: 0 }
-	aircraftName.subscribe(async (a) => {
-		let newPlane = await lookupAircraft(a)
-		if (newPlane != null) {
-			inputFail = false
-			aircraftData = newPlane
-			refresh()
-		} else {
-			inputFail = true
-		}
-	})
-
-	let Va = 0
-
+	//Input/Output
 	let input: {
 		frontSeats: LineItem
 		rearSeats: LineItem
@@ -64,14 +51,6 @@
 		taxiBurn: new FuelLineItem(48),
 		flightBurn: new FuelLineItem(48)
 	}
-
-	input.frontSeats.subscribeToMoment(refresh)
-	input.rearSeats.subscribeToMoment(refresh)
-	input.frontBag.subscribeToMoment(refresh)
-	input.rearBag.subscribeToMoment(refresh)
-	input.rampFuel.subscribeToMoment(refresh)
-	input.taxiBurn.subscribeToMoment(refresh)
-	input.flightBurn.subscribeToMoment(refresh)
 
 	let output: OutputLineItems<CalculatedLine> = {
 		empty: {
@@ -96,9 +75,12 @@
 		}
 	}
 
-	//
-	// Change in aircraft
-	//
+	//Aircraft lookups
+	let aircraftName = writable('')
+	let inputFail = false
+	let aircraftData: Aircraft = { name: '', tailNumber: '', weight: 0, arm: 0, moment: 0 }
+
+	//Change in aircraft
 	let newAircraft = false
 	let newAircraftInputFail = false
 	let newAircraftName = writable('')
@@ -109,6 +91,38 @@
 		landWeight: 0,
 		landMoment: 0
 	}
+
+	//Climb rate
+	let climbRate: { rate: number; altitude: number } = { rate: 0, altitude: 0 }
+
+	//Land/Takeoff Performance
+	let Va = 0
+	let performanceResult: { out: PerformanceOutput; downOption: boolean; notes?: string }
+	let performanceData: PerformanceOutput = {
+		takeoffRoll: 0,
+		takeoffFifty: 0,
+		landRoll: 0,
+		landFifty: 0
+	}
+	let isRoundingDown = writable(false)
+	let currentPressureAltitude = writable('')
+	let currentTemp = writable('')
+
+	//
+	// Subscriptions
+	//
+
+	//Aircraft
+	aircraftName.subscribe(async (a) => {
+		let newPlane = await lookupAircraft(a)
+		if (newPlane != null) {
+			inputFail = false
+			aircraftData = newPlane
+			refresh()
+		} else {
+			inputFail = true
+		}
+	})
 	newAircraftName.subscribe(async (a) => {
 		let newPlane = await lookupAircraft(a)
 		if (newPlane != null) {
@@ -120,31 +134,24 @@
 		}
 	})
 
-	//
-	// Climb rate
-	//
-	let climbRate: { rate: number; altitude: number } = { rate: 0, altitude: 0 }
-
-	//
-	// Land/Takeoff Performance
-	//
-	let performanceResult: { out: PerformanceOutput; downOption: boolean; notes?: string }
-	let performanceData: PerformanceOutput = {
-		takeoffRoll: 0,
-		takeoffFifty: 0,
-		landRoll: 0,
-		landFifty: 0
-	}
-	let isRoundingDown = writable(false)
-	isRoundingDown.subscribe(refresh)
-	let currentPressureAltitude = writable('')
-	currentPressureAltitude.subscribe(refresh)
-	let currentTemp = writable('')
+	//Refresh
+	//Input
+	input.frontSeats.subscribeToMoment(refresh)
+	input.rearSeats.subscribeToMoment(refresh)
+	input.frontBag.subscribeToMoment(refresh)
+	input.rearBag.subscribeToMoment(refresh)
+	input.rampFuel.subscribeToMoment(refresh)
+	input.taxiBurn.subscribeToMoment(refresh)
+	input.flightBurn.subscribeToMoment(refresh)
+	//Performance
 	currentTemp.subscribe(refresh)
+	currentPressureAltitude.subscribe(refresh)
+	isRoundingDown.subscribe(refresh)
 
 	//
 	// Refresh
 	//
+
 	function refresh() {
 		//Calculate total weights
 		output.empty.weight = round(
@@ -184,6 +191,8 @@
 				console.log(error)
 			}
 		}
+		//This object is so that we don't have to embed performance logic inside the new aircraft block, thereby not duplicating it.
+		let p: {toWeight: number, toMoment: number, landWeight: number} = {toWeight: 0, toMoment: 0, landWeight: 0}
 		//New aircraft
 		if (newAircraft) {
 			newAircraftTotals.takeoffWeight = round(
@@ -198,34 +207,29 @@
 			newAircraftTotals.landMoment = round(
 				output.land.moment - (aircraftData.moment - newAircraftData.moment)
 			)
-			//Performance
-			performanceResult = calculatePerformanceData(
-				newAircraftTotals.takeoffWeight,
-				Number($currentPressureAltitude),
-				Number($currentTemp),
-				$isRoundingDown
-			)
-			performanceData = performanceResult.out
-			//Validate
-			validationResult = calcLimits(
-				newAircraftTotals.takeoffWeight,
-				newAircraftTotals.takeoffMoment,
-				input
-			)
-			Va = Math.floor(Math.sqrt(newAircraftTotals.landWeight / 2550) * 105)
+			p.toWeight = newAircraftTotals.takeoffWeight
+			p.landWeight = newAircraftTotals.landWeight
+			p.toMoment = newAircraftTotals.takeoffMoment
 		} else {
-			//Performance
-			performanceResult = calculatePerformanceData(
-				output.takeoff.weight,
-				Number($currentPressureAltitude),
-				Number($currentTemp),
-				$isRoundingDown
-			)
-			performanceData = performanceResult.out
-			//Validate
-			validationResult = calcLimits(output.takeoff.weight, output.takeoff.moment, input)
-			Va = Math.floor(Math.sqrt(output.land.weight / 2550) * 105)
+			p.toWeight = output.takeoff.weight
+			p.landWeight = output.land.weight
+			p.toMoment = output.takeoff.moment
 		}
+		//Performance
+		performanceResult = calculatePerformanceData(
+			p.toWeight,
+			Number($currentPressureAltitude),
+			Number($currentTemp),
+			$isRoundingDown
+		)
+		performanceData = performanceResult.out
+		//Validate
+		validationResult = calcLimits(
+			p.toWeight,
+			p.toMoment,
+			input
+		)
+		Va = Math.floor(Math.sqrt(p.landWeight / 2550) * 105)
 	}
 </script>
 
