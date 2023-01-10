@@ -28,15 +28,7 @@ export function decodeMetar(metar: string): DecodedMetar {
     }
 
     //Wind
-    const windResult = metar.match(regexTable.wind)
-    if(windResult == null) {
-        throw new Error("Invalid wind data")
-    }
-    console.log(windResult)
-    output.wind.speed = Number(windResult[2])
-    output.wind.isGusting = windResult[0].includes("G")
-    if(output.wind.isGusting) output.wind.gust = Number(windResult[4].charAt(1) + windResult[4].charAt(2)) //I don't feel like writing more complicated parse code, so here we are
-    console.log(output.wind)
+    output.wind = decodeWind(metar)
 
     //Visibility
     console.log(Number("3/4")) //TODO 4/3 programs have trouble with fractions
@@ -55,5 +47,24 @@ export function decodeMetar(metar: string): DecodedMetar {
     //TODO M?!? Who thought M was a good idea?
 
     console.log(output)
+    return output
+}
+
+function decodeWind(metar: string): DecodedMetar["wind"] {
+    const output: DecodedMetar["wind"] = {
+        speed: 0,
+        isGusting: false
+    }
+    //Parse
+    const windResult = metar.match(regexTable.wind)
+    if(windResult == null) {
+        throw new Error("Invalid wind data")
+    }
+    //Speed
+    output.speed = Number(windResult[2])
+    //Gust
+    output.isGusting = windResult[0].includes("G")
+    if(output.isGusting) output.gust = Number(windResult[4].charAt(1) + windResult[4].charAt(2)) //I don't feel like writing more complicated parse code, so here we are
+    
     return output
 }
