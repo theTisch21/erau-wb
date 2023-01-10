@@ -16,7 +16,19 @@
 
 <main>
 	<h2>Pressure Altitude:</h2>
-	<input id="pa-fieldElevation" bind:value={$fieldElevation} placeholder="Field Elevation" />
-	<input id="pa-currentAltimiter" bind:value={$currentAltimiter} placeholder="Current Altimiter" />
+	<input id="pa-fieldElevation" bind:value={$fieldElevation} placeholder="Field Elevation" class={$fieldElevation == "" ? "empty" : "success"} />
+	<input id="pa-currentAltimiter" bind:value={$currentAltimiter} placeholder="Current Altimiter" class={$currentAltimiter == "" ? "empty" : "success"} />
 	<p id="pa-result">{$pressureAltitude}ft</p>
 </main>
+
+<style>	
+	.empty {
+		background-color: lime;
+	}
+	.success {
+		background-color: white;
+	}
+	input {
+		transition: all 0.5s;
+	}
+</style>

@@ -380,6 +380,7 @@
 				placeholder="Current Temperature °C"
 				title="Aircraft"
 				bind:value={$currentTemp}
+				class={$currentTemp == "" ? "empty" : "success"}
 			/>
 			<p>Takeoff roll: {performanceData.takeoffRoll}</p>
 			<p>Takeoff 50ft: {performanceData.takeoffFifty}</p>
@@ -413,6 +414,9 @@
 	}
 	.empty {
 		background-color: lime;
+	}
+	.success {
+		background-color: white;
 	}
 	.fail {
 		background-color: red;
