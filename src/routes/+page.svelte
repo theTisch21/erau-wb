@@ -192,7 +192,11 @@
 			}
 		}
 		//This object is so that we don't have to embed performance logic inside the new aircraft block, thereby not duplicating it.
-		let p: {toWeight: number, toMoment: number, landWeight: number} = {toWeight: 0, toMoment: 0, landWeight: 0}
+		let p: { toWeight: number; toMoment: number; landWeight: number } = {
+			toWeight: 0,
+			toMoment: 0,
+			landWeight: 0
+		}
 		//New aircraft
 		if (newAircraft) {
 			newAircraftTotals.takeoffWeight = round(
@@ -224,11 +228,7 @@
 		)
 		performanceData = performanceResult.out
 		//Validate
-		validationResult = calcLimits(
-			p.toWeight,
-			p.toMoment,
-			input
-		)
+		validationResult = calcLimits(p.toWeight, p.toMoment, input)
 		Va = Math.floor(Math.sqrt(p.landWeight / 2550) * 105)
 	}
 </script>
@@ -380,6 +380,7 @@
 				placeholder="Current Temperature °C"
 				title="Aircraft"
 				bind:value={$currentTemp}
+				class={$currentTemp == '' ? 'empty' : 'success'}
 			/>
 			<p>Takeoff roll: {performanceData.takeoffRoll}</p>
 			<p>Takeoff 50ft: {performanceData.takeoffFifty}</p>
@@ -413,6 +414,9 @@
 	}
 	.empty {
 		background-color: lime;
+	}
+	.success {
+		background-color: white;
 	}
 	.fail {
 		background-color: red;
