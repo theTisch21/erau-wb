@@ -67,6 +67,8 @@ describe('Pressure Altitude', () => {
 	})
 })
 
+//We don't do performance testing specifically, as that's covered by the example sheets.
+
 describe('Example sheets', () => {
 	beforeEach(() => {
 		//Refresh before each test to get a fresh sheet
