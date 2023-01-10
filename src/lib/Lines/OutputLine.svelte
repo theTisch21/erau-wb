@@ -30,9 +30,12 @@
         box-sizing: content-box;
         width: 70px;
         margin: 5px;
-    }
-    table, th, td {
-        border: 2px solid;
-        border-collapse: collapse;
-    }*/
+    } */
+	td {
+		border: 2px solid;
+		border-collapse: collapse;
+	}
+	input {
+		transition: all 0.5s;
+	}
 </style>
