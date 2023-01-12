@@ -31,7 +31,7 @@
 
 	//METAR data
 	export let data: import('./$types').PageServerData
-	const metar = data.metar
+	const metar = decodeMetar(data.metar)
 
 	//
 	// Variables
@@ -115,6 +115,7 @@
 		landFifty: 0
 	}
 	let isRoundingDown = writable(false)
+	let currentAltimiter = writable('')
 	let currentPressureAltitude = writable('')
 	let currentTemp = writable('')
 
@@ -247,12 +248,11 @@
 	//
 
 	//Wait, why are we calling onMount down here?
-	//By now, the variables have had a chance to initialize, so we can safely modify them here. This is mostly to load user and METAR data into the input boxes. We also call refresh() at the start and end to ensure data is always accurate.
+	//By now, the variables have had a chance to initialize, so we can safely modify them here. This is mostly to load user and METAR data into the input boxes. We also call refresh() at the end to ensure data is always accurate.
 	onMount(() => {
-		refresh()
-		
 		//METAR
-		//decodeMetar(metar)
+		$currentTemp = metar.temp.toString()
+		$currentAltimiter = metar.altimiter.toString()
 
 		//User data
 		//Coming soon:tm:
@@ -266,7 +266,7 @@
 	</head>
 	<body>
 		<div id="header">
-			<h1>{metar}</h1>
+			<h1>{JSON.stringify(metar)}</h1>
 			<h1>Welcome to Sam's ERAU Cessna 172 Weight and Balance Calculator!</h1>
 			<p>Fill out the info below to calculate weight and balance for your aircraft!</p>
 			<p>
@@ -395,7 +395,7 @@
 			<h2>Maneuvering speed:</h2>
 			<p>Va = {Va} kts</p>
 		</div>
-		<PressureAlt pressureAltitude={currentPressureAltitude} />
+		<PressureAlt pressureAltitude={currentPressureAltitude} altimiter={currentAltimiter} />
 		<div id="Performance">
 			<h2>Performance data</h2>
 			<p>
