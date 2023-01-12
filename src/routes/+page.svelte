@@ -22,6 +22,16 @@
 		type PerformanceOutput
 	} from '$lib/Lookups/Performance/Landing/performance'
 	import { getClimbLine, getClimbRate } from '$lib/Lookups/Performance/Climb/climbRate'
+	import { decodeMetar } from '$lib/Calculators/metar'
+	import { onMount } from 'svelte'
+
+	//
+	// Data
+	//
+
+	//METAR data
+	export let data: import('./$types').PageServerData
+	const metar = decodeMetar(data.metar)
 
 	//
 	// Variables
@@ -105,6 +115,7 @@
 		landFifty: 0
 	}
 	let isRoundingDown = writable(false)
+	let currentAltimiter = writable('')
 	let currentPressureAltitude = writable('')
 	let currentTemp = writable('')
 
@@ -231,6 +242,22 @@
 		validationResult = calcLimits(p.toWeight, p.toMoment, input)
 		Va = Math.floor(Math.sqrt(p.landWeight / 2550) * 105)
 	}
+
+	//
+	// Loading
+	//
+
+	//Wait, why are we calling onMount down here?
+	//By now, the variables have had a chance to initialize, so we can safely modify them here. This is mostly to load user and METAR data into the input boxes. We also call refresh() at the end to ensure data is always accurate.
+	onMount(() => {
+		//METAR
+		$currentTemp = metar.temp.toString()
+		$currentAltimiter = metar.altimiter.toString()
+
+		//User data
+		//Coming soon:tm:
+		refresh()
+	})
 </script>
 
 <main>
@@ -239,6 +266,7 @@
 	</head>
 	<body>
 		<div id="header">
+			<h1>{JSON.stringify(metar)}</h1>
 			<h1>Welcome to Sam's ERAU Cessna 172 Weight and Balance Calculator!</h1>
 			<p>Fill out the info below to calculate weight and balance for your aircraft!</p>
 			<p>
@@ -367,7 +395,19 @@
 			<h2>Maneuvering speed:</h2>
 			<p>Va = {Va} kts</p>
 		</div>
-		<PressureAlt pressureAltitude={currentPressureAltitude} />
+		<div class="disclaimer">
+			<h2>Oh wait, what's this?</h2>
+			<p>
+				You may have noticed that the altimiter and temperature are auto-filled now. That's right,
+				the site now pulls live METAR data from KPRC and feeds it directly into the inputs! If it's
+				outdated, simply refresh the page to reload the data.<br /> <br />
+				<strong>WARNING:</strong> I've thoroughly tested the metar parsing code, and that seems to
+				be working. However, since the site pulls directly from the AWC, it's way harder to test the
+				live data. Please double-check these values and immediately email me if something's wrong.
+				<a href="mailto:tischaes@my.erau.edu">tischaes@my.erau.edu</a>
+			</p>
+		</div>
+		<PressureAlt pressureAltitude={currentPressureAltitude} altimiter={currentAltimiter} />
 		<div id="Performance">
 			<h2>Performance data</h2>
 			<p>
@@ -450,4 +490,9 @@
         color: white;
     }
     */
+	.disclaimer {
+		padding: 2em;
+		background-color: #ccccff;
+		color: black;
+	}
 </style>

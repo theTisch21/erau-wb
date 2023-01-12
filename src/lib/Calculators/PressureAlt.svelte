@@ -3,13 +3,13 @@
 
 	const stdAltimiter = 29.92
 	export let pressureAltitude: Writable<string> = writable('')
+	export let altimiter: Writable<string> = writable('')
 	let fieldElevation = writable('5045')
-	let currentAltimiter = writable('')
 	fieldElevation.subscribe(refresh)
-	currentAltimiter.subscribe(refresh)
+	altimiter.subscribe(refresh)
 	function refresh() {
 		pressureAltitude.set(
-			((stdAltimiter - Number($currentAltimiter)) * 1000 + Number($fieldElevation)).toFixed(0)
+			((stdAltimiter - Number($altimiter)) * 1000 + Number($fieldElevation)).toFixed(0)
 		)
 	}
 </script>
@@ -24,9 +24,9 @@
 	/>
 	<input
 		id="pa-currentAltimiter"
-		bind:value={$currentAltimiter}
+		bind:value={$altimiter}
 		placeholder="Current Altimiter"
-		class={$currentAltimiter == '' ? 'empty' : 'success'}
+		class={$altimiter == '' ? 'empty' : 'success'}
 	/>
 	<p id="pa-result">{$pressureAltitude}ft</p>
 </main>

@@ -2,6 +2,139 @@
 let delay = 1000
 let url = 'http://127.0.0.1:3000'
 
+import { decodeMetar } from '../../src/lib/Calculators/metar'
+
+describe('Metar parsing', () => {
+	it('Simple metars', () => {
+		expect(decodeMetar('KPRC 12045KT 04/05 A3003')).deep.equal({
+			wind: {
+				speed: 45,
+				isGusting: false
+			},
+			altimiter: 30.03,
+			temp: 4
+		})
+		expect(decodeMetar('KPRC 33423G45KT M04/M05 A2931')).deep.equal({
+			wind: {
+				speed: 23,
+				isGusting: true,
+				gust: 45
+			},
+			altimiter: 29.31,
+			temp: -4
+		})
+	})
+	it('Regular', () => {
+		expect(
+			decodeMetar('KPRC 061953Z 00000KT 10SM CLR 09/M03 A3021 RMK AO2 SLP199 T00941028')
+		).deep.equal({
+			wind: {
+				speed: 0,
+				isGusting: false
+			},
+			altimiter: 30.21,
+			temp: 9
+		})
+		expect(
+			decodeMetar('KPRC 061453Z 20007KT 10SM CLR M01/M01 A3018 RMK AO2 SLP211 T10061011 53011')
+		).deep.equal({
+			wind: {
+				speed: 7,
+				isGusting: false
+			},
+			altimiter: 30.18,
+			temp: -1
+		})
+		expect(
+			decodeMetar('KPRC 072153Z 00000KT 10SM CLR 12/M06 A3023 RMK AO2 SLP219 T01171056')
+		).deep.equal({
+			wind: {
+				speed: 0,
+				isGusting: false
+			},
+			altimiter: 30.23,
+			temp: 12
+		})
+		expect(
+			decodeMetar('KPRC 071853Z VRB04KT 10SM CLR 06/M03 A3028 RMK AO2 SLP246 T00611028')
+		).deep.equal({
+			wind: {
+				speed: 4,
+				isGusting: false
+			},
+			altimiter: 30.28,
+			temp: 6
+		})
+	})
+	it('Wacky', () => {
+		expect(
+			decodeMetar(
+				'KPRC 080553Z AUTO 17004KT 10SM CLR 01/M06 A3025 RMK AO2 SLP235 T00061056 10094 20000 53005'
+			)
+		).deep.equal({
+			wind: {
+				speed: 4,
+				isGusting: false
+			},
+			altimiter: 30.25,
+			temp: 1
+		})
+		expect(
+			decodeMetar(
+				'KPRC 110353Z 21014G26KT 9SM -RA FEW019 BKN045 OVC085 08/M01 A2998 RMK AO2 PK WND 20028/0340 RAB51 SLP119 P0000 T00781011'
+			)
+		).deep.equal({
+			wind: {
+				speed: 14,
+				isGusting: true,
+				gust: 26
+			},
+			altimiter: 29.98,
+			temp: 8
+		})
+		expect(
+			decodeMetar(
+				'KPRC 110438Z AUTO 28013G25KT 3SM RA BR SCT030 BKN035 OVC046 06/03 A3001 RMK AO2 WSHFT 0418 P0003 T00560033'
+			)
+		).deep.equal({
+			wind: {
+				speed: 13,
+				isGusting: true,
+				gust: 25
+			},
+			altimiter: 30.01,
+			temp: 6
+		})
+		expect(
+			decodeMetar(
+				'KPRC 102353Z 20013KT 10SM CLR 11/M03 A3002 RMK AO2 PK WND 20026/2254 SLP130 T01061028 10133 20106 55004'
+			)
+		).deep.equal({
+			wind: {
+				speed: 13,
+				isGusting: false
+			},
+			altimiter: 30.02,
+			temp: 11
+		})
+	})
+	it('Absolutely Bonkers', () => {
+		expect(
+			decodeMetar(
+				'METAR KFLG 041657Z 08023G30KT 050V130 M1/4SM R21/1000FT +SN BLSN FZFG BKN013 OVC058 M02/M03 A2921 RMK A02 PK WND 10036/33 WSHFT 23 TWR VIS 1/4 VIS1/4V1/2 SHSNB05E20SNB20 CIG010V060 BKN013 V OVC PRESFR SLP 892 SNINCR 2/8 T10221031 P0020 TSNO'
+			)
+		).deep.equal({
+			wind: {
+				speed: 23,
+				isGusting: true,
+				gust: 30
+			},
+			altimiter: 29.21,
+			temp: -2
+		})
+	})
+})
+
 describe('Aircraft Lookups', () => {
 	before(() => {
 		cy.visit(url)
@@ -113,8 +246,8 @@ describe('Example sheets', () => {
 		cy.get('#land-moment').should('contain.text', '96459')
 
 		//Performance
-		cy.get('#pa-currentAltimiter').type('30.14')
-		cy.get('#perf-temp-input').type('5')
+		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}30.14')
+		cy.get('#perf-temp-input').type('{selectAll}{backspace}5')
 		cy.get('#perf-to-roll').should('contain.text', '1410')
 		cy.get('#perf-to-50').should('contain.text', '2445')
 		cy.get('#perf-climb').should('contain.text', '466')
@@ -159,8 +292,8 @@ describe('Example sheets', () => {
 		cy.get('#land-moment').should('contain.text', '97340')
 
 		//Performance
-		cy.get('#pa-currentAltimiter').type('29.85')
-		cy.get('#perf-temp-input').type('13')
+		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}29.85')
+		cy.get('#perf-temp-input').type('{selectAll}{backspace}13')
 		cy.get('#perf-to-roll').should('contain.text', '1654')
 		cy.get('#perf-to-50').should('contain.text', '2903')
 		cy.get('#perf-climb').should('contain.text', '492')
@@ -221,8 +354,8 @@ describe('Example sheets', () => {
 		cy.get('#new-land-moment').should('contain.text', '96702')
 
 		//Performance
-		cy.get('#pa-currentAltimiter').type('31.00')
-		cy.get('#perf-temp-input').type('35')
+		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}31.00')
+		cy.get('#perf-temp-input').type('{selectAll}{backspace}35')
 		cy.get('#perf-to-roll').should('contain.text', '1605')
 		cy.get('#perf-to-50').should('contain.text', '2782.5')
 		cy.get('#perf-climb').should('contain.text', '540')
@@ -268,8 +401,8 @@ describe('Example sheets', () => {
 		cy.get('#land-moment').should('contain.text', '94722')
 
 		//Performance before aircraft change
-		cy.get('#pa-currentAltimiter').type('30.14')
-		cy.get('#perf-temp-input').type('5')
+		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}30.14')
+		cy.get('#perf-temp-input').type('{selectAll}{backspace}5')
 		cy.get('#perf-to-roll').should('contain.text', '1217')
 		cy.get('#perf-to-50').should('contain.text', '2097')
 		cy.get('#perf-climb').should('contain.text', '466')
