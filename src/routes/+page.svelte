@@ -266,7 +266,6 @@
 	</head>
 	<body>
 		<div id="header">
-			<h1>{JSON.stringify(metar)}</h1>
 			<h1>Welcome to Sam's ERAU Cessna 172 Weight and Balance Calculator!</h1>
 			<p>Fill out the info below to calculate weight and balance for your aircraft!</p>
 			<p>
