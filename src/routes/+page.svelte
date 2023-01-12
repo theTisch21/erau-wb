@@ -395,6 +395,18 @@
 			<h2>Maneuvering speed:</h2>
 			<p>Va = {Va} kts</p>
 		</div>
+		<div class="disclaimer">
+			<h2>Oh wait, what's this?</h2>
+			<p>
+				You may have noticed that the altimiter and temperature are auto-filled now. That's right,
+				the site now pulls live METAR data from KPRC and feeds it directly into the inputs! If it's
+				outdated, simply refresh the page to reload the data.<br /> <br />
+				<strong>WARNING:</strong> I've thoroughly tested the metar parsing code, and that seems to
+				be working. However, since the site pulls directly from the AWC, it's way harder to test the
+				live data. Please double-check these values and immediately email me if something's wrong.
+				<a href="mailto:tischaes@my.erau.edu">tischaes@my.erau.edu</a>
+			</p>
+		</div>
 		<PressureAlt pressureAltitude={currentPressureAltitude} altimiter={currentAltimiter} />
 		<div id="Performance">
 			<h2>Performance data</h2>
@@ -478,4 +490,9 @@
         color: white;
     }
     */
+	.disclaimer {
+		padding: 2em;
+		background-color: #ccccff;
+		color: black;
+	}
 </style>
