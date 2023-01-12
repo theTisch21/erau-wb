@@ -49,7 +49,6 @@ export function decodeMetar(metar: string): DecodedMetar {
 		output.temp = Number(tempString)
 	}
 
-	console.log(output)
 	return output
 }
 
