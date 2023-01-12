@@ -246,8 +246,8 @@ describe('Example sheets', () => {
 		cy.get('#land-moment').should('contain.text', '96459')
 
 		//Performance
-		cy.get('#pa-currentAltimiter').type('30.14')
-		cy.get('#perf-temp-input').type('5')
+		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}30.14')
+		cy.get('#perf-temp-input').type('{selectAll}{backspace}5')
 		cy.get('#perf-to-roll').should('contain.text', '1410')
 		cy.get('#perf-to-50').should('contain.text', '2445')
 		cy.get('#perf-climb').should('contain.text', '466')
@@ -292,8 +292,8 @@ describe('Example sheets', () => {
 		cy.get('#land-moment').should('contain.text', '97340')
 
 		//Performance
-		cy.get('#pa-currentAltimiter').type('29.85')
-		cy.get('#perf-temp-input').type('13')
+		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}29.85')
+		cy.get('#perf-temp-input').type('{selectAll}{backspace}13')
 		cy.get('#perf-to-roll').should('contain.text', '1654')
 		cy.get('#perf-to-50').should('contain.text', '2903')
 		cy.get('#perf-climb').should('contain.text', '492')
@@ -354,8 +354,8 @@ describe('Example sheets', () => {
 		cy.get('#new-land-moment').should('contain.text', '96702')
 
 		//Performance
-		cy.get('#pa-currentAltimiter').type('31.00')
-		cy.get('#perf-temp-input').type('35')
+		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}31.00')
+		cy.get('#perf-temp-input').type('{selectAll}{backspace}35')
 		cy.get('#perf-to-roll').should('contain.text', '1605')
 		cy.get('#perf-to-50').should('contain.text', '2782.5')
 		cy.get('#perf-climb').should('contain.text', '540')
@@ -401,8 +401,8 @@ describe('Example sheets', () => {
 		cy.get('#land-moment').should('contain.text', '94722')
 
 		//Performance before aircraft change
-		cy.get('#pa-currentAltimiter').type('30.14')
-		cy.get('#perf-temp-input').type('5')
+		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}30.14')
+		cy.get('#perf-temp-input').type('{selectAll}{backspace}5')
 		cy.get('#perf-to-roll').should('contain.text', '1217')
 		cy.get('#perf-to-50').should('contain.text', '2097')
 		cy.get('#perf-climb').should('contain.text', '466')
