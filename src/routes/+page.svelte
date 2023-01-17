@@ -321,8 +321,8 @@
 					<Line data={input.rearSeats} name="Rear seats" testTag="rs" />
 					<Line data={input.frontBag} name="Front Bags" testTag="fb" defaultValue="17" />
 					<Line data={input.rearBag} name="Aft bag" testTag="aft" defaultValue="0" />
-					<OutputLine data={output.empty} name="Empty weight" testTag="empty" />
-					<FuelLine data={input.rampFuel} name="Ramp Fuel" testTag="rampFuel" defaultValue="53" />
+					<OutputLine data={output.empty} name="Zero fuel weight" testTag="empty" />
+					<FuelLine data={input.rampFuel} name="Ramp fuel" testTag="rampFuel" defaultValue="53" />
 					<OutputLine data={output.ramp} name="Ramp weight" testTag="ramp" />
 					<FuelLine
 						data={input.taxiBurn}
