@@ -1,4 +1,5 @@
 <script lang="ts">
+	import "../../routes/global.css"
 	import type { LineItem } from '$lib/classes'
 	import { writable, type Writable } from 'svelte/store'
 	export let data: LineItem
