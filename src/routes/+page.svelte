@@ -124,7 +124,11 @@
 	//
 
 	//Aircraft
+	let secretz = false
 	aircraftName.subscribe(async (a) => {
+		if(a.toLowerCase() == "orange") {
+			secretz = true
+		}
 		let newPlane = await lookupAircraft(a)
 		if (newPlane != null) {
 			inputFail = false
@@ -494,3 +498,11 @@
 		color: black;
 	}
 </style>
+
+{#if secretz}
+<style>
+	body {
+		background-color: #ff7700;
+	}
+</style>
+{/if}
