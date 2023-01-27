@@ -1,3 +1,11 @@
-p, h1, h2, a, td,th,tr, input, button {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+p,
+h1,
+h2,
+a,
+td,
+th,
+tr,
+input,
+button {
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }

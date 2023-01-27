@@ -126,7 +126,7 @@
 	//Aircraft
 	let secretz = false
 	aircraftName.subscribe(async (a) => {
-		if(a.toLowerCase() == "orange") {
+		if (a.toLowerCase() == 'orange') {
 			secretz = true
 		}
 		let newPlane = await lookupAircraft(a)
@@ -277,7 +277,8 @@
 				data from ETA
 			</p>
 			<p>
-				<strong>Please note again:</strong> These numbers from ETA are up to date as of January 27 2023, but may not be completely up to date. <br />Please double-check with the POH during
+				<strong>Please note again:</strong> These numbers from ETA are up to date as of January 27
+				2023, but may not be completely up to date. <br />Please double-check with the POH during
 				your preflight or check with the numbers on ETA to ensure accurate calculations.
 			</p>
 			<p>
@@ -437,6 +438,14 @@
 	</body>
 </main>
 
+{#if secretz}
+	<style>
+		body {
+			background-color: #ff7700;
+		}
+	</style>
+{/if}
+
 <style>
 	table,
 	th,
@@ -498,11 +507,3 @@
 		color: black;
 	}
 </style>
-
-{#if secretz}
-<style>
-	body {
-		background-color: #ff7700;
-	}
-</style>
-{/if}
