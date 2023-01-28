@@ -14,7 +14,8 @@ export const GET: RequestHandler = () => {
 
 export const POST: RequestHandler = async ({ request }) => {
 	const token = request.headers.get('Authorization')?.split(' ')[1]
-	if (token != API_TOKEN) { //TODO DO NOT COMMIT
+	if (token != API_TOKEN) {
+		//TODO DO NOT COMMIT
 		return new Response('UNAUTHORIZED', { status: 401 })
 	}
 	const recievedAlert: UserAlert = await request.json()

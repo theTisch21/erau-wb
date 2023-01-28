@@ -277,7 +277,8 @@
 				data from ETA
 			</p>
 			<p>
-				<strong>Please note again:</strong> These numbers from ETA are up to date as of January 27 2023, but may not be completely up to date. <br />Please double-check with the POH during
+				<strong>Please note again:</strong> These numbers from ETA are up to date as of January 27
+				2023, but may not be completely up to date. <br />Please double-check with the POH during
 				your preflight or check with the numbers on ETA to ensure accurate calculations.
 			</p>
 			<p>
@@ -287,10 +288,10 @@
 			</p>
 		</div>
 		{#if alert.alert}
-		<div class="warning">
-			<h1>WARNING</h1>
-			<p>{alert.alertText}</p>
-		</div>
+			<div class="warning">
+				<h1>WARNING</h1>
+				<p>{alert.alertText}</p>
+			</div>
 		{/if}
 		<div id="calc">
 			<h2>Aircraft:</h2>
@@ -484,11 +485,11 @@
 		background-color: red;
 		color: white;
 	}
-    .warning {
-        padding: 2em;
-        background-color: red;
-        color: white;
-    }
+	.warning {
+		padding: 2em;
+		background-color: red;
+		color: white;
+	}
 	.disclaimer {
 		padding: 2em;
 		background-color: #ccccff;
