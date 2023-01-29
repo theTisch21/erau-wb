@@ -18,6 +18,11 @@ jobs:
       - name: Check Formatting
         run: yarn format-check
 
+      - name: Setup dummy env file
+        run: |
+          touch .env
+          echo API_TOKEN = abcd >> .env
+
       - name: Build server
         run: yarn build
 
