@@ -1,6 +1,7 @@
 tasks:
   - init: sudo yarn playwright install-deps
   - init: yarn playwright install
+  - init: touch .env && echo API_TOKEN = abcd >> .env
   - init: yarn install && yarn run build
     command: yarn run dev
 
