@@ -119,6 +119,7 @@
 		landFifty: 0
 	}
 	let isRoundingDown = writable(false)
+	let performanceMultiplier = writable('1')
 	let currentAltimiter = writable('')
 	let currentPressureAltitude = writable('')
 	let currentTemp = writable('')
@@ -166,6 +167,7 @@
 	currentTemp.subscribe(refresh)
 	currentPressureAltitude.subscribe(refresh)
 	isRoundingDown.subscribe(refresh)
+	performanceMultiplier.subscribe(refresh)
 
 	//
 	// Refresh
@@ -243,7 +245,8 @@
 			p.toWeight,
 			Number($currentPressureAltitude),
 			Number($currentTemp),
-			$isRoundingDown
+			$isRoundingDown,
+			Number($performanceMultiplier)
 		)
 		performanceData = performanceResult.out
 		//Validate
@@ -427,6 +430,14 @@
 				title="Aircraft"
 				bind:value={$currentTemp}
 				class={$currentTemp == '' ? 'empty' : 'success'}
+			/>
+			<input
+				type="text"
+				id="perf-multiplier-input"
+				placeholder="Multiplier"
+				title="Multiplier"
+				bind:value={$performanceMultiplier}
+				class={$performanceMultiplier == '' ? 'empty' : 'success'}
 			/>
 			<p id="perf-to-roll">Takeoff roll: {performanceData.takeoffRoll}</p>
 			<p id="perf-to-50">Takeoff 50ft: {performanceData.takeoffFifty}</p>
