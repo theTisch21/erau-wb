@@ -6,9 +6,13 @@ The site now pulls METAR data from the Aviation Weather Center and uses it to ca
 
 # v2.0 Performance calculations
 Added takeoff, landing, and climb performance calculations
+Also added the aircraft's tail number for quick reference
 
-# v1.1 Limits
-Added an automatic check for aircraft weight and moment limits
+# v1.2 Fix rounding
+Sets it so that most numbers are rounded down to 2 decimal places
+
+# v1.1 Pressure altitude and Va
+Added pressure altitude and maneuvering speed calculators
 
 # v1.0 First release
-First full stable release, was simply the calculator
+First full stable release, was simply the calculator and limits
