@@ -248,7 +248,7 @@
 		performanceData = performanceResult.out
 		//Validate
 		validationResult = calcLimits(p.toWeight, p.toMoment, input)
-		Va = Math.floor(Math.sqrt(p.landWeight / 2550) * 105)
+		Va = round(Math.sqrt(p.landWeight / 2550) * 105)
 	}
 
 	//
