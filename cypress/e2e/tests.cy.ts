@@ -432,4 +432,66 @@ describe('Example sheets', () => {
 		cy.get('#perf-land-roll').should('contain.text', '672')
 		cy.get('#perf-land-50').should('contain.text', '1488')
 	})
+	it('5', () => {
+		cy.get('#aircraft-input').type('R-57')
+		cy.get('#fs-weight').type('350')
+		cy.get('#fs-moment').should('contain.text', '12950')
+		cy.get('#rs-weight').type('20')
+		cy.get('#rs-moment').should('contain.text', '1460')
+		//There's no need to re-type 17, as it's the default
+		//cy.get("#fb-weight").type("{selectAll}{backspace}17")
+		cy.get('#fb-moment').should('contain.text', '1615')
+		//cy.get("#aft-weight").type("0")
+		cy.get('#aft-moment').should('contain.text', '0')
+
+		cy.get('#empty-weight').should('contain.text', '2110')
+		cy.get('#empty-arm').should('contain.text', '41')
+		cy.get('#empty-moment').should('contain.text', '87701')
+
+		//cy.get("#ramp-input").type("53")
+		cy.get('#rampFuel-weight').should('contain.text', '318')
+		cy.get('#rampFuel-moment').should('contain.text', '15264')
+		cy.get('#ramp-weight').should('contain.text', '2428')
+		cy.get('#ramp-arm').should('contain.text', '42')
+		cy.get('#ramp-moment').should('contain.text', '102965')
+
+		//cy.get("#taxi-input").type("1")
+		cy.get('#taxi-weight').should('contain.text', '-8')
+		cy.get('#taxi-moment').should('contain.text', '-403')
+		cy.get('#takeoff-weight').should('contain.text', '2420')
+		cy.get('#takeoff-arm').should('contain.text', '42')
+		cy.get('#takeoff-moment').should('contain.text', '102561')
+
+		//cy.get("#flight-gallon").type("15")
+		cy.get('#flight-weight').should('contain.text', '-90')
+		cy.get('#flight-moment').should('contain.text', '-4320')
+		cy.get('#land-weight').should('contain.text', '2330')
+		cy.get('#land-arm').should('contain.text', '42')
+		cy.get('#land-moment').should('contain.text', '98241')
+
+		//Change in aircraft
+		cy.get('#new-aircraft-button').click()
+		cy.get('#new-aircraft-input').type('R- 4')
+
+		cy.get('#diff-weight').should('contain.text', '-16')
+		cy.get('#diff-arm').should('contain.text', '0')
+		cy.get('#diff-moment').should('contain.text', '-1539')
+
+		cy.get('#new-takeoff-weight').should('contain.text', '2404')
+		cy.get('#new-takeoff-arm').should('contain.text', '42')
+		cy.get('#new-takeoff-moment').should('contain.text', '101022')
+
+		cy.get('#new-land-weight').should('contain.text', '2314')
+		cy.get('#new-land-arm').should('contain.text', '41')
+		cy.get('#new-land-moment').should('contain.text', '96702')
+
+		//Performance
+		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}31.00')
+		cy.get('#perf-temp-input').type('{selectAll}{backspace}-7')
+		cy.get('#perf-to-roll').should('contain.text', '1235')
+		cy.get('#perf-to-50').should('contain.text', '2120')
+		cy.get('#perf-climb').should('contain.text', '642.75')
+		cy.get('#perf-land-roll').should('contain.text', '630')
+		cy.get('#perf-land-50').should('contain.text', '1425')
+	})
 })

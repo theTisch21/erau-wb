@@ -50,7 +50,7 @@ export function getClimbRate(altitude: number, temp: number): { rate: number; al
 		return { rate: line.cm20, altitude: line.altitude }
 	} else if (temp < 0) {
 		//Use -20 - 0
-		return { rate: interpolate(line.cm20, line.c0, (temp * -1) / 20), altitude: line.altitude }
+		return { rate: interpolate(line.cm20, line.c0, (20 + temp) / 20), altitude: line.altitude }
 	} else if (temp < 20) {
 		//Use 0-20
 		return { rate: interpolate(line.c0, line.c20, temp / 20), altitude: line.altitude }
