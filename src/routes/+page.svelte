@@ -25,6 +25,7 @@
 	import { decodeMetar } from '$lib/Calculators/metar'
 	import { onMount } from 'svelte'
 	import type { UserAlert } from './api/alert/+server'
+	import OverrideLine from '$lib/Lines/OverrideLine.svelte'
 
 	//
 	// Data
@@ -106,6 +107,16 @@
 		landMoment: 0
 	}
 
+	//Aircraft overrides
+	let isOverriding = writable(false)
+	let overrideData: Writable<Aircraft> = writable({
+		name: '',
+		tailNumber: '',
+		weight: 0,
+		arm: 0,
+		moment: 0
+	})
+
 	//Climb rate
 	let climbRate: { rate: number; altitude: number } = { rate: 0, altitude: 0 }
 
@@ -166,6 +177,11 @@
 	currentTemp.subscribe(refresh)
 	currentPressureAltitude.subscribe(refresh)
 	isRoundingDown.subscribe(refresh)
+	//Override
+	overrideData.subscribe((o) => {
+		aircraftData = o
+		refresh()
+	})
 
 	//
 	// Refresh
@@ -299,21 +315,28 @@
 		{/if}
 		<div id="calc">
 			<h2>Aircraft:</h2>
-			<input
-				id="aircraft-input"
-				type="text"
-				placeholder="Copy from ETA"
-				title="Aircraft"
-				bind:value={$aircraftName}
-				style="font-size: large;"
-				class={inputFail ? ($aircraftName != '' ? 'fail' : 'empty') : 'empty'}
-			/>
-			<p>Tail number: {aircraftData.tailNumber}</p>
-			<button
-				on:click={() => {
-					aircraftName.set('R-55')
-				}}>Set to heaviest aircraft</button
-			>
+			{#if !$isOverriding}
+				<input
+					id="aircraft-input"
+					type="text"
+					placeholder="Copy from ETA"
+					title="Aircraft"
+					bind:value={$aircraftName}
+					style="font-size: large;"
+					class={inputFail ? ($aircraftName != '' ? 'fail' : 'empty') : 'empty'}
+				/>
+				<p>Tail number: {aircraftData.tailNumber}</p>
+				<button
+					on:click={() => {
+						aircraftName.set('R-55')
+					}}>Set to heaviest aircraft</button
+				>
+				<button
+					on:click={() => {
+						isOverriding.set(true)
+					}}>Override aircraft values</button
+				>
+			{/if}
 			<table>
 				<thead>
 					<th>Item</th>
@@ -323,7 +346,11 @@
 					<th>Fuel (gal)</th>
 				</thead>
 				<tbody>
-					<OutputLine data={aircraftData} name="Aircraft" testTag="aircraft" />
+					{#if $isOverriding}
+						<OverrideLine data={overrideData} name="Aircraft" testTag="aircraft" />
+					{:else}
+						<OutputLine data={aircraftData} name="Aircraft" testTag="aircraft" />
+					{/if}
 					<Line data={input.frontSeats} name="Front Seats" testTag="fs" />
 					<Line data={input.rearSeats} name="Rear seats" testTag="rs" />
 					<Line data={input.frontBag} name="Front Bags" testTag="fb" defaultValue="17" />
