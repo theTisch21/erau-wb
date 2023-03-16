@@ -4,7 +4,7 @@
 	//
 	import { writable, type Writable } from 'svelte/store'
 	import { lookupAircraft, type Aircraft } from '$lib/Lookups/Aircraft/aircraft'
-	import { calcLimits } from '$lib/limitCalc'
+	import { calcLimits, type LimitResult } from '$lib/limitCalc'
 	import Line from '$lib/Lines/Line.svelte'
 	import FuelLine from '$lib/Lines/FuelLine.svelte'
 	import OutputLine from '$lib/Lines/OutputLine.svelte'
@@ -42,7 +42,7 @@
 	//
 
 	//Validation
-	let validationResult: { result: boolean; comment: string } = {
+	let validationResult: LimitResult = {
 		result: false,
 		comment: 'No data entered'
 	}
@@ -166,6 +166,17 @@
 	currentTemp.subscribe(refresh)
 	currentPressureAltitude.subscribe(refresh)
 	isRoundingDown.subscribe(refresh)
+
+	//
+	// Functions
+	//
+	function setMaxFuel() {
+		//Get weight difference
+		let difference = validationResult.overweightGallons ?? 0
+		validationResult.comment = (input.rampFuel.getGallons() - difference).toString()
+		input.rampFuel.overrideGallons(input.rampFuel.getGallons() - difference)
+		refresh()
+	}
 
 	//
 	// Refresh
@@ -396,6 +407,9 @@
 		</div>
 		<div id="validation" class={validationResult.result ? 'good' : 'bad'}>
 			<h1>{validationResult.comment}</h1>
+			{#if !validationResult.result && (validationResult.overweightGallons ?? 0) > 0}
+				<button on:click={setMaxFuel}>Set fuel to maximum allowed</button>
+			{/if}
 		</div>
 		<div id="Va">
 			<h2>Maneuvering speed:</h2>

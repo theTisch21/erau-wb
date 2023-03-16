@@ -1,4 +1,6 @@
 import type { LineItem, FuelLineItem } from './classes'
+import { round, roundToPrecision } from './round'
+export type LimitResult = { result: boolean; comment: string; overweightGallons?: number }
 export function calcLimits(
 	weight: number,
 	moment: number,
@@ -11,16 +13,17 @@ export function calcLimits(
 		taxiBurn: FuelLineItem
 		flightBurn: FuelLineItem
 	}
-): { result: boolean; comment: string } {
+): LimitResult {
 	const arm = moment / weight
 	//Max gross weight
-	if (weight > 2550)
+	if (weight > 2550) {
+		const gallonDifference = roundToPrecision(((weight - 2550) / 6), 1)
 		return {
 			result: false,
-			comment: `Overweight by ${(weight - 2550).toFixed(2)}lbs or ${((weight - 2550) / 6).toFixed(
-				2
-			)} gallons of fuel`
+			comment: `Overweight by ${round((weight - 2550))}lbs or ${gallonDifference} gallons of fuel`,
+			overweightGallons: gallonDifference
 		}
+	}
 	//CG Limits
 	if (arm > 47.2) return { result: false, comment: 'CG Too far aft' }
 	if (arm < 35) return { result: false, comment: 'CG Too far forward' }
