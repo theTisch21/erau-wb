@@ -210,13 +210,13 @@ describe('Aircraft overrides', () => {
 		cy.get('#fs-weight').type('0')
 		cy.get('#rs-weight').type('0')
 		//Clear default survival kit weight
-		cy.get("#fb-weight").type("{selectAll}{backspace}0")
+		cy.get('#fb-weight').type('{selectAll}{backspace}0')
 	})
 	it('Override 1', () => {
 		//Clear fuel inputs
-		cy.get('#rampFuel-gallon').type("{selectAll}{backspace}0")
-		cy.get('#taxi-gallon').type("{selectAll}{backspace}0")
-		cy.get('#flight-gallon').type("{selectAll}{backspace}0")
+		cy.get('#rampFuel-gallon').type('{selectAll}{backspace}0')
+		cy.get('#taxi-gallon').type('{selectAll}{backspace}0')
+		cy.get('#flight-gallon').type('{selectAll}{backspace}0')
 		//Set
 		cy.get('#aircraft-weight').type('{selectAll}{backspace}1')
 		cy.get('#aircraft-moment').type('{selectAll}{backspace}1')
@@ -227,9 +227,9 @@ describe('Aircraft overrides', () => {
 	})
 	it('Override 2', () => {
 		//Clear fuel inputs
-		cy.get('#rampFuel-gallon').type("{selectAll}{backspace}0")
-		cy.get('#taxi-gallon').type("{selectAll}{backspace}0")
-		cy.get('#flight-gallon').type("{selectAll}{backspace}0")
+		cy.get('#rampFuel-gallon').type('{selectAll}{backspace}0')
+		cy.get('#taxi-gallon').type('{selectAll}{backspace}0')
+		cy.get('#flight-gallon').type('{selectAll}{backspace}0')
 		//Set
 		cy.get('#aircraft-weight').type('{selectAll}{backspace}1')
 		cy.get('#aircraft-moment').type('{selectAll}{backspace}2')
@@ -240,9 +240,9 @@ describe('Aircraft overrides', () => {
 	})
 	it('Override 3', () => {
 		//Clear fuel inputs
-		cy.get('#rampFuel-gallon').type("{selectAll}{backspace}0")
-		cy.get('#taxi-gallon').type("{selectAll}{backspace}0")
-		cy.get('#flight-gallon').type("{selectAll}{backspace}0")
+		cy.get('#rampFuel-gallon').type('{selectAll}{backspace}0')
+		cy.get('#taxi-gallon').type('{selectAll}{backspace}0')
+		cy.get('#flight-gallon').type('{selectAll}{backspace}0')
 		//Set
 		cy.get('#aircraft-weight').type('{selectAll}{backspace}2')
 		cy.get('#aircraft-moment').type('{selectAll}{backspace}1')
@@ -250,12 +250,12 @@ describe('Aircraft overrides', () => {
 		cy.get('#ramp-weight').should('contain.text', '2')
 		cy.get('#ramp-arm').should('contain.text', '0.5')
 		cy.get('#ramp-moment').should('contain.text', '1')
-	})	
+	})
 	it('Override 4', () => {
 		//Set fuel inputs
-		cy.get('#rampFuel-gallon').type("{selectAll}{backspace}53")
-		cy.get('#taxi-gallon').type("{selectAll}{backspace}1.4")
-		cy.get('#flight-gallon').type("{selectAll}{backspace}15")
+		cy.get('#rampFuel-gallon').type('{selectAll}{backspace}53')
+		cy.get('#taxi-gallon').type('{selectAll}{backspace}1.4')
+		cy.get('#flight-gallon').type('{selectAll}{backspace}15')
 		//Set
 		cy.get('#aircraft-weight').type('{selectAll}{backspace}1723.7')
 		cy.get('#aircraft-moment').type('{selectAll}{backspace}71676')
@@ -267,7 +267,7 @@ describe('Aircraft overrides', () => {
 		cy.get('#ramp-moment').should('contain.text', '100260')
 		//Also check performance
 		//Set taxi gallon to 0 so that takeoff weight > 2400
-		cy.get('#taxi-gallon').type("{selectAll}{backspace}0")
+		cy.get('#taxi-gallon').type('{selectAll}{backspace}0')
 		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}30.00')
 		cy.get('#perf-temp-input').type('{selectAll}{backspace}0')
 		cy.get('#perf-to-roll').should('contain.text', '1355')

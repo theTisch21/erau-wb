@@ -331,7 +331,8 @@
 						aircraftName.set('R-55')
 					}}>Set to heaviest aircraft</button
 				>
-				<button id="aircraft-override-button"
+				<button
+					id="aircraft-override-button"
 					on:click={() => {
 						isOverriding.set(true)
 					}}>Override aircraft values</button
