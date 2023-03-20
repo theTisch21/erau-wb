@@ -37,7 +37,7 @@
 			id="{testTag}-gallon"
 			type="text"
 			bind:value={$input}
-			class={$input == '' ? 'empty' : ($input == defaultValue ? 'success' : 'warn')}
+			class={$input == '' ? 'empty' : $input == defaultValue ? 'success' : 'warn'}
 		/>
 	</td>
 </tr>

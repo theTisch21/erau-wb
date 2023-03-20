@@ -17,10 +17,10 @@ export function calcLimits(
 	const arm = moment / weight
 	//Max gross weight
 	if (weight > 2550) {
-		const gallonDifference = roundToPrecision(((weight - 2550) / 6), 1)
+		const gallonDifference = roundToPrecision((weight - 2550) / 6, 1)
 		return {
 			result: false,
-			comment: `Overweight by ${round((weight - 2550))}lbs or ${gallonDifference} gallons of fuel`,
+			comment: `Overweight by ${round(weight - 2550)}lbs or ${gallonDifference} gallons of fuel`,
 			overweightGallons: gallonDifference
 		}
 	}
