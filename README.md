@@ -8,4 +8,4 @@ Link to the site: https://erauwb.com
 
 This site is hosted on [Linode/Akami](). It's built off of [SvelteKit](https://kit.svelte.dev) and runs with [NodeJS](https://nodejs.org).
 
-Bug reports, pull requests, feature requests, and other contributions are welcome and appreciated! If you're unfamiliar with GitHub but want to make a suggestion/bug report, send me an email at: [tischaes@my.erau.edu](mailto:tischaes@my.erau.edu)
+Bug reports, pull requests, feature requests, and other contributions are welcome and appreciated! If you're unfamiliar with GitHub but want to make a suggestion/bug report, send me an email at: [sam@erauwb.com](mailto:sam@erauwb.com)

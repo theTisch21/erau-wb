@@ -16,5 +16,5 @@
 	<a href="https://github.com/thetisch21/erau-wb">https://github.com/thetisch21/erau-wb</a>. Bug
 	reports, pull requests, feature requests, and other contributions are welcome and appreciated! If
 	you're unfamiliar with GitHub but want to make a suggestion/bug report, send me an email at:
-	<a href="mailto:tischaes@my.erau.edu">tischaes@my.erau.edu</a>
+	<a href="mailto:sam@erauwb.com">sam@erauwb.com</a>
 </p>

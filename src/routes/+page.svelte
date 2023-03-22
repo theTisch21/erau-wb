@@ -286,8 +286,8 @@
 				your preflight or check with the numbers on ETA to ensure accurate calculations.
 			</p>
 			<p>
-				Notice something out of date? Send me an email: <a href="mailto:tischaes@my.erau.edu"
-					>tischaes@my.erau.edu</a
+				Notice something out of date? Send me an email: <a href="mailto:sam@erauwb.com"
+					>sam@erauwb.com</a
 				>
 			</p>
 		</div>
@@ -410,7 +410,7 @@
 				<strong>WARNING:</strong> I've thoroughly tested the metar parsing code, and that seems to
 				be working. However, since the site pulls directly from the AWC, it's way harder to test the
 				live data. Please double-check these values and immediately email me if something's wrong.
-				<a href="mailto:tischaes@my.erau.edu">tischaes@my.erau.edu</a>
+				<a href="mailto:sam@erauwb.com">sam@erauwb.com</a>
 			</p>
 		</div>
 		<PressureAlt pressureAltitude={currentPressureAltitude} altimiter={currentAltimiter} />
