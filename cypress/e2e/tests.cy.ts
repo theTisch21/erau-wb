@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 let delay = 1000
-let url = 'http://127.0.0.1:5173'
+let url = 'http://127.0.0.1:3000'
 
 import { decodeMetar } from '../../src/lib/Calculators/metar'
 
