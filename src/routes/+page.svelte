@@ -408,7 +408,7 @@
 		<div id="validation" class={validationResult.result ? 'good' : 'bad'}>
 			<h1>{validationResult.comment}</h1>
 			{#if !validationResult.result && (validationResult.overweightGallons ?? 0) > 0}
-				<button on:click={setMaxFuel}>Set fuel to maximum allowed</button>
+				<button id='max-fuel-button' on:click={setMaxFuel}>Set fuel to maximum allowed</button>
 			{/if}
 		</div>
 		<div id="Va">
