@@ -305,7 +305,11 @@
 	<body>
 		<div id="header">
 			<h1>Welcome to Sam's ERAU Cessna 172 Weight and Balance Calculator!</h1>
-			<h2>You are running V2.3 <a href="https://github.com/thetisch21/erau-wb/blob/main/CHANGELOG.md">What's new?</a></h2>
+			<h2>
+				You are running V2.3 <a href="https://github.com/thetisch21/erau-wb/blob/main/CHANGELOG.md"
+					>What's new?</a
+				>
+			</h2>
 			<p>Fill out the info below to calculate weight and balance for your aircraft!</p>
 			<p>
 				<strong>Please note:</strong> All numbers are rounded UP to 2 decimal places, except for the
@@ -463,7 +467,12 @@
 				bind:value={$currentTemp}
 				class={$currentTemp == '' ? 'empty' : 'success'}
 			/>
-			<p>Performance multiplier <br> Use if you have winds. Decrease by .1 for every 9kts or greater headwind, increase by .1 for every 2kts or greater tailwind <br> Examples:<br>9kts headwind = .9<br>18kts headwind = .8<br>11kts headwind = .9 (You can only subtract 9 once, so only decrease by .1)<br>2kts tailwind = 1.1<br>6kts tailwind = 1.3</p>
+			<p>
+				Performance multiplier <br /> Use if you have winds. Decrease by .1 for every 9kts or
+				greater headwind, increase by .1 for every 2kts or greater tailwind <br /> Examples:<br
+				/>9kts headwind = .9<br />18kts headwind = .8<br />11kts headwind = .9 (You can only
+				subtract 9 once, so only decrease by .1)<br />2kts tailwind = 1.1<br />6kts tailwind = 1.3
+			</p>
 			<input
 				type="text"
 				id="perf-multiplier-input"
