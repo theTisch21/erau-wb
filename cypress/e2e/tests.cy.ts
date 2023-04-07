@@ -304,6 +304,34 @@ describe('Max fuel button', () => {
 	})
 })
 
+describe('Performance multiplier', () => {
+	beforeEach(() => {
+		cy.visit(url)
+		cy.wait(delay)
+	})
+
+	it('Increase multiplier', () => {
+		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}29.92')
+		cy.get('#perf-temp-input').type('{selectAll}{backspace}10')
+		cy.get('#perf-multiplier-input').type('{selectAll}{backspace}1.2')
+		cy.get('#perf-to-roll').should('contain.text', '1356')
+		cy.get('#perf-to-50').should('contain.text', '2328')
+		cy.get('#perf-climb').should('contain.text', '482.5')
+		cy.get('#perf-land-roll').should('contain.text', '846')
+		cy.get('#perf-land-50').should('contain.text', '1848')
+	})
+
+	it('Decrease multiplier', () => {
+		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}29.92')
+		cy.get('#perf-temp-input').type('{selectAll}{backspace}10')
+		cy.get('#perf-multiplier-input').type('{selectAll}{backspace}.9')
+		cy.get('#perf-to-roll').should('contain.text', '1017')
+		cy.get('#perf-to-50').should('contain.text', '1746')
+		cy.get('#perf-climb').should('contain.text', '482.5')
+		cy.get('#perf-land-roll').should('contain.text', '634')
+		cy.get('#perf-land-50').should('contain.text', '1386')
+	})
+})
 //We don't do performance testing specifically, as that's covered by the example sheets.
 
 describe('Example sheets', () => {
