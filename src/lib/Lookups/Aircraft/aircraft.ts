@@ -86,7 +86,7 @@ const list: Aircraft[] = [
 export async function lookupAircraft(name: string): Promise<Aircraft | null> {
 	let out = null
 	name = name.trim()
-	if(name.toLowerCase().charAt(5) == "w") {
+	if (name.toLowerCase().charAt(5) == 'w') {
 		name = name.substring(0, 4)
 	}
 	list.forEach((plane) => {

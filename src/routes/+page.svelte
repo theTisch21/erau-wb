@@ -300,7 +300,10 @@
 		<div id="calc">
 			<h2>Aircraft:</h2>
 			<p>Use R- then the aircraft number. Add a space if the number is a single digit</p>
-			<p>Examples: Riddle 12 = R-12 <br> Riddle 5 = R- 5<br> Riddle 25 (west ops) = R-25 W <br>(The W is optional)</p>
+			<p>
+				Examples: Riddle 12 = R-12 <br /> Riddle 5 = R- 5<br /> Riddle 25 (west ops) = R-25 W
+				<br />(The W is optional)
+			</p>
 			<input
 				id="aircraft-input"
 				type="text"
