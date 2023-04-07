@@ -16,7 +16,7 @@
 	//I know... this is a very weird way to do it, but it works.
 	//TODO refactor and make good
 	data.subscribeToOverrideGallons((gallons) => {
-		input.set(gallons)
+		input.set(gallons.toString())
 	})
 	data.subscribeToMoment((moment) => {
 		weight = data.weight
