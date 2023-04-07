@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 let delay = 1000
-let url = 'http://127.0.0.1:3000'
+let url = 'http://127.0.0.1:5173'
 
 import { decodeMetar } from '../../src/lib/Calculators/metar'
 
@@ -197,6 +197,32 @@ describe('Pressure Altitude', () => {
 	it('Example 4', () => {
 		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}29.00')
 		cy.get('#pa-result').should('contain.text', '5965')
+	})
+})
+
+describe('Max fuel button', () => {
+	beforeEach(() => {
+		//Refresh before each test to get a fresh sheet
+		cy.visit(url)
+		cy.wait(delay)
+	})
+	it('Test 1', () => {
+		cy.get('#aircraft-input').type('R- 3')
+		cy.get('#fs-weight').type('350')
+		cy.get('#rs-weight').type('170')
+		cy.get('#validation').should('contain.text', '2 gallons')
+		cy.get('#max-fuel-button').click()
+		cy.get('#validation').should('contain.text', 'Within normal limits')
+		cy.get('#rampFuel-weight').should('contain.text', '306')
+	})
+	it('Test 2', () => {
+		cy.get('#aircraft-input').type('R-69')
+		cy.get('#fs-weight').type('350')
+		cy.get('#rs-weight').type('200')
+		cy.get('#validation').should('contain.text', '6 gallons')
+		cy.get('#max-fuel-button').click()
+		cy.get('#validation').should('contain.text', 'Within normal limits')
+		cy.get('#rampFuel-weight').should('contain.text', '282')
 	})
 })
 

@@ -37,7 +37,8 @@ export class FuelLineItem {
 	public weight: number
 	public arm: number
 	public moment: number
-	callbacks: ((moment: number) => unknown)[] = []
+	momentCallbacks: ((moment: number) => unknown)[] = []
+	gallonCallbacks: ((gallons: number) => unknown)[] = []
 
 	constructor(arm: number) {
 		this.arm = arm
@@ -46,8 +47,11 @@ export class FuelLineItem {
 		this.gallons = 0
 	}
 
-	getGallons(): number {
+	getWeight(): number {
 		return this.weight
+	}
+	getGallons(): number {
+		return this.gallons
 	}
 	setGallons(newGallons: string | number): void {
 		if (typeof newGallons == 'string') {
@@ -56,13 +60,23 @@ export class FuelLineItem {
 		this.gallons = newGallons
 		this.weight = round(this.gallons * 6, true)
 		this.moment = round(this.weight * this.arm)
-		this.callbacks.forEach((callback) => {
+		this.momentCallbacks.forEach((callback) => {
 			callback(this.moment)
+		})
+	}
+	overrideGallons(newGallons: string | number): void {
+		this.setGallons(newGallons)
+		this.gallonCallbacks.forEach((callback) => {
+			callback(this.gallons)
 		})
 	}
 
 	subscribeToMoment(callback: (moment: number) => unknown) {
-		this.callbacks.push(callback)
+		this.momentCallbacks.push(callback)
+	}
+
+	subscribeToOverrideGallons(callback: (gallons: number) => unknown) {
+		this.gallonCallbacks.push(callback)
 	}
 }
 

@@ -13,6 +13,11 @@
 	})
 	let output = 0
 	let weight = 0
+	//I know... this is a very weird way to do it, but it works.
+	//TODO refactor and make good
+	data.subscribeToOverrideGallons((gallons) => {
+		input.set(gallons.toString())
+	})
 	data.subscribeToMoment((moment) => {
 		weight = data.weight
 		output = moment
@@ -32,7 +37,7 @@
 			id="{testTag}-gallon"
 			type="text"
 			bind:value={$input}
-			class={$input == '' ? 'empty' : 'success'}
+			class={$input == '' ? 'empty' : $input == defaultValue ? 'success' : 'warn'}
 		/>
 	</td>
 </tr>
@@ -43,6 +48,9 @@
 	}
 	.success {
 		background-color: white;
+	}
+	.warn {
+		background-color: yellow;
 	}
 	td {
 		border: 2px solid;
