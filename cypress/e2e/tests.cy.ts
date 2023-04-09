@@ -200,6 +200,138 @@ describe('Pressure Altitude', () => {
 	})
 })
 
+describe('Aircraft overrides', () => {
+	before(() => {
+		cy.visit(url)
+		cy.wait(delay)
+		//Click override
+		cy.get('#aircraft-override-button').click()
+		//Clear all inputs
+		cy.get('#fs-weight').type('0')
+		cy.get('#rs-weight').type('0')
+		//Clear default survival kit weight
+		cy.get('#fb-weight').type('{selectAll}{backspace}0')
+	})
+	it('Override 1', () => {
+		//Clear fuel inputs
+		cy.get('#rampFuel-gallon').type('{selectAll}{backspace}0')
+		cy.get('#taxi-gallon').type('{selectAll}{backspace}0')
+		cy.get('#flight-gallon').type('{selectAll}{backspace}0')
+		//Set
+		cy.get('#aircraft-weight').type('{selectAll}{backspace}1')
+		cy.get('#aircraft-moment').type('{selectAll}{backspace}1')
+		//Check
+		cy.get('#ramp-weight').should('contain.text', '1')
+		cy.get('#ramp-arm').should('contain.text', '1')
+		cy.get('#ramp-moment').should('contain.text', '1')
+	})
+	it('Override 2', () => {
+		//Clear fuel inputs
+		cy.get('#rampFuel-gallon').type('{selectAll}{backspace}0')
+		cy.get('#taxi-gallon').type('{selectAll}{backspace}0')
+		cy.get('#flight-gallon').type('{selectAll}{backspace}0')
+		//Set
+		cy.get('#aircraft-weight').type('{selectAll}{backspace}1')
+		cy.get('#aircraft-moment').type('{selectAll}{backspace}2')
+		//Check
+		cy.get('#ramp-weight').should('contain.text', '1')
+		cy.get('#ramp-arm').should('contain.text', '2')
+		cy.get('#ramp-moment').should('contain.text', '2')
+	})
+	it('Override 3', () => {
+		//Clear fuel inputs
+		cy.get('#rampFuel-gallon').type('{selectAll}{backspace}0')
+		cy.get('#taxi-gallon').type('{selectAll}{backspace}0')
+		cy.get('#flight-gallon').type('{selectAll}{backspace}0')
+		//Set
+		cy.get('#aircraft-weight').type('{selectAll}{backspace}2')
+		cy.get('#aircraft-moment').type('{selectAll}{backspace}1')
+		//Check
+		cy.get('#ramp-weight').should('contain.text', '2')
+		cy.get('#ramp-arm').should('contain.text', '0.5')
+		cy.get('#ramp-moment').should('contain.text', '1')
+	})
+	it('Override 4', () => {
+		//Set fuel inputs
+		cy.get('#rampFuel-gallon').type('{selectAll}{backspace}53')
+		cy.get('#taxi-gallon').type('{selectAll}{backspace}1.4')
+		cy.get('#flight-gallon').type('{selectAll}{backspace}15')
+		//Set
+		cy.get('#aircraft-weight').type('{selectAll}{backspace}1723.7')
+		cy.get('#aircraft-moment').type('{selectAll}{backspace}71676')
+		//Add example data
+		cy.get('#fs-weight').type('{selectAll}{backspace}360')
+		//Check
+		cy.get('#ramp-weight').should('contain.text', '2401')
+		cy.get('#ramp-arm').should('contain.text', '41')
+		cy.get('#ramp-moment').should('contain.text', '100260')
+		//Also check performance
+		//Set taxi gallon to 0 so that takeoff weight > 2400
+		cy.get('#taxi-gallon').type('{selectAll}{backspace}0')
+		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}30.00')
+		cy.get('#perf-temp-input').type('{selectAll}{backspace}0')
+		cy.get('#perf-to-roll').should('contain.text', '1355')
+		cy.get('#perf-to-50').should('contain.text', '2345')
+		cy.get('#perf-climb').should('contain.text', '515')
+		cy.get('#perf-land-roll').should('contain.text', '655')
+		cy.get('#perf-land-50').should('contain.text', '1460')
+	})
+})
+
+describe('Max fuel button', () => {
+	beforeEach(() => {
+		//Refresh before each test to get a fresh sheet
+		cy.visit(url)
+		cy.wait(delay)
+	})
+	it('Test 1', () => {
+		cy.get('#aircraft-input').type('R- 3')
+		cy.get('#fs-weight').type('350')
+		cy.get('#rs-weight').type('170')
+		cy.get('#validation').should('contain.text', '2 gallons')
+		cy.get('#max-fuel-button').click()
+		cy.get('#validation').should('contain.text', 'Within normal limits')
+		cy.get('#rampFuel-weight').should('contain.text', '306')
+	})
+	it('Test 2', () => {
+		cy.get('#aircraft-input').type('R-69')
+		cy.get('#fs-weight').type('350')
+		cy.get('#rs-weight').type('200')
+		cy.get('#validation').should('contain.text', '6 gallons')
+		cy.get('#max-fuel-button').click()
+		cy.get('#validation').should('contain.text', 'Within normal limits')
+		cy.get('#rampFuel-weight').should('contain.text', '282')
+	})
+})
+
+describe('Performance multiplier', () => {
+	beforeEach(() => {
+		cy.visit(url)
+		cy.wait(delay)
+	})
+
+	it('Increase multiplier', () => {
+		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}29.92')
+		cy.get('#perf-temp-input').type('{selectAll}{backspace}10')
+		cy.get('#perf-multiplier-input').type('{selectAll}{backspace}1.2')
+		cy.get('#perf-to-roll').should('contain.text', '1356')
+		cy.get('#perf-to-50').should('contain.text', '2328')
+		cy.get('#perf-climb').should('contain.text', '482.5')
+		cy.get('#perf-land-roll').should('contain.text', '846')
+		cy.get('#perf-land-50').should('contain.text', '1848')
+	})
+
+	it('Decrease multiplier', () => {
+		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}29.92')
+		cy.get('#perf-temp-input').type('{selectAll}{backspace}10')
+		cy.get('#perf-multiplier-input').type('{selectAll}{backspace}.9')
+		cy.get('#perf-to-roll').should('contain.text', '1017')
+		cy.get('#perf-to-50').should('contain.text', '1746')
+		cy.get('#perf-climb').should('contain.text', '482.5')
+		cy.get('#perf-land-roll').should('contain.text', '634')
+		cy.get('#perf-land-50').should('contain.text', '1386')
+	})
+})
 //We don't do performance testing specifically, as that's covered by the example sheets.
 
 describe('Example sheets', () => {

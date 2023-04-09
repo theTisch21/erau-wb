@@ -32,7 +32,7 @@ const list: Aircraft[] = [
 	{ name: 'R-29', tailNumber: 'N629ER', weight: 1711.4, arm: 41.1704, moment: 70459 },
 	{ name: 'R-32', tailNumber: 'N632ER', weight: 1686.36, arm: 40.3824, moment: 68099.23 },
 	{ name: 'R-33', tailNumber: 'N633ER', weight: 1681.56, arm: 40.3506, moment: 67851.96 },
-	{ name: 'R-34', tailNumber: 'N634ER', weight: 1689.73, arm: 40.9498, moment: 69194.14 },
+	{ name: 'R-34', tailNumber: 'N634ER', weight: 1687.33, arm: 40.947, moment: 69091.04 },
 	{ name: 'R-35', tailNumber: 'N635ER', weight: 1686.36, arm: 40.3824, moment: 68099.23 },
 	{ name: 'R-36', tailNumber: 'N636ER', weight: 1683.96, arm: 40.3787, moment: 67996.13 },
 	{ name: 'R-37', tailNumber: 'N637ER', weight: 1683.96, arm: 40.3787, moment: 67996.13 },
@@ -85,6 +85,10 @@ const list: Aircraft[] = [
 
 export async function lookupAircraft(name: string): Promise<Aircraft | null> {
 	let out = null
+	name = name.trim()
+	if (name.toLowerCase().charAt(5) == 'w') {
+		name = name.substring(0, 4)
+	}
 	list.forEach((plane) => {
 		if (plane.name == name) out = plane
 	})

@@ -4,7 +4,7 @@
 	//
 	import { writable, type Writable } from 'svelte/store'
 	import { lookupAircraft, type Aircraft } from '$lib/Lookups/Aircraft/aircraft'
-	import { calcLimits } from '$lib/limitCalc'
+	import { calcLimits, type LimitResult } from '$lib/limitCalc'
 	import Line from '$lib/Lines/Line.svelte'
 	import FuelLine from '$lib/Lines/FuelLine.svelte'
 	import OutputLine from '$lib/Lines/OutputLine.svelte'
@@ -25,6 +25,7 @@
 	import { decodeMetar } from '$lib/Calculators/metar'
 	import { onMount } from 'svelte'
 	import type { UserAlert } from './api/alert/+server'
+	import OverrideLine from '$lib/Lines/OverrideLine.svelte'
 
 	//
 	// Data
@@ -42,7 +43,7 @@
 	//
 
 	//Validation
-	let validationResult: { result: boolean; comment: string } = {
+	let validationResult: LimitResult = {
 		result: false,
 		comment: 'No data entered'
 	}
@@ -106,6 +107,16 @@
 		landMoment: 0
 	}
 
+	//Aircraft overrides
+	let isOverriding = writable(false)
+	let overrideData: Writable<Aircraft> = writable({
+		name: '',
+		tailNumber: '',
+		weight: 0,
+		arm: 0,
+		moment: 0
+	})
+
 	//Climb rate
 	let climbRate: { rate: number; altitude: number } = { rate: 0, altitude: 0 }
 
@@ -119,6 +130,7 @@
 		landFifty: 0
 	}
 	let isRoundingDown = writable(false)
+	let performanceMultiplier = writable('1')
 	let currentAltimiter = writable('')
 	let currentPressureAltitude = writable('')
 	let currentTemp = writable('')
@@ -166,6 +178,23 @@
 	currentTemp.subscribe(refresh)
 	currentPressureAltitude.subscribe(refresh)
 	isRoundingDown.subscribe(refresh)
+	performanceMultiplier.subscribe(refresh)
+	//Override
+	overrideData.subscribe((o) => {
+		aircraftData = o
+		refresh()
+	})
+
+	//
+	// Functions
+	//
+	function setMaxFuel() {
+		//Get weight difference
+		let difference = validationResult.overweightGallons ?? 0
+		validationResult.comment = (input.rampFuel.getGallons() - difference).toString()
+		input.rampFuel.overrideGallons(input.rampFuel.getGallons() - difference)
+		refresh()
+	}
 
 	//
 	// Refresh
@@ -243,7 +272,8 @@
 			p.toWeight,
 			Number($currentPressureAltitude),
 			Number($currentTemp),
-			$isRoundingDown
+			$isRoundingDown,
+			Number($performanceMultiplier)
 		)
 		performanceData = performanceResult.out
 		//Validate
@@ -275,6 +305,11 @@
 	<body>
 		<div id="header">
 			<h1>Welcome to Sam's ERAU Cessna 172 Weight and Balance Calculator!</h1>
+			<h2>
+				You are running V2.3 <a href="https://github.com/thetisch21/erau-wb/blob/main/CHANGELOG.md"
+					>What's new?</a
+				>
+			</h2>
 			<p>Fill out the info below to calculate weight and balance for your aircraft!</p>
 			<p>
 				<strong>Please note:</strong> All numbers are rounded UP to 2 decimal places, except for the
@@ -286,8 +321,8 @@
 				your preflight or check with the numbers on ETA to ensure accurate calculations.
 			</p>
 			<p>
-				Notice something out of date? Send me an email: <a href="mailto:tischaes@my.erau.edu"
-					>tischaes@my.erau.edu</a
+				Notice something out of date? Send me an email: <a href="mailto:sam@erauwb.com"
+					>sam@erauwb.com</a
 				>
 			</p>
 		</div>
@@ -299,21 +334,34 @@
 		{/if}
 		<div id="calc">
 			<h2>Aircraft:</h2>
-			<input
-				id="aircraft-input"
-				type="text"
-				placeholder="Copy from ETA"
-				title="Aircraft"
-				bind:value={$aircraftName}
-				style="font-size: large;"
-				class={inputFail ? ($aircraftName != '' ? 'fail' : 'empty') : 'empty'}
-			/>
-			<p>Tail number: {aircraftData.tailNumber}</p>
-			<button
-				on:click={() => {
-					aircraftName.set('R-55')
-				}}>Set to heaviest aircraft</button
-			>
+			{#if !$isOverriding}
+				<p>Use R- then the aircraft number. Add a space if the number is a single digit</p>
+				<p>
+					Examples: Riddle 12 = R-12 <br /> Riddle 5 = R- 5<br /> Riddle 25 (west ops) = R-25 W
+					<br />(The W is optional)
+				</p>
+				<input
+					id="aircraft-input"
+					type="text"
+					placeholder="Copy from ETA"
+					title="Aircraft"
+					bind:value={$aircraftName}
+					style="font-size: large;"
+					class={inputFail ? ($aircraftName != '' ? 'fail' : 'empty') : 'empty'}
+				/>
+				<p>Tail number: {aircraftData.tailNumber}</p>
+				<button
+					on:click={() => {
+						aircraftName.set('R-55')
+					}}>Set to heaviest aircraft</button
+				>
+				<button
+					id="aircraft-override-button"
+					on:click={() => {
+						isOverriding.set(true)
+					}}>Override aircraft values</button
+				>
+			{/if}
 			<table>
 				<thead>
 					<th>Item</th>
@@ -323,7 +371,11 @@
 					<th>Fuel (gal)</th>
 				</thead>
 				<tbody>
-					<OutputLine data={aircraftData} name="Aircraft" testTag="aircraft" />
+					{#if $isOverriding}
+						<OverrideLine data={overrideData} name="Aircraft" testTag="aircraft" />
+					{:else}
+						<OutputLine data={aircraftData} name="Aircraft" testTag="aircraft" />
+					{/if}
 					<Line data={input.frontSeats} name="Front Seats" testTag="fs" />
 					<Line data={input.rearSeats} name="Rear seats" testTag="rs" />
 					<Line data={input.frontBag} name="Front Bags" testTag="fb" defaultValue="17" />
@@ -396,30 +448,17 @@
 		</div>
 		<div id="validation" class={validationResult.result ? 'good' : 'bad'}>
 			<h1>{validationResult.comment}</h1>
+			{#if !validationResult.result && (validationResult.overweightGallons ?? 0) > 0}
+				<button id="max-fuel-button" on:click={setMaxFuel}>Set fuel to maximum allowed</button>
+			{/if}
 		</div>
 		<div id="Va">
 			<h2>Maneuvering speed:</h2>
 			<p>Va = {Va} kts</p>
 		</div>
-		<div class="disclaimer">
-			<h2>Oh wait, what's this?</h2>
-			<p>
-				You may have noticed that the altimiter and temperature are auto-filled now. That's right,
-				the site now pulls live METAR data from KPRC and feeds it directly into the inputs! If it's
-				outdated, simply refresh the page to reload the data.<br /> <br />
-				<strong>WARNING:</strong> I've thoroughly tested the metar parsing code, and that seems to
-				be working. However, since the site pulls directly from the AWC, it's way harder to test the
-				live data. Please double-check these values and immediately email me if something's wrong.
-				<a href="mailto:tischaes@my.erau.edu">tischaes@my.erau.edu</a>
-			</p>
-		</div>
 		<PressureAlt pressureAltitude={currentPressureAltitude} altimiter={currentAltimiter} />
 		<div id="Performance">
 			<h2>Performance data</h2>
-			<p>
-				These DO NOT factor in winds. Reference the PIM if you have headwind equal or greater than
-				9kts or tailwind equal or greater than 2kts
-			</p>
 			<input
 				type="text"
 				id="perf-temp-input"
@@ -427,6 +466,20 @@
 				title="Aircraft"
 				bind:value={$currentTemp}
 				class={$currentTemp == '' ? 'empty' : 'success'}
+			/>
+			<p>
+				Performance multiplier <br /> Use if you have winds. Decrease by .1 for every 9kts or
+				greater headwind, increase by .1 for every 2kts or greater tailwind <br /> Examples:<br
+				/>9kts headwind = .9<br />18kts headwind = .8<br />11kts headwind = .9 (You can only
+				subtract 9 once, so only decrease by .1)<br />2kts tailwind = 1.1<br />6kts tailwind = 1.3
+			</p>
+			<input
+				type="text"
+				id="perf-multiplier-input"
+				placeholder="Multiplier"
+				title="Multiplier"
+				bind:value={$performanceMultiplier}
+				class={$performanceMultiplier == '' ? 'empty' : 'success'}
 			/>
 			<p id="perf-to-roll">Takeoff roll: {performanceData.takeoffRoll}</p>
 			<p id="perf-to-50">Takeoff 50ft: {performanceData.takeoffFifty}</p>
@@ -501,10 +554,5 @@
 		padding: 2em;
 		background-color: red;
 		color: white;
-	}
-	.disclaimer {
-		padding: 2em;
-		background-color: #ccccff;
-		color: black;
 	}
 </style>
