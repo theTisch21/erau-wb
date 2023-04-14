@@ -9,12 +9,12 @@ const ARMS = {
 }
 
 export type DataLine = {
-	weight: number,
-	arm: number,
+	weight: number
+	arm: number
 	moment: number
 }
 
-export type DataFuelLine = DataLine & {gallons: number}
+export type DataFuelLine = DataLine & { gallons: number }
 
 export type TableInput = {
 	aircraft: DataLine
@@ -88,7 +88,7 @@ export function calculateTable(input: TableInput): TableOutput {
 		moment: m,
 		arm: arm(w, m)
 	}
-	
+
 	//Ramp fuel
 	f = input.fuel.start
 	const rampFuel: DataFuelLine = {
@@ -104,7 +104,7 @@ export function calculateTable(input: TableInput): TableOutput {
 	const ramp: DataLine = {
 		weight: w,
 		moment: m,
-		arm: arm(w,m)
+		arm: arm(w, m)
 	}
 
 	//Taxi burn
@@ -122,7 +122,7 @@ export function calculateTable(input: TableInput): TableOutput {
 	const takeoff: DataLine = {
 		weight: w,
 		moment: m,
-		arm: arm(w,m)
+		arm: arm(w, m)
 	}
 
 	//Flight burn
@@ -140,7 +140,7 @@ export function calculateTable(input: TableInput): TableOutput {
 	const landing: DataLine = {
 		weight: w,
 		moment: m,
-		arm: arm(w,m)
+		arm: arm(w, m)
 	}
 	return {
 		aircraft: aircraft,
