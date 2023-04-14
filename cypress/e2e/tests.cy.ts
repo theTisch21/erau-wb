@@ -3,6 +3,7 @@ let delay = 1000
 let url = 'http://127.0.0.1:3000'
 
 import { decodeMetar } from '../../src/lib/Calculators/metar'
+import { calculateTable } from '../../src/lib/Calculators/Table/table'
 
 describe('Metar parsing', () => {
 	it('Simple metars', () => {
@@ -132,6 +133,76 @@ describe('Metar parsing', () => {
 			altimiter: 29.21,
 			temp: -2
 		})
+	})
+})
+
+describe('table calculations', ()=>{
+	it('1', ()=>{
+		expect(calculateTable({aircraft: {weight: 1706.4, arm: 41.4762, moment: 70775}, frontSeats: 350, rearSeats: 20, frontBags: 17, aftBags: 0, fuel: {start: 53, taxiBurn: -1.4, flightBurn: -15}})).deep.equal({
+			aircraft: {
+			  weight: 1706.4,
+			  arm: 41.4762,
+			  moment: 70775
+			},
+			frontSeats: {
+			  weight: 350,
+			  arm: 37,
+			  moment: 12950
+			},
+			rearSeats: {
+			  weight: 20,
+			  arm: 73,
+			  moment: 1460
+			},
+			frontBags: {
+			  weight: 17,
+			  arm: 95,
+			  moment: 1615
+			},
+			aftBags: {
+			  weight: 0,
+			  arm: 123,
+			  moment: 0
+			},
+			zeroFuel: {
+			  weight: 2093.4,
+			  moment: 86800,
+			  arm: 41.47
+			},
+			rampFuel: {
+			  gallons: 53,
+			  weight: 318,
+			  arm: 48,
+			  moment: 15264
+			},
+			ramp: {
+			  weight: 2411.4,
+			  moment: 102064,
+			  arm: 42.33
+			},
+			taxi: {
+			  gallons: -1.4,
+			  weight: -8.4,
+			  arm: 48,
+			  moment: -403.2
+			},
+			takeoff: {
+			  weight: 2403,
+			  moment: 101660.8,
+			  arm: 42.31
+			},
+			flight: {
+			  gallons: -15,
+			  weight: -90,
+			  arm: 48,
+			  moment: -4320
+			},
+			landing: {
+			  weight: 2313,
+			  moment: 97340.8,
+			  arm: 42.09
+			}
+		  })
 	})
 })
 

@@ -111,9 +111,9 @@ export function calculateTable(input: TableInput): TableOutput {
 	f = input.fuel.taxiBurn
 	const taxi: DataFuelLine = {
 		gallons: f,
-		weight: f * 6,
+		weight: round(f * 6, true),
 		arm: ARMS.fuel,
-		moment: round(f * 6 * ARMS.fuel)
+		moment: round(f * 6 * ARMS.fuel, true)
 	}
 
 	//Takeoff
