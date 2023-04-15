@@ -4,7 +4,7 @@
 	//
 	import { writable, type Writable } from 'svelte/store'
 	import { lookupAircraft, type Aircraft } from '$lib/Lookups/Aircraft/aircraft'
-	import { calcLimits, type LimitResult } from '$lib/limitCalc'
+	import { calcLimits, type LimitResult } from '$lib/Flow/limitCalc'
 	import Line from '$lib/Lines/Line.svelte'
 	import FuelLine from '$lib/Lines/FuelLine.svelte'
 	import OutputLine from '$lib/Lines/OutputLine.svelte'
@@ -371,6 +371,12 @@
 					<th>Fuel (gal)</th>
 				</thead>
 				<tbody>
+					<!--
+						IDEA TODO
+						Use <slot></slot> for a custom line?
+						Have a regular output line that takes a WAB object
+						But also a line that can slot in things like inputs, avoiding message chains
+					-->
 					{#if $isOverriding}
 						<OverrideLine data={overrideData} name="Aircraft" testTag="aircraft" />
 					{:else}

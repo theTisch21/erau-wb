@@ -1,5 +1,6 @@
-import type { LineItem, FuelLineItem } from './classes'
-import { round, roundToPrecision } from './round'
+import type { LineItem, FuelLineItem } from '../classes'
+import { round, roundToPrecision } from '../round'
+import type { TableOutput } from './table'
 export type LimitResult = { result: boolean; comment: string; overweightGallons?: number }
 export function calcLimits(
 	weight: number,
