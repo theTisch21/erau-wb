@@ -26,6 +26,7 @@
 	import { onMount } from 'svelte'
 	import type { UserAlert } from './api/alert/+server'
 	import OverrideLine from '$lib/Lines/OverrideLine.svelte'
+	import { calculateTable, type TableOutput } from '$lib/Flow/table'
 
 	//
 	// Data
@@ -67,28 +68,65 @@
 		flightBurn: new FuelLineItem(48)
 	}
 
-	let output: OutputLineItems<CalculatedLine> = {
-		empty: {
-			weight: 0,
-			arm: 0,
-			moment: 0
-		},
-		ramp: {
-			weight: 0,
-			arm: 0,
-			moment: 0
-		},
-		takeoff: {
-			weight: 0,
-			arm: 0,
-			moment: 0
-		},
-		land: {
-			weight: 0,
-			arm: 0,
-			moment: 0
-		}
+	//
+	// Inputs
+	//
+
+	//WB
+	let frontSeatsInput = writable('')
+	let rearSeatsInput = writable('')
+	let frontBagInput = writable('17')
+	let rearBagInput = writable('0')
+
+	let rampFuel = writable('53')
+	let taxiFuel = writable('1.4')
+	let flightFuel = writable('15')
+
+	//Performance and PA
+	let isRoundingDown = writable(false)
+	let performanceMultiplier = writable('1')
+	let currentAltimiter = writable('')
+	let currentPressureAltitude = writable('')
+	let currentTemp = writable('')
+
+	let tableOutput: TableOutput = {
+	aircraft: {
+		weight: 0, arm: 0, moment: 0
+	},
+	frontSeats: {
+		weight: 0, arm: 0, moment: 0
+	},
+	rearSeats: {
+		weight: 0, arm: 0, moment: 0
+	},
+	frontBags: {
+		weight: 0, arm: 0, moment: 0
+	},
+	aftBags: {
+		weight: 0, arm: 0, moment: 0
+	},
+	zeroFuel: {
+		weight: 0, arm: 0, moment: 0
+	},
+	rampFuel: {
+		weight: 0, arm: 0, moment: 0, gallons: 0
+	},
+	ramp: {
+		weight: 0, arm: 0, moment: 0
+	},
+	taxi: {
+		weight: 0, arm: 0, moment: 0, gallons: 0
+	},
+	takeoff: {
+		weight: 0, arm: 0, moment: 0
+	},
+	flight: {
+		weight: 0, arm: 0, moment: 0, gallons: 0
+	},
+	landing: {
+		weight: 0, arm: 0, moment: 0
 	}
+}
 
 	//Aircraft lookups
 	let aircraftName = writable('')
@@ -129,11 +167,6 @@
 		landRoll: 0,
 		landFifty: 0
 	}
-	let isRoundingDown = writable(false)
-	let performanceMultiplier = writable('1')
-	let currentAltimiter = writable('')
-	let currentPressureAltitude = writable('')
-	let currentTemp = writable('')
 
 	//
 	// Subscriptions
@@ -201,33 +234,23 @@
 	//
 
 	function refresh() {
-		//Calculate total weights
-		output.empty.weight = round(
-			aircraftData.weight +
-				input.frontSeats.weight +
-				input.rearSeats.weight +
-				input.frontBag.weight +
-				input.rearBag.weight
-		)
-		output.ramp.weight = round(output.empty.weight + input.rampFuel.weight)
-		output.takeoff.weight = round(output.ramp.weight + input.taxiBurn.weight)
-		output.land.weight = round(output.takeoff.weight + input.flightBurn.weight)
-		//Calculate total moments
-		output.empty.moment = round(
-			aircraftData.moment +
-				input.frontSeats.moment +
-				input.rearSeats.moment +
-				input.frontBag.moment +
-				input.rearBag.moment
-		)
-		output.ramp.moment = round(output.empty.moment + input.rampFuel.moment)
-		output.takeoff.moment = round(output.ramp.moment + input.taxiBurn.moment)
-		output.land.moment = round(output.takeoff.moment + input.flightBurn.moment)
-		//Calculate arms
-		output.empty.arm = round(output.empty.moment / output.empty.weight)
-		output.ramp.arm = round(output.ramp.moment / output.ramp.weight)
-		output.takeoff.arm = round(output.takeoff.moment / output.takeoff.weight)
-		output.land.arm = round(output.land.moment / output.land.weight)
+		//Calculate weight and balance table
+		tableOutput = calculateTable({
+			aircraft: { //TODO fix
+				weight: 0,
+				arm: 0,
+				moment: 0,
+			},
+			frontSeats: Number($frontSeatsInput),
+			rearSeats: Number($rearSeatsInput),
+			frontBags: Number($frontBagInput),
+			aftBags: Number($rearBagInput),
+			fuel: {
+				start: Number($rampFuel),
+				taxiBurn: Number($taxiFuel),
+				flightBurn: Number($flightFuel)
+			}
+		})
 		//Climb rate
 		if ($currentPressureAltitude != undefined) {
 			//If it hasn't been set yet, just skip it
@@ -248,24 +271,24 @@
 		//New aircraft
 		if (newAircraft) {
 			newAircraftTotals.takeoffWeight = round(
-				output.takeoff.weight - (aircraftData.weight - newAircraftData.weight)
+				tableOutput.takeoff.weight - (aircraftData.weight - newAircraftData.weight)
 			)
 			newAircraftTotals.landWeight = round(
-				output.land.weight - (aircraftData.weight - newAircraftData.weight)
+				tableOutput.landing.weight - (aircraftData.weight - newAircraftData.weight)
 			)
 			newAircraftTotals.takeoffMoment = round(
-				output.takeoff.moment - (aircraftData.moment - newAircraftData.moment)
+				tableOutput.takeoff.moment - (aircraftData.moment - newAircraftData.moment)
 			)
 			newAircraftTotals.landMoment = round(
-				output.land.moment - (aircraftData.moment - newAircraftData.moment)
+				tableOutput.landing.moment - (aircraftData.moment - newAircraftData.moment)
 			)
 			p.toWeight = newAircraftTotals.takeoffWeight
 			p.landWeight = newAircraftTotals.landWeight
 			p.toMoment = newAircraftTotals.takeoffMoment
 		} else {
-			p.toWeight = output.takeoff.weight
-			p.landWeight = output.land.weight
-			p.toMoment = output.takeoff.moment
+			p.toWeight = tableOutput.takeoff.weight
+			p.landWeight = tableOutput.landing.weight
+			p.toMoment = tableOutput.takeoff.moment
 		}
 		//Performance
 		performanceResult = calculatePerformanceData(
@@ -277,7 +300,7 @@
 		)
 		performanceData = performanceResult.out
 		//Validate
-		validationResult = calcLimits(p.toWeight, p.toMoment, input)
+		validationResult = calcLimits(tableOutput)
 		Va = round(Math.sqrt(p.landWeight / 2550) * 105)
 	}
 
@@ -386,9 +409,9 @@
 					<Line data={input.rearSeats} name="Rear seats" testTag="rs" />
 					<Line data={input.frontBag} name="Front Bags" testTag="fb" defaultValue="17" />
 					<Line data={input.rearBag} name="Aft bag" testTag="aft" defaultValue="0" />
-					<OutputLine data={output.empty} name="Zero fuel weight" testTag="empty" />
+					<OutputLine data={tableOutput.zeroFuel} name="Zero fuel weight" testTag="empty" />
 					<FuelLine data={input.rampFuel} name="Ramp fuel" testTag="rampFuel" defaultValue="53" />
-					<OutputLine data={output.ramp} name="Ramp weight" testTag="ramp" />
+					<OutputLine data={tableOutput.ramp} name="Ramp weight" testTag="ramp" />
 					<FuelLine
 						data={input.taxiBurn}
 						name="Burn in taxi"
@@ -396,7 +419,7 @@
 						subtract
 						defaultValue="1.4"
 					/>
-					<OutputLine data={output.takeoff} name="Takeoff weight" testTag="takeoff" />
+					<OutputLine data={tableOutput.takeoff} name="Takeoff weight" testTag="takeoff" />
 					<FuelLine
 						data={input.flightBurn}
 						name="Burn in flight"
@@ -404,7 +427,7 @@
 						subtract
 						defaultValue="15"
 					/>
-					<OutputLine data={output.land} name="Landing weight" testTag="land" />
+					<OutputLine data={tableOutput.landing} name="Landing weight" testTag="land" />
 				</tbody>
 			</table>
 			<button
