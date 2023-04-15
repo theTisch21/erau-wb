@@ -1,3 +1,8 @@
+# v2.4 Refactor
+
+A pretty major refactor that will make some upcoming features a lot easier to program
+There shouldn't be any noticable changes to the user experience
+
 # v2.3 QOL 1
 
 A couple of quality of life features
