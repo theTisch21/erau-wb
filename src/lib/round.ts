@@ -13,3 +13,13 @@ export function roundToPrecision(input: number, RoundingConstant = 100, down = f
 	}
 	return Math.ceil(input * RoundingConstant) / RoundingConstant
 }
+
+export function roundTo2Thousand(input: number, down = false): number {
+	input = roundToPrecision(input, 0.001, down) //Round to next thousand
+	
+	if ((input / 1000) % 2 != 0) {
+		//If thousand is not even
+		input += down ? -1000 : 1000
+	}
+	return input
+}

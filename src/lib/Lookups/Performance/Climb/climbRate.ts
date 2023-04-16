@@ -1,5 +1,5 @@
 import { interpolate } from '$lib/interpolate'
-import { roundToPrecision } from '$lib/round'
+import { roundTo2Thousand, roundToPrecision } from '$lib/round'
 
 export type ClimbLine = {
 	altitude: number
@@ -20,12 +20,7 @@ const climbRateList: ClimbLine[] = [
 	{ altitude: 12000, climbSpeed: 72, cm20: 255, c0: 195, c20: 135, c40: NaN }
 ]
 export function getClimbLine(altitude: number): ClimbLine {
-	altitude = roundToPrecision(altitude, 0.001, false) //Round to next thousand up
-
-	if ((altitude / 1000) % 2 != 0) {
-		//If thousand is not even
-		altitude += 1000
-	}
+	altitude = roundTo2Thousand(altitude)
 
 	if (altitude > 12000) {
 		return getClimbLine(12000)
