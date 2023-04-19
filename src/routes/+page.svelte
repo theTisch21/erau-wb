@@ -306,8 +306,8 @@
 		<div id="header">
 			<h1>Welcome to Sam's ERAU Cessna 172 Weight and Balance Calculator!</h1>
 			<h2>
-				You are running V2.3.1 <a href="https://github.com/thetisch21/erau-wb/blob/main/CHANGELOG.md"
-					>What's new?</a
+				You are running V2.3.1 <a
+					href="https://github.com/thetisch21/erau-wb/blob/main/CHANGELOG.md">What's new?</a
 				>
 			</h2>
 			<p>Fill out the info below to calculate weight and balance for your aircraft!</p>
@@ -459,7 +459,7 @@
 		<PressureAlt pressureAltitude={currentPressureAltitude} altimiter={currentAltimiter} />
 		<div id="Performance">
 			<h2>Performance data</h2>
-			<label for="perf-temp-input">Temperature °C</label><br>
+			<label for="perf-temp-input">Temperature °C</label><br />
 			<input
 				type="text"
 				id="perf-temp-input"

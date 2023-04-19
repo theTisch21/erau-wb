@@ -16,15 +16,15 @@
 
 <main>
 	<h2>Pressure Altitude:</h2>
-	<label for="pa-fieldElevation">Field elevation</label><br>
+	<label for="pa-fieldElevation">Field elevation</label><br />
 	<input
 		id="pa-fieldElevation"
 		bind:value={$fieldElevation}
 		placeholder="Field Elevation"
 		class={$fieldElevation == '' ? 'empty' : 'success'}
 	/>
-	<br>
-	<label for="pa-currentAltimiter">Current altimiter</label><br>
+	<br />
+	<label for="pa-currentAltimiter">Current altimiter</label><br />
 	<input
 		id="pa-currentAltimiter"
 		bind:value={$altimiter}
