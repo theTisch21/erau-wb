@@ -1,3 +1,7 @@
+# v2.3.1 Labels for inputs
+
+Added some labels to the input boxes to clear up confusion
+
 # v2.3 QOL 1
 
 A couple of quality of life features
