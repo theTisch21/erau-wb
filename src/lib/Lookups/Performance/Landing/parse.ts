@@ -1,6 +1,6 @@
 //This file is simply to parse CSV data to convert it to a format we can use
 
-import type { AltitudeLine } from './performance'
+import type { AltitudeLine } from '../../../Flow/toLandPerformance'
 
 export async function parse() {
 	//A CSV in this format: Altitude, 0c, 10c, 20c, 30c, 40c

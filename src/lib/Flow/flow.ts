@@ -1,6 +1,7 @@
 import type { LimitResult } from './limitCalc'
 import { calculateTable, type TableInput, type TableOutput } from './table'
-import { round } from '../round'
+import { round, roundToPrecision } from '../round'
+import { calculatePerformanceData } from './toLandPerformance'
 
 export type CompleteFlowInput = {
 	table: TableInput
@@ -29,8 +30,9 @@ export type CompleteFlowOutput = {
 export function flow(input: CompleteFlowInput) {
 	const calculatedTable = calculateTable(input.table)
 	const maneuveringSpeed = round(Math.sqrt(calculatedTable.landing.weight / 2550) * 105)
-	const pressureAltitude = (
+	const pressureAltitude = roundToPrecision(
 		(29.92 - Number(input.altimiter)) * 1000 +
 		Number(input.fieldElevation)
-	).toFixed(0)
+	, 1)
+	const performanceData = calculatePerformanceData(calculatedTable.takeoff.weight, pressureAltitude, input.temperature, input.performanceRoundingDown, input.performanceMultiplier)
 }
