@@ -45,7 +45,8 @@ function getTfdLine(altitude: number): tfdLine {
 	return out
 }
 
-function getInterpolatedTfdLine(altitude: number): tfdOutput {
+function getInterpolatedTfdLine(altitude: number, temp: number): tfdLine {
+	const multi = calculateMultiplier(temp)
 	if (altitude > 12000) {
 		throw new Error(
 			"Altitude above service ceiling. Are you sure whatever you're doing is worth it?"
@@ -60,10 +61,18 @@ function getInterpolatedTfdLine(altitude: number): tfdOutput {
 	const percent = (upperAlt - lowerAlt) / (altitude - lowerAlt)
 
 	return {
-		time: interpolate(lowerLine.time, upperLine.time, percent),
-		fuel: interpolate(lowerLine.fuel, upperLine.fuel, percent),
-		distance: interpolate(lowerLine.distance, upperLine.distance, percent)
+		altitude: interpolate(lowerLine.altitude, upperLine.altitude, percent) * multi,
+		time: interpolate(lowerLine.time, upperLine.time, percent) * multi,
+		fuel: interpolate(lowerLine.fuel, upperLine.fuel, percent) * multi,
+		distance: interpolate(lowerLine.distance, upperLine.distance, percent) * multi,
+		stdTemp: interpolate(lowerLine.stdTemp, upperLine.stdTemp, percent) * multi
 	}
+}
+
+function calculateMultiplier(temp: number) {
+	if(temp < 0) return 1
+	const times = Math.floor(temp / 10)
+	return Math.floor(.1 * times * 10) / 10 //A little funky, but nicely handles floating point problems
 }
 
 function calculateTFD(
@@ -71,4 +80,15 @@ function calculateTFD(
 	startTemp: number,
 	endAlt: number,
 	endTemp: number
-): tfdOuptut {}
+): tfdOutput {
+	const startLine = getInterpolatedTfdLine(startAlt, startTemp)
+	const endLine = getInterpolatedTfdLine(endAlt, endTemp)
+	const time = endLine.time - startLine.time
+	const fuel = endLine.fuel - startLine.fuel
+	const distance = endLine.distance - startLine.distance
+	return {
+		time: time,
+		fuel: fuel,
+		distance: distance
+	}
+}
