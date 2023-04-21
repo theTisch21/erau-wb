@@ -70,9 +70,9 @@ function getInterpolatedTfdLine(altitude: number, temp: number): tfdLine {
 }
 
 function calculateMultiplier(temp: number) {
-	if(temp < 0) return 1
+	if (temp < 0) return 1
 	const times = Math.floor(temp / 10)
-	return Math.floor(.1 * times * 10) / 10 //A little funky, but nicely handles floating point problems
+	return Math.floor(0.1 * times * 10) / 10 //A little funky, but nicely handles floating point problems
 }
 
 function calculateTFD(
