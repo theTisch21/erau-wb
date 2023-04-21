@@ -75,7 +75,7 @@ function calculateMultiplier(temp: number) {
 	return Math.floor(0.1 * times * 10) / 10 //A little funky, but nicely handles floating point problems
 }
 
-function calculateTFD(
+export function calculateTFD(
 	startAlt: number,
 	startTemp: number,
 	endAlt: number,

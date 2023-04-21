@@ -26,6 +26,7 @@
 	import { onMount } from 'svelte'
 	import type { UserAlert } from './api/alert/+server'
 	import OverrideLine from '$lib/Lines/OverrideLine.svelte'
+	import TimeFuelDistance from '$lib/Calculators/TimeFuelDistance.svelte'
 
 	//
 	// Data
@@ -490,6 +491,9 @@
 				<h3>{performanceResult.notes}</h3>
 				<input type="checkbox" bind:checked={$isRoundingDown} />
 			{/if}
+		</div>
+		<div id="tfd">
+			<TimeFuelDistance />
 		</div>
 	</body>
 </main>
