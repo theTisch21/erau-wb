@@ -135,6 +135,12 @@ describe('Metar parsing', () => {
 	})
 })
 
+describe('Time, Fuel, Distance', () => {
+	it('Can calculate the multiplier', () => {
+		expect()
+	})
+})
+
 describe('Aircraft Lookups', () => {
 	before(() => {
 		cy.visit(url)

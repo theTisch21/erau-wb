@@ -1,10 +1,12 @@
 import { interpolate } from '$lib/interpolate'
-import { roundTo2Thousand } from '$lib/round'
+import { round, roundTo2Thousand } from '$lib/round'
 
 export type tfdOutput = {
 	time: number
 	fuel: number
 	distance: number
+	startLine: tfdLine
+	endLine: tfdLine
 }
 
 export type tfdLine = {
@@ -46,33 +48,42 @@ function getTfdLine(altitude: number): tfdLine {
 }
 
 function getInterpolatedTfdLine(altitude: number, temp: number): tfdLine {
-	const multi = calculateMultiplier(temp)
+	if (Number.isNaN(altitude)) altitude = 0
 	if (altitude > 12000) {
 		throw new Error(
 			"Altitude above service ceiling. Are you sure whatever you're doing is worth it?"
 		)
 	}
 	const upperAlt = roundTo2Thousand(altitude, false) //Round to next 2thousand up
+	console.log(upperAlt)
 	const lowerAlt = roundTo2Thousand(altitude, true) //Round to next 2thousand down
+	console.log(lowerAlt)
+
+	if (upperAlt == lowerAlt) return getTfdLine(upperAlt) //No interpolation needed
 
 	const upperLine = getTfdLine(upperAlt)
+	console.log(upperLine)
 	const lowerLine = getTfdLine(lowerAlt)
+	console.log(lowerLine)
 
-	const percent = (upperAlt - lowerAlt) / (altitude - lowerAlt)
-
+	const percent = (altitude - lowerAlt) / (upperAlt - lowerAlt)
+	console.log('P ' + percent)
+	const standardTemp = interpolate(lowerLine.stdTemp, upperLine.stdTemp, percent)
+	const multi = calculateMultiplier(temp - standardTemp)
 	return {
-		altitude: interpolate(lowerLine.altitude, upperLine.altitude, percent) * multi,
-		time: interpolate(lowerLine.time, upperLine.time, percent) * multi,
-		fuel: interpolate(lowerLine.fuel, upperLine.fuel, percent) * multi,
-		distance: interpolate(lowerLine.distance, upperLine.distance, percent) * multi,
-		stdTemp: interpolate(lowerLine.stdTemp, upperLine.stdTemp, percent) * multi
+		altitude: round(interpolate(lowerLine.altitude, upperLine.altitude, percent)),
+		time: round(interpolate(lowerLine.time, upperLine.time, percent) * multi),
+		fuel: round(interpolate(lowerLine.fuel, upperLine.fuel, percent) * multi),
+		distance: round(interpolate(lowerLine.distance, upperLine.distance, percent) * multi),
+		stdTemp: standardTemp
 	}
 }
 
-function calculateMultiplier(temp: number) {
+function calculateMultiplier(temp: number): number {
 	if (temp < 0) return 1
 	const times = Math.floor(temp / 10)
-	return Math.floor(0.1 * times * 10) / 10 //A little funky, but nicely handles floating point problems
+	console.log('T' + times)
+	return Math.floor(0.1 * times * 10) / 10 + 1 //A little funky, but nicely handles floating point problems
 }
 
 export function calculateTFD(
@@ -81,14 +92,22 @@ export function calculateTFD(
 	endAlt: number,
 	endTemp: number
 ): tfdOutput {
+	console.log(startAlt)
+	console.log(startTemp)
+	console.log(endAlt)
+	console.log(endTemp)
 	const startLine = getInterpolatedTfdLine(startAlt, startTemp)
 	const endLine = getInterpolatedTfdLine(endAlt, endTemp)
+	console.log(startLine)
+	console.log(endLine)
 	const time = endLine.time - startLine.time
 	const fuel = endLine.fuel - startLine.fuel
 	const distance = endLine.distance - startLine.distance
 	return {
 		time: time,
 		fuel: fuel,
-		distance: distance
+		distance: distance,
+		startLine: startLine,
+		endLine: endLine
 	}
 }
