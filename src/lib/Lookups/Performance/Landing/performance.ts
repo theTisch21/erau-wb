@@ -459,6 +459,7 @@ export function calculatePerformanceData(
 	down = false,
 	multiplier = 1
 ): { out: PerformanceOutput; notes: string; downOption: boolean } {
+	if (multiplier == 0) multiplier = 1
 	let notes = ''
 	let downOption = false
 	const out: PerformanceOutput = { takeoffRoll: 0, takeoffFifty: 0, landRoll: 0, landFifty: 0 }

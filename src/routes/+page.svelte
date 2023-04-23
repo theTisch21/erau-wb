@@ -130,7 +130,7 @@
 		landFifty: 0
 	}
 	let isRoundingDown = writable(false)
-	let performanceMultiplier = writable('1')
+	let performanceMultiplier = writable('')
 	let currentAltimiter = writable('')
 	let currentPressureAltitude = writable('')
 	let currentTemp = writable('')
@@ -469,15 +469,17 @@
 				class={$currentTemp == '' ? 'empty' : 'success'}
 			/>
 			<p>
-				Performance multiplier <br /> Use if you have winds. Decrease by .1 for every 9kts or
-				greater headwind, increase by .1 for every 2kts or greater tailwind <br /> Examples:<br
-				/>9kts headwind = .9<br />18kts headwind = .8<br />11kts headwind = .9 (You can only
-				subtract 9 once, so only decrease by .1)<br />2kts tailwind = 1.1<br />6kts tailwind = 1.3
+				Performance multiplier <br /> Use if you have winds. Start at 1, Decrease by .1 for every
+				9kts or greater headwind, increase by .1 for every 2kts or greater tailwind <br />
+				Examples:<br />Calm wind = 1<br />9kts headwind = .9<br />18kts headwind = .8<br />11kts
+				headwind = .9 (You can only subtract 9 once, so only decrease by .1)<br />2kts tailwind =
+				1.1<br />3kts tailwind = 1.1 (You can only subtract 2 from 3 once, so only add .1 to
+				multiplier)<br />6kts tailwind = 1.3
 			</p>
 			<input
 				type="text"
 				id="perf-multiplier-input"
-				placeholder="Multiplier"
+				placeholder="Multiplier (Defaults to 1)"
 				title="Multiplier"
 				bind:value={$performanceMultiplier}
 				class={$performanceMultiplier == '' ? 'empty' : 'success'}
