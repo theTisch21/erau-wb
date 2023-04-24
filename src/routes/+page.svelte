@@ -471,7 +471,12 @@
 				class={$currentTemp == '' ? 'empty' : 'success'}
 			/>
 			<h2>Wind</h2>
-			<p>Enter the current headwind in knots. If you have a tailwind, check the checkbox below</p>
+			<p>
+				{#if $isTailwind}Enter the current tailwind in knots. If you have a headwind, uncheck the
+					checkbox below
+				{:else}Enter the current headwind in knots. If you have a tailwind, check the checkbox below
+				{/if}
+			</p>
 			<input type="checkbox" id="perf-wind-tailwind" bind:checked={$isTailwind} /><br />
 			<input
 				type="text"
