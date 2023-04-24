@@ -1,3 +1,7 @@
+# v2.4 Use winds instead of multiplier
+
+Changes the performance multiplier to use wind speed instead
+
 # v2.3.1 Labels for inputs
 
 Added some labels to the input boxes to clear up confusion
