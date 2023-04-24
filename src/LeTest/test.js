@@ -1,7 +1,8 @@
-import a, { By } from "selenium-webdriver"
+import selenium, { By } from "selenium-webdriver"
 import c from "selenium-webdriver/firefox.js"
 let builder = new c.ServiceBuilder("C:\\Users\\samti\\.cache\\selenium\\geckodriver\\win64\\0.33.0\\geckodriver.exe")
-let driver = await new a.Builder().forBrowser('firefox').setFirefoxService(builder).build();
+let driver = await new selenium.Builder().forBrowser('firefox').setFirefoxService(builder).build();
+driver.manage().setTimeouts({implicit: 2000})
 await driver.get('https://eta.erau.edu/tseta/servlet/content?module=home&fromHomepg=true&page=home_ops_gen&view=general');
 console.log(await driver.getTitle())
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -9,14 +10,100 @@ console.log(await driver.getTitle())
 // eslint-disable-next-line
 
 //Login
-{
-    await driver.actions().pause(2000).perform()
-    await driver.findElement(By.id("uname")).sendKeys("tischaes")
-    await driver.findElement(By.id("password")).click()
-    await driver.findElement(By.id("password")).sendKeys(string)
-    await driver.actions().pause(1000).click(driver.findElement(By.id("butlogin"))).perform()
-    await driver.findElement(By.css("*[value='FILTER]'")).click()
+
+await driver.sleep(1000)
+let username = await driver.findElement(By.id("uname"))
+let password = await driver.findElement(By.id("password"))
+
+await driver.actions()
+.click(username)
+.sendKeys("tischaes")
+.pause(100)
+.click(password)
+.pause(100)
+.click(password)
+.pause(100)
+.sendKeys(string)
+.pause(100)
+.click(driver.findElement(By.id("butlogin")))
+.perform()
+console.log("Login complete")
+await driver.sleep(2000)
+console.log("Sleep complete")
+//Set to only grab flights
+try {
+    await (await driver.findElement(By.id("act_type"))).findElement(By.xpath('option[.="' + "Flight" + '"]')).click()
+} catch (e) {
+    await driver.actions()
+.click(username)
+.sendKeys("tischaes")
+.pause(100)
+.click(password)
+.pause(100)
+.click(password)
+.pause(100)
+.sendKeys(string)
+.pause(100)
+.click(driver.findElement(By.id("butlogin")))
+.perform()
+    await (await driver.findElement(By.id("act_type"))).findElement(By.xpath('option[.="' + "Flight" + '"]')).click()
+    
 }
 
+let tomorrow = true
+//Go to tomorrow (test)
+if (tomorrow) await driver.actions().click(driver.findElement(By.id("opsbtnext"))).perform()
+else await driver.actions().click(driver.findElement(By.css("input.btn.ui-button.ui-widget.ui-state-default.ui-corner-all"))).perform()
 
-setTimeout(()=>driver.close(),5000)
+//Build table
+let table = []
+let hasSeenNum1 = false
+let done = false
+while(!done) {
+    await driver.sleep(1000)
+    for(let i = 1; i <= 50; i++) {
+        try {
+            let num = await driver.findElement(By.xpath(`//*[@id='row${i}']/td[${1}]`)).getText()
+            if(num == "1") {
+                if(hasSeenNum1) {
+                    done = true
+                    break
+                } else {
+                    hasSeenNum1 = true
+                }
+            }
+            table.push({
+                num: num,
+                time: await driver.findElement(By.xpath(`//*[@id='row${i}']/td[${2}]`)).getText(),
+                status: await driver.findElement(By.xpath(`//*[@id='row${i}']/td[${3}]`)).getText(),
+                resource: await driver.findElement(By.xpath(`//*[@id='row${i}']/td[${4}]`)).getText(),
+                pic: await driver.findElement(By.xpath(`//*[@id='row${i}']/td[${5}]`)).getText(),
+                stu1: await driver.findElement(By.xpath(`//*[@id='row${i}']/td[${6}]`)).getText(),
+                stu2: await driver.findElement(By.xpath(`//*[@id='row${i}']/td[${7}]`)).getText(),
+                subtype: await driver.findElement(By.xpath(`//*[@id='row${i}']/td[${8}]`)).getText(),
+            })
+        } catch (error) {
+            done = true
+            break
+        }
+    }
+    await driver.actions().click(driver.findElement(By.css("input.btn.ui-button.ui-widget.ui-state-default.ui-corner-all"))).perform()
+}
+
+console.log(table)
+
+//console.log(await driver.findElement(By.id("startingTimeDiv")).getText())
+setTimeout(()=>driver.close(),1000)
+
+/**
+ * btn ui-button ui-widget ui-state-default ui-corner-all
+
+let v = document.getElementsByClassName("btn ui-button ui-widget ui-state-default ui-corner-all")
+let output
+for (i in v) {
+console.log(v[i])
+if (v[i].value == "FILTER") output = v[i]
+}
+console.log(output)
+
+ */
