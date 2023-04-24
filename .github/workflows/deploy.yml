@@ -5,39 +5,12 @@ on:
       - main
 
 jobs:
-  InitialTest:
-    runs-on: ubuntu-20.04
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
-
-      - name: Install dependancies
-        run: yarn
-
-      - name: Check Formatting
-        run: yarn format-check
-
-      - name: Setup dummy env file
-        run: |
-          touch .env
-          echo API_TOKEN = abcd >> .env
-
-      - name: Build server
-        run: yarn build
-
-      - name: Run tests
-        run: yarn test
-
-  FullTest:
+  Test:
     needs: InitialTest
     strategy:
       fail-fast: true
       matrix:
-        browser: ['firefox', 'edge', 'chrome']
+        browser: ['electron', 'firefox', 'edge', 'chrome']
     runs-on: ubuntu-20.04
 
     steps:
@@ -65,7 +38,7 @@ jobs:
         run: 'yarn test:${{matrix.browser}}'
 
   Deploy:
-    needs: [InitialTest, FullTest]
+    needs: Test
     runs-on: ubuntu-20.04
     steps:
       - name: Create SSH key
