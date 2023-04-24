@@ -6,7 +6,6 @@ on:
 
 jobs:
   Test:
-    needs: InitialTest
     strategy:
       fail-fast: true
       matrix:
