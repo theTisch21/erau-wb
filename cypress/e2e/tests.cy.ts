@@ -304,16 +304,28 @@ describe('Max fuel button', () => {
 	})
 })
 
-describe('Performance multiplier', () => {
+describe('Winds', () => {
 	beforeEach(() => {
 		cy.visit(url)
 		cy.wait(delay)
 	})
 
-	it('Increase multiplier', () => {
+	it('Calm wind', () => {
 		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}29.92')
 		cy.get('#perf-temp-input').type('{selectAll}{backspace}10')
-		cy.get('#perf-multiplier-input').type('{selectAll}{backspace}1.2')
+		cy.get('#perf-wind-input').type('{selectAll}{backspace}0')
+		cy.get('#perf-to-roll').should('contain.text', '1130')
+		cy.get('#perf-to-50').should('contain.text', '1940')
+		cy.get('#perf-climb').should('contain.text', '482.5')
+		cy.get('#perf-land-roll').should('contain.text', '705')
+		cy.get('#perf-land-50').should('contain.text', '1540')
+	})
+
+	it('Tailwind 1', () => {
+		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}29.92')
+		cy.get('#perf-temp-input').type('{selectAll}{backspace}10')
+		cy.get('#perf-wind-tailwind').click()
+		cy.get('#perf-wind-input').type('{selectAll}{backspace}5')
 		cy.get('#perf-to-roll').should('contain.text', '1356')
 		cy.get('#perf-to-50').should('contain.text', '2328')
 		cy.get('#perf-climb').should('contain.text', '482.5')
@@ -321,15 +333,38 @@ describe('Performance multiplier', () => {
 		cy.get('#perf-land-50').should('contain.text', '1848')
 	})
 
-	it('Decrease multiplier', () => {
+	it('Headwind 1', () => {
 		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}29.92')
 		cy.get('#perf-temp-input').type('{selectAll}{backspace}10')
-		cy.get('#perf-multiplier-input').type('{selectAll}{backspace}.9')
+		cy.get('#perf-wind-input').type('{selectAll}{backspace}11')
 		cy.get('#perf-to-roll').should('contain.text', '1017')
 		cy.get('#perf-to-50').should('contain.text', '1746')
 		cy.get('#perf-climb').should('contain.text', '482.5')
 		cy.get('#perf-land-roll').should('contain.text', '634')
 		cy.get('#perf-land-50').should('contain.text', '1386')
+	})
+
+	it('Tailwind 2', () => {
+		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}29.92')
+		cy.get('#perf-temp-input').type('{selectAll}{backspace}10')
+		cy.get('#perf-wind-tailwind').click()
+		cy.get('#perf-wind-input').type('{selectAll}{backspace}10')
+		cy.get('#perf-to-roll').should('contain.text', '1695')
+		cy.get('#perf-to-50').should('contain.text', '2910')
+		cy.get('#perf-climb').should('contain.text', '482.5')
+		cy.get('#perf-land-roll').should('contain.text', '1057')
+		cy.get('#perf-land-50').should('contain.text', '2310')
+	})
+
+	it('Headwind 2', () => {
+		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}29.92')
+		cy.get('#perf-temp-input').type('{selectAll}{backspace}10')
+		cy.get('#perf-wind-input').type('{selectAll}{backspace}29')
+		cy.get('#perf-to-roll').should('contain.text', '791')
+		cy.get('#perf-to-50').should('contain.text', '1358')
+		cy.get('#perf-climb').should('contain.text', '482.5')
+		cy.get('#perf-land-roll').should('contain.text', '493')
+		cy.get('#perf-land-50').should('contain.text', '1078')
 	})
 })
 //We don't do performance testing specifically, as that's covered by the example sheets.
