@@ -1,3 +1,5 @@
+import { round } from '$lib/round'
+
 export function calculateWindMultiplier(wind: number): number {
 	let multi = 1
 	if (wind == 0) return multi
@@ -6,11 +8,12 @@ export function calculateWindMultiplier(wind: number): number {
 			wind -= 9
 			multi -= 0.1
 		}
+		return round(multi, true)
 	} else {
-		while (wind >= 2) {
-			wind -= 2
+		while (wind <= -2) {
+			wind += 2
 			multi += 0.1
 		}
+		return round(multi, true)
 	}
-	return multi
 }
