@@ -308,8 +308,8 @@
 		<div id="header">
 			<h1>Welcome to Sam's ERAU Cessna 172 Weight and Balance Calculator!</h1>
 			<h2>
-				You are running V2.3.1 <a
-					href="https://github.com/thetisch21/erau-wb/blob/main/CHANGELOG.md">What's new?</a
+				You are using V2.4 <a href="https://github.com/thetisch21/erau-wb/blob/main/CHANGELOG.md"
+					>What's new?</a
 				>
 			</h2>
 			<p>Fill out the info below to calculate weight and balance for your aircraft!</p>
