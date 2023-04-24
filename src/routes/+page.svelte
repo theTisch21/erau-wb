@@ -130,7 +130,8 @@
 		landFifty: 0
 	}
 	let isRoundingDown = writable(false)
-	let performanceMultiplier = writable('1')
+	let wind = writable('')
+	let isTailwind = writable(false)
 	let currentAltimiter = writable('')
 	let currentPressureAltitude = writable('')
 	let currentTemp = writable('')
@@ -178,7 +179,8 @@
 	currentTemp.subscribe(refresh)
 	currentPressureAltitude.subscribe(refresh)
 	isRoundingDown.subscribe(refresh)
-	performanceMultiplier.subscribe(refresh)
+	wind.subscribe(refresh)
+	isTailwind.subscribe(refresh)
 	//Override
 	overrideData.subscribe((o) => {
 		aircraftData = o
@@ -273,7 +275,7 @@
 			Number($currentPressureAltitude),
 			Number($currentTemp),
 			$isRoundingDown,
-			Number($performanceMultiplier)
+			$isTailwind ? Number($wind) * -1 : Number($wind)
 		)
 		performanceData = performanceResult.out
 		//Validate
@@ -468,19 +470,16 @@
 				bind:value={$currentTemp}
 				class={$currentTemp == '' ? 'empty' : 'success'}
 			/>
-			<p>
-				Performance multiplier <br /> Use if you have winds. Decrease by .1 for every 9kts or
-				greater headwind, increase by .1 for every 2kts or greater tailwind <br /> Examples:<br
-				/>9kts headwind = .9<br />18kts headwind = .8<br />11kts headwind = .9 (You can only
-				subtract 9 once, so only decrease by .1)<br />2kts tailwind = 1.1<br />6kts tailwind = 1.3
-			</p>
+			<h2>Wind</h2>
+			<p>Enter the current headwind in knots. If you have a tailwind, check the checkbox below</p>
+			<input type="checkbox" id="perf-wind-tailwind" bind:checked={$isTailwind} /><br />
 			<input
 				type="text"
-				id="perf-multiplier-input"
-				placeholder="Multiplier"
-				title="Multiplier"
-				bind:value={$performanceMultiplier}
-				class={$performanceMultiplier == '' ? 'empty' : 'success'}
+				id="perf-wind-input"
+				placeholder="Wind (kts)"
+				title="Winds"
+				bind:value={$wind}
+				class={$wind == '' ? 'empty' : 'success'}
 			/>
 			<p id="perf-to-roll">Takeoff roll: {performanceData.takeoffRoll}</p>
 			<p id="perf-to-50">Takeoff 50ft: {performanceData.takeoffFifty}</p>

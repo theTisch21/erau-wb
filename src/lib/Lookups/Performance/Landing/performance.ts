@@ -1,5 +1,6 @@
 import { interpolate } from '$lib/interpolate'
 import { roundToPrecision, round } from '$lib/round'
+import { calculateWindMultiplier } from '../windmultiplier'
 
 export type AltitudeLine = {
 	altitude: number
@@ -457,8 +458,9 @@ export function calculatePerformanceData(
 	altitude: number,
 	temp: number,
 	down = false,
-	multiplier = 1
+	winds: number
 ): { out: PerformanceOutput; notes: string; downOption: boolean } {
+	const multiplier = calculateWindMultiplier(winds)
 	let notes = ''
 	let downOption = false
 	const out: PerformanceOutput = { takeoffRoll: 0, takeoffFifty: 0, landRoll: 0, landFifty: 0 }
