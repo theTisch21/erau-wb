@@ -109,6 +109,42 @@ const flightGone = [
 	}
 ]
 
+const reschedule = [
+	{
+		key: '26 APR 06:00 DeLaju, Antoine',
+		num: '1',
+		time: '26 APR 06:00',
+		status: 'Scheduled',
+		resource: 'R-67 W',
+		pic: 'DeLaju, Antoine',
+		stu1: 'Enoul, Nicholas',
+		stu2: '',
+		subtype: 'Flight / Dual'
+	},
+	{
+		key: '26 APR 12:00 Eisell, Zsoee',
+		num: '2',
+		time: '26 APR 12:00',
+		status: 'Scheduled',
+		resource: 'C-172S NAV III',
+		pic: 'Eisell, Zsoee',
+		stu1: 'Kermanian, Jonathan',
+		stu2: '',
+		subtype: 'Flight / Dual'
+	},
+	{
+		key: '26 APR 17:30 Pak, John H.',
+		num: '3',
+		time: '26 APR 17:30',
+		status: 'Scheduled',
+		resource: 'C-172 TAA',
+		pic: 'Pak, John H.',
+		stu1: 'Tischaefer, Samuel',
+		stu2: '',
+		subtype: 'Flight / Dual'
+	}
+]
+
 function lookup(table: Table, key: string): TableLine | false {
 	//In this case, we reference old state, but this should actually be a redis call
 	let o = null
@@ -121,10 +157,12 @@ function lookup(table: Table, key: string): TableLine | false {
 
 export function processChangedTable(oldTable: Table, newTable: Table) {
 	let old: TableLine | false
+	const newItems: TableLine[] = []
 	newTable.forEach((item) => {
 		old = lookup(oldTable, item.key)
 		if (!old) {
 			console.log(item.key + ' appeared')
+			newItems.push(item)
 		} else {
 			//Aircraft
 			if (old.resource != item.resource) {
@@ -132,6 +170,17 @@ export function processChangedTable(oldTable: Table, newTable: Table) {
 				console.log(item.key + ' resource ' + item.resource)
 			}
 		}
+	})
+	//Compare items
+	const diff = oldTable.filter(value => !newTable.map(i => i.key).includes(value.key))
+	diff.forEach(item => {
+		console.log("Mismatch " + item.key)
+		newItems.forEach(newItem => {
+			if(newItem.pic == item.pic && newItem.stu1 == item.stu1 && newItem.stu2 == item.stu2) {
+				//Reschedule
+				console.log("Reschedule " + item.key + " to " + newItem.time)
+			}
+		})
 	})
 }
 
@@ -141,3 +190,5 @@ console.log('Poof')
 processChangedTable(oldTestingTable, flightGone)
 console.log('Multi')
 processChangedTable(flightGone, aircraftAssigned)
+console.log("Reschedule");
+processChangedTable(oldTestingTable, reschedule)
