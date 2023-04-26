@@ -1,0 +1,16 @@
+{
+	"name": "eta",
+	"packageManager": "yarn@3.2.4",
+	"dependencies": {
+		"@types/selenium-webdriver": "^4.1.13",
+		"selenium-webdriver": "^4.9.0",
+		"ts-node": "^10.9.1",
+		"tsconfig-paths": "^4.2.0",
+		"typescript": "^5.0.4"
+	},
+	"type": "module",
+	"scripts": {
+		"go": "tsc; yarn node eta.js",
+		"table": "tsc; yarn node table.js"
+	}
+}
