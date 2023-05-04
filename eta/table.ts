@@ -155,6 +155,8 @@ function lookup(table: Table, key: string): TableLine | false {
 	return o
 }
 
+const stuNames = ["Tischaefer, Samuel", "Kermanian, Jonathan", "DeLaju, Antoine"]
+
 export function processChangedTable(oldTable: Table, newTable: Table) {
 	let old: TableLine | false
 	const newItems: TableLine[] = []
@@ -162,6 +164,15 @@ export function processChangedTable(oldTable: Table, newTable: Table) {
 		old = lookup(oldTable, item.key)
 		if (!old) {
 			console.log(item.key + ' appeared')
+			if(stuNames.includes(item.pic)) {
+				console.log(item.pic + " identitifed as PIC")
+			}
+			if(stuNames.includes(item.stu1)) {
+				console.log(item.stu1 + " identitifed as student")
+			}
+			if (stuNames.includes(item.stu2)) {
+				console.log(item.stu2 + " identitifed as student 2")
+			}
 			newItems.push(item)
 		} else {
 			//Aircraft
