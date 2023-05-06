@@ -1,5 +1,5 @@
 import { interpolate } from '$lib/interpolate'
-import { round, roundTo2Thousand } from '$lib/round'
+import { round, roundTo2Thousand, roundToPrecision } from '$lib/round'
 
 export type tfdOutput = {
 	time: number
@@ -81,9 +81,7 @@ function getInterpolatedTfdLine(altitude: number, temp: number): tfdLine {
 
 function calculateMultiplier(temp: number): number {
 	if (temp < 0) return 1
-	const times = Math.floor(temp / 10)
-	console.log('T' + times)
-	return Math.floor(0.1 * times * 10) / 10 + 1 //A little funky, but nicely handles floating point problems
+	return roundToPrecision(temp / 10, 10) + 1
 }
 
 export function calculateTFD(

@@ -58,17 +58,18 @@
 	/><br />
 	<p>{JSON.stringify(output)}</p>
 	<h3>Result:</h3>
-	<p>Time: {round(output.time)}</p>
-	<p>Fuel: {round(output.fuel)}</p>
-	<p>Distance: {round(output.distance)}</p>
+	<p id="tfd-res-t">Time: {round(output.time)}</p>
+	<p id="tfd-res-f">Fuel: {round(output.fuel)}</p>
+	<p id="tfd-res-f-taxi">Fuel (+ 1.4 gal. for taxi): {round(output.fuel) + 1.4}</p>
+	<p id="tfd-res-d">Distance: {round(output.distance)}</p>
 	<h3>Bottom of climb:</h3>
-	<p>Time: {round(output.startLine.time)}</p>
-	<p>Fuel: {round(output.startLine.fuel)}</p>
-	<p>Distance: {round(output.startLine.distance)}</p>
+	<p id="tfd-b-t">Time: {round(output.startLine.time)}</p>
+	<p id="tfd-b-f">Fuel: {round(output.startLine.fuel)}</p>
+	<p id="tfd-b-d">Distance: {round(output.startLine.distance)}</p>
 	<h3>Top of climb:</h3>
-	<p>Time: {round(output.endLine.time)}</p>
-	<p>Fuel: {round(output.endLine.fuel)}</p>
-	<p>Distance: {round(output.endLine.distance)}</p>
+	<p id="tfd-t-t">Time: {round(output.endLine.time)}</p>
+	<p id="tfd-t-f">Fuel: {round(output.endLine.fuel)}</p>
+	<p id="tfd-t-d">Distance: {round(output.endLine.distance)}</p>
 </main>
 
 <style>
