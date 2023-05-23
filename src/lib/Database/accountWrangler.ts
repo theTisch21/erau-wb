@@ -49,6 +49,15 @@ async function checkPassword(username: string, inputPassword: string): Promise<b
     return user.passwordHash == inputHash
 }
 
+async function changePassword(username: string, oldPassword: string, newPassword: string): Promise<{newSession: Session}> {
+    if(!(await checkPassword(username, oldPassword))) throw new Error("Old password not correct")
+    deleteAllSessions(username)
+    const user = await getUser(username)
+    const newSalt = crypto.randomBytes(64).toString('hex')
+    accountColl.updateOne({username: username}, {passwordHash: hash(newPassword + newSalt), salt: newSalt})
+    return {newSession: await generateSession(username)}
+}
+
 async function createUser(username: string, password: string, name: string) {
     const newSalt = crypto.randomBytes(64).toString('hex')
     const passwordHash = hash(password + newSalt)
@@ -98,4 +107,9 @@ async function getSession(token: string): Promise<Session | null> {
 
 async function deleteAllSessions(username: string) {
     await sessionColl.deleteMany({username: username})
+}
+
+//Aggregations and bulk management
+async function getTrackedUsersEtaNames(): string[] {
+    return accountColl.aggregate("HECC") //TODO Pipeline
 }
