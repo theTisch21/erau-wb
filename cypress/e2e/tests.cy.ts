@@ -3,7 +3,7 @@ let delay = 1000
 let url = 'http://127.0.0.1:3000'
 
 import { decodeMetar } from '../../src/lib/Calculators/metar'
-import { calculateTable } from '../../src/lib/Calculators/Table/table'
+import { calculateTable, type TableInput, type TableOutput } from '../../src/lib/Flow/table'
 
 describe('Metar parsing', () => {
 	it('Simple metars', () => {

@@ -4,7 +4,6 @@
 	//
 	import { writable, type Writable } from 'svelte/store'
 	import { lookupAircraft, type Aircraft } from '$lib/Lookups/Aircraft/aircraft'
-	import { calcLimits, type LimitResult } from '$lib/Flow/limitCalc'
 	import Line from '$lib/Lines/Line.svelte'
 	import FuelLine from '$lib/Lines/FuelLine.svelte'
 	import OutputLine from '$lib/Lines/OutputLine.svelte'
@@ -17,16 +16,14 @@
 	} from '$lib/classes'
 	import { round } from '$lib/round'
 	import PressureAlt from '$lib/Calculators/PressureAlt.svelte'
-	import {
-		calculatePerformanceData,
-		type PerformanceOutput
-	} from '$lib/Lookups/Performance/Landing/performance'
-	import { getClimbLine, getClimbRate } from '$lib/Lookups/Performance/Climb/climbRate'
 	import { decodeMetar } from '$lib/Calculators/metar'
 	import { onMount } from 'svelte'
 	import type { UserAlert } from './api/alert/+server'
 	import OverrideLine from '$lib/Lines/OverrideLine.svelte'
-	import { calculateTable, type TableOutput } from '$lib/Flow/table'
+	import type { TableOutput } from '$lib/Flow/table'
+	import { flow, type CompleteFlowOutput } from '$lib/Flow/flow'
+	import { get } from 'svelte/store'
+	import type { LimitResult } from '$lib/Flow/limitCalc'
 
 	//
 	// Data
@@ -86,47 +83,75 @@
 	let isRoundingDown = writable(false)
 	let performanceMultiplier = writable('1')
 	let currentAltimiter = writable('')
+	let currentFieldElevation = writable('')
 	let currentPressureAltitude = writable('')
 	let currentTemp = writable('')
 
 	let tableOutput: TableOutput = {
-	aircraft: {
-		weight: 0, arm: 0, moment: 0
-	},
-	frontSeats: {
-		weight: 0, arm: 0, moment: 0
-	},
-	rearSeats: {
-		weight: 0, arm: 0, moment: 0
-	},
-	frontBags: {
-		weight: 0, arm: 0, moment: 0
-	},
-	aftBags: {
-		weight: 0, arm: 0, moment: 0
-	},
-	zeroFuel: {
-		weight: 0, arm: 0, moment: 0
-	},
-	rampFuel: {
-		weight: 0, arm: 0, moment: 0, gallons: 0
-	},
-	ramp: {
-		weight: 0, arm: 0, moment: 0
-	},
-	taxi: {
-		weight: 0, arm: 0, moment: 0, gallons: 0
-	},
-	takeoff: {
-		weight: 0, arm: 0, moment: 0
-	},
-	flight: {
-		weight: 0, arm: 0, moment: 0, gallons: 0
-	},
-	landing: {
-		weight: 0, arm: 0, moment: 0
+		aircraft: {
+			weight: 0,
+			arm: 0,
+			moment: 0
+		},
+		frontSeats: {
+			weight: 0,
+			arm: 0,
+			moment: 0
+		},
+		rearSeats: {
+			weight: 0,
+			arm: 0,
+			moment: 0
+		},
+		frontBags: {
+			weight: 0,
+			arm: 0,
+			moment: 0
+		},
+		aftBags: {
+			weight: 0,
+			arm: 0,
+			moment: 0
+		},
+		zeroFuel: {
+			weight: 0,
+			arm: 0,
+			moment: 0
+		},
+		rampFuel: {
+			weight: 0,
+			arm: 0,
+			moment: 0,
+			gallons: 0
+		},
+		ramp: {
+			weight: 0,
+			arm: 0,
+			moment: 0
+		},
+		taxi: {
+			weight: 0,
+			arm: 0,
+			moment: 0,
+			gallons: 0
+		},
+		takeoff: {
+			weight: 0,
+			arm: 0,
+			moment: 0
+		},
+		flight: {
+			weight: 0,
+			arm: 0,
+			moment: 0,
+			gallons: 0
+		},
+		landing: {
+			weight: 0,
+			arm: 0,
+			moment: 0
+		}
 	}
-}
 
 	//Aircraft lookups
 	let aircraftName = writable('')
@@ -155,18 +180,26 @@
 		moment: 0
 	})
 
-	//Climb rate
-	let climbRate: { rate: number; altitude: number } = { rate: 0, altitude: 0 }
-
-	//Land/Takeoff Performance
-	let Va = 0
-	let performanceResult: { out: PerformanceOutput; downOption: boolean; notes?: string }
-	let performanceData: PerformanceOutput = {
-		takeoffRoll: 0,
-		takeoffFifty: 0,
-		landRoll: 0,
-		landFifty: 0
-	}
+	//Flow
+	let flowResult: CompleteFlowOutput = flow({
+		table: {
+			aircraft: aircraftData,
+			frontSeats: Number(get(frontSeatsInput)),
+			rearSeats: Number(get(rearSeatsInput)),
+			frontBags: Number(get(frontBagInput)),
+			aftBags: Number(get(rearBagInput)),
+			fuel: {
+				start: Number(get(rampFuel)),
+				taxiBurn: Number(get(taxiFuel)),
+				flightBurn: Number(get(flightFuel))
+			}
+		},
+		altimiter: Number(get(currentAltimiter)),
+		fieldElevation: Number(get(currentFieldElevation)),
+		performanceRoundingDown: get(isRoundingDown),
+		performanceMultiplier: Number(get(performanceMultiplier)),
+		temperature: Number(get(currentTemp))
+	})
 
 	//
 	// Subscriptions
@@ -234,34 +267,26 @@
 	//
 
 	function refresh() {
-		//Calculate weight and balance table
-		tableOutput = calculateTable({
-			aircraft: { //TODO fix
-				weight: 0,
-				arm: 0,
-				moment: 0,
+		//Complete linear flow
+		flowResult = flow({
+			table: {
+				aircraft: aircraftData,
+				frontSeats: Number(get(frontSeatsInput)),
+				rearSeats: Number(get(rearSeatsInput)),
+				frontBags: Number(get(frontBagInput)),
+				aftBags: Number(get(rearBagInput)),
+				fuel: {
+					start: Number(get(rampFuel)),
+					taxiBurn: Number(get(taxiFuel)),
+					flightBurn: Number(get(flightFuel))
+				}
 			},
-			frontSeats: Number($frontSeatsInput),
-			rearSeats: Number($rearSeatsInput),
-			frontBags: Number($frontBagInput),
-			aftBags: Number($rearBagInput),
-			fuel: {
-				start: Number($rampFuel),
-				taxiBurn: Number($taxiFuel),
-				flightBurn: Number($flightFuel)
-			}
+			altimiter: Number(get(currentAltimiter)),
+			fieldElevation: Number(get(currentFieldElevation)),
+			performanceRoundingDown: get(isRoundingDown),
+			performanceMultiplier: Number(get(performanceMultiplier)),
+			temperature: Number(get(currentTemp))
 		})
-		//Climb rate
-		if ($currentPressureAltitude != undefined) {
-			//If it hasn't been set yet, just skip it
-			//Due to how it's setup, a bad input can cause an infinite loop. We catch that here
-			try {
-				climbRate = getClimbRate(Number($currentPressureAltitude), Number($currentTemp))
-			} catch (error) {
-				console.log('Bad input to climb calculator')
-				console.log(error)
-			}
-		}
 		//This object is so that we don't have to embed performance logic inside the new aircraft block, thereby not duplicating it.
 		let p: { toWeight: number; toMoment: number; landWeight: number } = {
 			toWeight: 0,
@@ -290,18 +315,8 @@
 			p.landWeight = tableOutput.landing.weight
 			p.toMoment = tableOutput.takeoff.moment
 		}
-		//Performance
-		performanceResult = calculatePerformanceData(
-			p.toWeight,
-			Number($currentPressureAltitude),
-			Number($currentTemp),
-			$isRoundingDown,
-			Number($performanceMultiplier)
-		)
-		performanceData = performanceResult.out
 		//Validate
-		validationResult = calcLimits(tableOutput)
-		Va = round(Math.sqrt(p.landWeight / 2550) * 105)
+		validationResult = flowResult.validation
 	}
 
 	//
@@ -483,7 +498,7 @@
 		</div>
 		<div id="Va">
 			<h2>Maneuvering speed:</h2>
-			<p>Va = {Va} kts</p>
+			<p>Va = {flowResult.maneuveringSpeed} kts</p>
 		</div>
 		<PressureAlt pressureAltitude={currentPressureAltitude} altimiter={currentAltimiter} />
 		<div id="Performance">
@@ -510,13 +525,15 @@
 				bind:value={$performanceMultiplier}
 				class={$performanceMultiplier == '' ? 'empty' : 'success'}
 			/>
-			<p id="perf-to-roll">Takeoff roll: {performanceData.takeoffRoll}</p>
-			<p id="perf-to-50">Takeoff 50ft: {performanceData.takeoffFifty}</p>
-			<p id="perf-climb">Climb rate: {climbRate.rate} @ {climbRate.altitude}ft</p>
-			<p id="perf-land-roll">Land roll: {performanceData.landRoll}</p>
-			<p id="perf-land-50">Land 50ft: {performanceData.landFifty}</p>
-			{#if performanceResult.downOption}
-				<h3>{performanceResult.notes}</h3>
+			<p id="perf-to-roll">Takeoff roll: {flowResult.performance.takeoffRoll}</p>
+			<p id="perf-to-50">Takeoff 50ft: {flowResult.performance.takeoffFifty}</p>
+			<p id="perf-climb">
+				Climb rate: {flowResult.performance.climbRate} @ {flowResult.performance.climbAlt}ft
+			</p>
+			<p id="perf-land-roll">Land roll: {flowResult.performance.landRoll}</p>
+			<p id="perf-land-50">Land 50ft: {flowResult.performance.landFifty}</p>
+			{#if flowResult.downOption}
+				<h3>{flowResult.performanceComment}</h3>
 				<input type="checkbox" bind:checked={$isRoundingDown} />
 			{/if}
 		</div>
