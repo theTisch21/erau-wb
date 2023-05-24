@@ -1,3 +1,4 @@
+// tsc -m es2022; node .\eta.js
 import { By, Builder } from 'selenium-webdriver'
 import { ServiceBuilder } from 'selenium-webdriver/firefox.js'
 const builder = new ServiceBuilder(
