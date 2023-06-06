@@ -11,6 +11,7 @@ export type CompleteFlowInput = {
 	temperature: number
 	performanceMultiplier: number
 	performanceRoundingDown: boolean
+	toWeightOverride?: number
 }
 
 export type CompleteFlowOutput = {
@@ -26,7 +27,6 @@ export type CompleteFlowOutput = {
 		landFifty: number
 	}
 	validation: LimitResult
-	downOption: boolean //TODO Un-Jank
 	performanceComment: string
 }
 
@@ -41,8 +41,8 @@ export function flow(input: CompleteFlowInput): CompleteFlowOutput {
 		calculatedTable.takeoff.weight,
 		pressureAltitude,
 		input.temperature,
-		input.performanceRoundingDown,
-		input.performanceMultiplier
+		input.performanceMultiplier,
+		input.toWeightOverride
 	)
 	const climbData = getClimbRate(pressureAltitude, input.temperature)
 	const limitData = calcLimits(calculatedTable)
@@ -56,7 +56,6 @@ export function flow(input: CompleteFlowInput): CompleteFlowOutput {
 			climbRate: climbData.rate
 		},
 		validation: limitData,
-		downOption: performanceData.downOption,
 		performanceComment: performanceData.notes
 	}
 }

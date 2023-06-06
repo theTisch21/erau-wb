@@ -456,20 +456,17 @@ export function calculatePerformanceData(
 	TOWeight: number,
 	altitude: number,
 	temp: number,
-	down = false,
-	multiplier = 1
+	multiplier = 1,
+	toWeightOverride = 0
 ): { out: PerformanceOutput; notes: string; downOption: boolean } {
 	let notes = ''
 	let downOption = false
 	const out: PerformanceOutput = { takeoffRoll: 0, takeoffFifty: 0, landRoll: 0, landFifty: 0 }
 	out.landRoll = round(findNumberFromTable(landingGroundRoll, altitude, temp) * multiplier)
 	out.landFifty = round(findNumberFromTable(landingFiftyFeet, altitude, temp) * multiplier)
-	//If the user has requested to round down
-	if (down) {
-		//By subtracting, we automatically move it to the next lower category.
-		TOWeight -= 50
-		notes = "Ok, we've rounded down."
-		downOption = true
+	//If the user has requested to override takeoff weight
+	if(toWeightOverride != 0) {
+		TOWeight = toWeightOverride
 	}
 	if (TOWeight > 2400) {
 		//Use 2550 tables

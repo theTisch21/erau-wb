@@ -181,6 +181,8 @@
 	})
 
 	//Flow
+	let isOverridingToAlt = false
+	let toAltOverride = 0
 	let flowResult: CompleteFlowOutput = flow({
 		table: {
 			aircraft: aircraftData,
@@ -525,6 +527,18 @@
 				bind:value={$performanceMultiplier}
 				class={$performanceMultiplier == '' ? 'empty' : 'success'}
 			/>
+			<input type="checkbox" id="overrideToAlt" bind:checked={isOverridingToAlt} />
+			{#if isOverridingToAlt}
+				<label for=>Select which takeoff tables to use</label>
+				<select id= bind:value={toAltOverride}>
+					<option value=2500>2500 lbs
+					<option value=2400>2400 lbs
+					<option value=2250>2250 lbs<!--TODO verify these are accurate-->
+				</select>
+				<p>Using {toAltOverride} performance tables</p>
+			{:else}
+				<p>Using {} performance tables</p>
+			{/if}
 			<p id="perf-to-roll">Takeoff roll: {flowResult.performance.takeoffRoll}</p>
 			<p id="perf-to-50">Takeoff 50ft: {flowResult.performance.takeoffFifty}</p>
 			<p id="perf-climb">
@@ -532,10 +546,6 @@
 			</p>
 			<p id="perf-land-roll">Land roll: {flowResult.performance.landRoll}</p>
 			<p id="perf-land-50">Land 50ft: {flowResult.performance.landFifty}</p>
-			{#if flowResult.downOption}
-				<h3>{flowResult.performanceComment}</h3>
-				<input type="checkbox" bind:checked={$isRoundingDown} />
-			{/if}
 		</div>
 	</body>
 </main>
