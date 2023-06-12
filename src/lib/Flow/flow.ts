@@ -10,8 +10,7 @@ export type CompleteFlowInput = {
 	fieldElevation: number
 	temperature: number
 	performanceMultiplier: number
-	performanceRoundingDown: boolean
-	toWeightOverride?: number
+	toWeightOverride: number
 }
 
 export type CompleteFlowOutput = {

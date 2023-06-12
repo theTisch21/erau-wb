@@ -182,7 +182,7 @@
 
 	//Flow
 	let isOverridingToAlt = false
-	let toAltOverride = 0
+	let toWeightOverride = 0
 	let flowResult: CompleteFlowOutput = flow({
 		table: {
 			aircraft: aircraftData,
@@ -198,7 +198,7 @@
 		},
 		altimiter: Number(get(currentAltimiter)),
 		fieldElevation: Number(get(currentFieldElevation)),
-		performanceRoundingDown: get(isRoundingDown),
+		toWeightOverride: toWeightOverride,
 		performanceMultiplier: Number(get(performanceMultiplier)),
 		temperature: Number(get(currentTemp))
 	})
@@ -285,9 +285,9 @@
 			},
 			altimiter: Number(get(currentAltimiter)),
 			fieldElevation: Number(get(currentFieldElevation)),
-			performanceRoundingDown: get(isRoundingDown),
 			performanceMultiplier: Number(get(performanceMultiplier)),
-			temperature: Number(get(currentTemp))
+			temperature: Number(get(currentTemp)),
+			toWeightOverride: toWeightOverride
 		})
 		//This object is so that we don't have to embed performance logic inside the new aircraft block, thereby not duplicating it.
 		let p: { toWeight: number; toMoment: number; landWeight: number } = {
@@ -529,15 +529,15 @@
 			/>
 			<input type="checkbox" id="overrideToAlt" bind:checked={isOverridingToAlt} />
 			{#if isOverridingToAlt}
-				<label for=>Select which takeoff tables to use</label>
-				<select id= bind:value={toAltOverride}>
-					<option value=2500>2500 lbs
+				<label for="toWeightOverride">Select which takeoff tables to use</label>
+				<select id="toWeightOverride" bind:value={toWeightOverride}>
+					<option value=2550>2550 lbs
 					<option value=2400>2400 lbs
-					<option value=2250>2250 lbs<!--TODO verify these are accurate-->
+					<option value=2200>2200 lbs
 				</select>
-				<p>Using {toAltOverride} performance tables</p>
+				<p>Using {toWeightOverride}lbs performance tables</p>
 			{:else}
-				<p>Using {} performance tables</p>
+				<p>Using {tableOutput.takeoff.weight}lbs performance tables</p>
 			{/if}
 			<p id="perf-to-roll">Takeoff roll: {flowResult.performance.takeoffRoll}</p>
 			<p id="perf-to-50">Takeoff 50ft: {flowResult.performance.takeoffFifty}</p>
