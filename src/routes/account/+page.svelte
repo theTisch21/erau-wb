@@ -1,6 +1,5 @@
 <script lang="ts">
-    export let data
+	export let data
 </script>
-<main>
-    
-</main>
+
+<main />

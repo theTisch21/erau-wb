@@ -30,19 +30,19 @@ export function deleteQuickAccesses() {
 }
 
 export async function generateQuickAccess(): Promise<string> {
-let done = false
-    let newQuickAccess: string
-    do {
-        const noun = nounList[Math.floor(Math.random() * nounList.length)]
-        const adj = adjList[Math.floor(Math.random() * adjList.length)]
-        newQuickAccess = `${adj}.${noun}`
-        const existing = await reportColl.countDocuments({quickAccess: newQuickAccess})
-        if(existing == 0) done = true
-    } while (!done)
-    return newQuickAccess
+	let done = false
+	let newQuickAccess: string
+	do {
+		const noun = nounList[Math.floor(Math.random() * nounList.length)]
+		const adj = adjList[Math.floor(Math.random() * adjList.length)]
+		newQuickAccess = `${adj}.${noun}`
+		const existing = await reportColl.countDocuments({ quickAccess: newQuickAccess })
+		if (existing == 0) done = true
+	} while (!done)
+	return newQuickAccess
 }
 
 export async function generateReportRecord(filePath: string) {
-    const qa = generateQuickAccess()
-    const largestIdRecord = reportColl.find({}).sort({id: -1}).next() //TODO this could lead to a race condition. Singular atomic index?
+	const qa = generateQuickAccess()
+	const largestIdRecord = reportColl.find({}).sort({ id: -1 }).next() //TODO this could lead to a race condition. Singular atomic index?
 }

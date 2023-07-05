@@ -7,13 +7,6 @@
 	import Line from '$lib/Lines/Line.svelte'
 	import FuelLine from '$lib/Lines/FuelLine.svelte'
 	import OutputLine from '$lib/Lines/OutputLine.svelte'
-	import {
-		FuelLineItem,
-		LineItem,
-		type CalculatedLine,
-		type LineItems,
-		type OutputLineItems
-	} from '$lib/classes'
 	import { round } from '$lib/round'
 	import PressureAlt from '$lib/Calculators/PressureAlt.svelte'
 	import { decodeMetar } from '$lib/Calculators/metar'
@@ -46,25 +39,6 @@
 		comment: 'No data entered'
 	}
 
-	//Input/Output
-	let input: {
-		frontSeats: LineItem
-		rearSeats: LineItem
-		frontBag: LineItem
-		rearBag: LineItem
-		rampFuel: FuelLineItem
-		taxiBurn: FuelLineItem
-		flightBurn: FuelLineItem
-	} = {
-		frontSeats: new LineItem(37),
-		rearSeats: new LineItem(73),
-		frontBag: new LineItem(95),
-		rearBag: new LineItem(123),
-		rampFuel: new FuelLineItem(48),
-		taxiBurn: new FuelLineItem(48),
-		flightBurn: new FuelLineItem(48)
-	}
-
 	//
 	// Inputs
 	//
@@ -86,72 +60,6 @@
 	let currentFieldElevation = writable('')
 	let currentPressureAltitude = writable('')
 	let currentTemp = writable('')
-
-	let tableOutput: TableOutput = {
-		aircraft: {
-			weight: 0,
-			arm: 0,
-			moment: 0
-		},
-		frontSeats: {
-			weight: 0,
-			arm: 0,
-			moment: 0
-		},
-		rearSeats: {
-			weight: 0,
-			arm: 0,
-			moment: 0
-		},
-		frontBags: {
-			weight: 0,
-			arm: 0,
-			moment: 0
-		},
-		aftBags: {
-			weight: 0,
-			arm: 0,
-			moment: 0
-		},
-		zeroFuel: {
-			weight: 0,
-			arm: 0,
-			moment: 0
-		},
-		rampFuel: {
-			weight: 0,
-			arm: 0,
-			moment: 0,
-			gallons: 0
-		},
-		ramp: {
-			weight: 0,
-			arm: 0,
-			moment: 0
-		},
-		taxi: {
-			weight: 0,
-			arm: 0,
-			moment: 0,
-			gallons: 0
-		},
-		takeoff: {
-			weight: 0,
-			arm: 0,
-			moment: 0
-		},
-		flight: {
-			weight: 0,
-			arm: 0,
-			moment: 0,
-			gallons: 0
-		},
-		landing: {
-			weight: 0,
-			arm: 0,
-			moment: 0
-		}
-	}
 
 	//Aircraft lookups
 	let aircraftName = writable('')
@@ -234,14 +142,6 @@
 	})
 
 	//Refresh
-	//Input
-	input.frontSeats.subscribeToMoment(refresh)
-	input.rearSeats.subscribeToMoment(refresh)
-	input.frontBag.subscribeToMoment(refresh)
-	input.rearBag.subscribeToMoment(refresh)
-	input.rampFuel.subscribeToMoment(refresh)
-	input.taxiBurn.subscribeToMoment(refresh)
-	input.flightBurn.subscribeToMoment(refresh)
 	//Performance
 	currentTemp.subscribe(refresh)
 	currentPressureAltitude.subscribe(refresh)
@@ -258,9 +158,8 @@
 	//
 	function setMaxFuel() {
 		//Get weight difference
-		let difference = validationResult.overweightGallons ?? 0
-		validationResult.comment = (input.rampFuel.getGallons() - difference).toString()
-		input.rampFuel.overrideGallons(input.rampFuel.getGallons() - difference)
+		let newGallons = Number(get(rampFuel)) - (validationResult.overweightGallons ?? 0)
+		rampFuel.set(newGallons.toString())
 		refresh()
 	}
 
@@ -296,7 +195,7 @@
 			landWeight: 0
 		}
 		//New aircraft
-		if (newAircraft) {
+		/**if (newAircraft) {
 			newAircraftTotals.takeoffWeight = round(
 				tableOutput.takeoff.weight - (aircraftData.weight - newAircraftData.weight)
 			)
@@ -316,7 +215,7 @@
 			p.toWeight = tableOutput.takeoff.weight
 			p.landWeight = tableOutput.landing.weight
 			p.toMoment = tableOutput.takeoff.moment
-		}
+		}*/
 		//Validate
 		validationResult = flowResult.validation
 	}
@@ -422,29 +321,40 @@
 					{:else}
 						<OutputLine data={aircraftData} name="Aircraft" testTag="aircraft" />
 					{/if}
-					<Line data={input.frontSeats} name="Front Seats" testTag="fs" />
-					<Line data={input.rearSeats} name="Rear seats" testTag="rs" />
-					<Line data={input.frontBag} name="Front Bags" testTag="fb" defaultValue="17" />
-					<Line data={input.rearBag} name="Aft bag" testTag="aft" defaultValue="0" />
-					<OutputLine data={tableOutput.zeroFuel} name="Zero fuel weight" testTag="empty" />
-					<FuelLine data={input.rampFuel} name="Ramp fuel" testTag="rampFuel" defaultValue="53" />
-					<OutputLine data={tableOutput.ramp} name="Ramp weight" testTag="ramp" />
+					<Line input={frontSeatsInput} arm="37" name="Front Seats" testTag="fs" />
+					<Line input={rearSeatsInput} arm="73" name="Rear seats" testTag="rs" />
+					<Line input={frontBagInput} arm="95" name="Front Bags" testTag="fb" />
+					<Line input={rearBagInput} arm="123" name="Aft bag" testTag="aft" />
+					<OutputLine data={flowResult.table.zeroFuel} name="Zero fuel weight" testTag="empty" />
 					<FuelLine
-						data={input.taxiBurn}
+						input={rampFuel}
+						arm="48"
+						weight={flowResult.table.rampFuel.weight}
+						name="Ramp fuel"
+						testTag="rampFuel"
+						defaultValue="53"
+					/>
+					<OutputLine data={flowResult.table.ramp} name="Ramp weight" testTag="ramp" />
+					<FuelLine
+						input={taxiFuel}
 						name="Burn in taxi"
 						testTag="taxi"
 						subtract
 						defaultValue="1.4"
+						arm="48"
+						weight={flowResult.table.taxi.weight}
 					/>
-					<OutputLine data={tableOutput.takeoff} name="Takeoff weight" testTag="takeoff" />
+					<OutputLine data={flowResult.table.takeoff} name="Takeoff weight" testTag="takeoff" />
 					<FuelLine
-						data={input.flightBurn}
+						input={flightFuel}
+						arm="48"
 						name="Burn in flight"
 						testTag="flight"
 						subtract
 						defaultValue="15"
+						weight={flowResult.table.flight.weight}
 					/>
-					<OutputLine data={tableOutput.landing} name="Landing weight" testTag="land" />
+					<OutputLine data={flowResult.table.landing} name="Landing weight" testTag="land" />
 				</tbody>
 			</table>
 			<button
@@ -531,13 +441,14 @@
 			{#if isOverridingToAlt}
 				<label for="toWeightOverride">Select which takeoff tables to use</label>
 				<select id="toWeightOverride" bind:value={toWeightOverride}>
-					<option value=2550>2550 lbs
-					<option value=2400>2400 lbs
-					<option value=2200>2200 lbs
-				</select>
+					<option value="2550">2550 lbs </option><option value="2400">2400 lbs </option><option
+						value="2200"
+						>2200 lbs
+					</option></select
+				>
 				<p>Using {toWeightOverride}lbs performance tables</p>
 			{:else}
-				<p>Using {tableOutput.takeoff.weight}lbs performance tables</p>
+				<p>Using {flowResult.table.takeoff.weight}lbs performance tables</p>
 			{/if}
 			<p id="perf-to-roll">Takeoff roll: {flowResult.performance.takeoffRoll}</p>
 			<p id="perf-to-50">Takeoff 50ft: {flowResult.performance.takeoffFifty}</p>

@@ -1,8 +1,7 @@
 <script lang="ts">
-	import type { CalculatedLine } from '$lib/classes'
-	import type { Writable } from 'svelte/store'
+	import type { DataLine } from '$lib/Flow/table'
 
-	export let data: CalculatedLine
+	export let data: DataLine
 	export let name: string
 	export let testTag: string
 </script>

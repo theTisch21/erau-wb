@@ -465,7 +465,7 @@ export function calculatePerformanceData(
 	out.landRoll = round(findNumberFromTable(landingGroundRoll, altitude, temp) * multiplier)
 	out.landFifty = round(findNumberFromTable(landingFiftyFeet, altitude, temp) * multiplier)
 	//If the user has requested to override takeoff weight
-	if(toWeightOverride != 0) {
+	if (toWeightOverride != 0) {
 		TOWeight = toWeightOverride
 	}
 	if (TOWeight > 2400) {

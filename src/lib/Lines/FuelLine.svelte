@@ -1,37 +1,19 @@
 <script lang="ts">
-	import type { FuelLineItem } from '$lib/classes'
-	import { writable, type Writable } from 'svelte/store'
-
-	export let data: FuelLineItem
+	import type { Writable } from 'svelte/store'
+	export let input: Writable<string>
+	export let arm: string
 	export let name: string
 	export let testTag: string
 	export let subtract: boolean = false
 	export let defaultValue: number | string | null = null
-	let input = writable('')
-	input.subscribe((gallons) => {
-		data.setGallons(subtract ? -gallons : gallons)
-	})
-	let output = 0
-	let weight = 0
-	//I know... this is a very weird way to do it, but it works.
-	//TODO refactor and make good
-	data.subscribeToOverrideGallons((gallons) => {
-		input.set(gallons.toString())
-	})
-	data.subscribeToMoment((moment) => {
-		weight = data.weight
-		output = moment
-	})
-	if (defaultValue != null) {
-		input.set(defaultValue.toString())
-	}
+	export let weight: number
 </script>
 
 <tr>
 	<td>{name}</td>
 	<td id="{testTag}-weight">{weight}</td>
-	<td id="{testTag}-arm">{data.arm}</td>
-	<td id="{testTag}-moment">{output}</td>
+	<td id="{testTag}-arm">{arm}</td>
+	<td id="{testTag}-moment"><slot><p>If you see this message, please let Sam know</p></slot></td>
 	<td>
 		{#if subtract}-{/if}<input
 			id="{testTag}-gallon"
