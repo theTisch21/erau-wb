@@ -112,7 +112,7 @@ export function calculateTable(input: TableInput): TableOutput {
 	}
 
 	//Taxi burn
-	f = input.fuel.taxiBurn
+	f = input.fuel.taxiBurn * -1
 	const taxi: DataFuelLine = {
 		gallons: f,
 		weight: fround(f * 6, true),
@@ -130,7 +130,7 @@ export function calculateTable(input: TableInput): TableOutput {
 	}
 
 	//Flight burn
-	f = input.fuel.flightBurn
+	f = input.fuel.flightBurn * -1
 	const flight: DataFuelLine = {
 		gallons: f,
 		weight: fround(f * 6),
