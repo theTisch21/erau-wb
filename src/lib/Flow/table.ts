@@ -1,4 +1,4 @@
-import { round } from '$lib/round'
+import { round, roundToPrecision } from '$lib/round'
 
 const ARMS = {
 	frontSeats: 37,
@@ -48,6 +48,10 @@ function arm(weight: number, moment: number): number {
 	return round(moment / weight)
 }
 
+function fround(input: number, down = false): number {
+	return roundToPrecision(input, 10, down)
+}
+
 export function calculateTable(input: TableInput): TableOutput {
 	//TODO What
 	const aircraft: DataLine = {
@@ -93,7 +97,7 @@ export function calculateTable(input: TableInput): TableOutput {
 	f = input.fuel.start
 	const rampFuel: DataFuelLine = {
 		gallons: f,
-		weight: f * 6,
+		weight: fround(f * 6),
 		arm: ARMS.fuel,
 		moment: round(f * 6 * ARMS.fuel)
 	}
@@ -111,7 +115,7 @@ export function calculateTable(input: TableInput): TableOutput {
 	f = input.fuel.taxiBurn
 	const taxi: DataFuelLine = {
 		gallons: f,
-		weight: round(f * 6, true),
+		weight: fround(f * 6, true),
 		arm: ARMS.fuel,
 		moment: round(f * 6 * ARMS.fuel, true)
 	}
@@ -129,7 +133,7 @@ export function calculateTable(input: TableInput): TableOutput {
 	f = input.fuel.flightBurn
 	const flight: DataFuelLine = {
 		gallons: f,
-		weight: f * 6,
+		weight: fround(f * 6),
 		arm: ARMS.fuel,
 		moment: round(f * 6 * ARMS.fuel)
 	}

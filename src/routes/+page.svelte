@@ -142,6 +142,16 @@
 	})
 
 	//Refresh
+	//Table inputs
+	frontSeatsInput.subscribe(refresh)
+	rearSeatsInput.subscribe(refresh)
+	frontBagInput.subscribe(refresh)
+	rearBagInput.subscribe(refresh)
+
+	rampFuel.subscribe(refresh)
+	taxiFuel.subscribe(refresh)
+	flightFuel.subscribe(refresh)
+
 	//Performance
 	currentTemp.subscribe(refresh)
 	currentPressureAltitude.subscribe(refresh)
@@ -321,10 +331,18 @@
 					{:else}
 						<OutputLine data={aircraftData} name="Aircraft" testTag="aircraft" />
 					{/if}
-					<Line input={frontSeatsInput} arm="37" name="Front Seats" testTag="fs" />
-					<Line input={rearSeatsInput} arm="73" name="Rear seats" testTag="rs" />
-					<Line input={frontBagInput} arm="95" name="Front Bags" testTag="fb" />
-					<Line input={rearBagInput} arm="123" name="Aft bag" testTag="aft" />
+					<Line input={frontSeatsInput} arm="37" name="Front Seats" testTag="fs"
+						>{flowResult.table.frontSeats.moment}</Line
+					>
+					<Line input={rearSeatsInput} arm="73" name="Rear seats" testTag="rs"
+						>{flowResult.table.rearSeats.moment}</Line
+					>
+					<Line input={frontBagInput} arm="95" name="Front Bags" testTag="fb"
+						>{flowResult.table.frontBags.moment}</Line
+					>
+					<Line input={rearBagInput} arm="123" name="Aft bag" testTag="aft"
+						>{flowResult.table.aftBags.moment}</Line
+					>
 					<OutputLine data={flowResult.table.zeroFuel} name="Zero fuel weight" testTag="empty" />
 					<FuelLine
 						input={rampFuel}
@@ -332,8 +350,8 @@
 						weight={flowResult.table.rampFuel.weight}
 						name="Ramp fuel"
 						testTag="rampFuel"
-						defaultValue="53"
-					/>
+						defaultValue="53">{flowResult.table.rampFuel.moment}</FuelLine
+					>
 					<OutputLine data={flowResult.table.ramp} name="Ramp weight" testTag="ramp" />
 					<FuelLine
 						input={taxiFuel}
@@ -342,8 +360,8 @@
 						subtract
 						defaultValue="1.4"
 						arm="48"
-						weight={flowResult.table.taxi.weight}
-					/>
+						weight={flowResult.table.taxi.weight}>{flowResult.table.taxi.moment}</FuelLine
+					>
 					<OutputLine data={flowResult.table.takeoff} name="Takeoff weight" testTag="takeoff" />
 					<FuelLine
 						input={flightFuel}
@@ -352,8 +370,8 @@
 						testTag="flight"
 						subtract
 						defaultValue="15"
-						weight={flowResult.table.flight.weight}
-					/>
+						weight={flowResult.table.flight.weight}>{flowResult.table.flight.moment}</FuelLine
+					>
 					<OutputLine data={flowResult.table.landing} name="Landing weight" testTag="land" />
 				</tbody>
 			</table>
