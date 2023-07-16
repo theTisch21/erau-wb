@@ -145,7 +145,7 @@ describe('table calculations', () => {
 				rearSeats: 20,
 				frontBags: 17,
 				aftBags: 0,
-				fuel: { start: 53, taxiBurn: -1.4, flightBurn: -15 }
+				fuel: { start: 53, taxiBurn: 1.4, flightBurn: 15 }
 			})
 		).deep.equal({
 			aircraft: {
