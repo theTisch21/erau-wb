@@ -458,9 +458,7 @@ export function calculatePerformanceData(
 	temp: number,
 	multiplier = 1,
 	toWeightOverride = 0
-): { out: PerformanceOutput; notes: string; downOption: boolean } {
-	let notes = ''
-	let downOption = false
+): PerformanceOutput {
 	const out: PerformanceOutput = { takeoffRoll: 0, takeoffFifty: 0, landRoll: 0, landFifty: 0 }
 	out.landRoll = round(findNumberFromTable(landingGroundRoll, altitude, temp) * multiplier)
 	out.landFifty = round(findNumberFromTable(landingFiftyFeet, altitude, temp) * multiplier)
@@ -470,20 +468,10 @@ export function calculatePerformanceData(
 	}
 	if (TOWeight > 2400) {
 		//Use 2550 tables
-		if (TOWeight - 2400 < 50) {
-			notes +=
-				"The takeoff weight is close to 2400, but we've rounded up to 2550 for safety. Click the box to round down"
-			downOption = true
-		}
 		out.takeoffRoll = round(findNumberFromTable(takeoff2550ground, altitude, temp) * multiplier)
 		out.takeoffFifty = round(findNumberFromTable(takeoff2550fifty, altitude, temp) * multiplier)
 	} else if (TOWeight > 2200) {
 		//Use 2400 tables
-		if (TOWeight - 2200 < 50) {
-			notes +=
-				"The takeoff weight is close to 2200, but we've rounded up to 2400 for safety. Click the box to round down"
-			downOption = true
-		}
 		out.takeoffRoll = round(findNumberFromTable(takeoff2400ground, altitude, temp) * multiplier)
 		out.takeoffFifty = round(findNumberFromTable(takeoff2400fifty, altitude, temp) * multiplier)
 	} else {
@@ -492,5 +480,5 @@ export function calculatePerformanceData(
 		out.takeoffFifty = round(findNumberFromTable(takeoff2200fifty, altitude, temp) * multiplier)
 	}
 
-	return { out: out, notes: notes, downOption: downOption }
+	return out
 }

@@ -26,7 +26,6 @@ export type CompleteFlowOutput = {
 		landFifty: number
 	}
 	validation: LimitResult
-	performanceComment: string
 }
 
 export function flow(input: CompleteFlowInput): CompleteFlowOutput {
@@ -50,11 +49,10 @@ export function flow(input: CompleteFlowInput): CompleteFlowOutput {
 		pressureAltitude: pressureAltitude,
 		maneuveringSpeed: maneuveringSpeed,
 		performance: {
-			...performanceData.out,
+			...performanceData,
 			climbAlt: climbData.altitude,
 			climbRate: climbData.rate
 		},
-		validation: limitData,
-		performanceComment: performanceData.notes
+		validation: limitData
 	}
 }
