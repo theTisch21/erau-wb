@@ -124,8 +124,8 @@ export function calculateTable(input: TableInput): TableOutput {
 	w = ramp.weight + taxi.weight
 	m = ramp.moment + taxi.moment
 	const takeoff: DataLine = {
-		weight: w,
-		moment: m,
+		weight: round(w),
+		moment: round(m),
 		arm: arm(w, m)
 	}
 
@@ -142,8 +142,8 @@ export function calculateTable(input: TableInput): TableOutput {
 	w = takeoff.weight + flight.weight
 	m = takeoff.moment + flight.moment
 	const landing: DataLine = {
-		weight: w,
-		moment: m,
+		weight: round(w),
+		moment: round(m),
 		arm: arm(w, m)
 	}
 	return {
