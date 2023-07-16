@@ -1,7 +1,7 @@
-# v2.4 Refactor
+# v3.0 Linear flow and PDF
 
-A pretty major refactor that will make some upcoming features a lot easier to program
-There shouldn't be any noticable changes to the user experience
+- Dramatically changes how the code works, making everything more linear.
+- Adds the ability to export your report as an ERAU PDF.
 
 # v2.3 QOL 1
 
