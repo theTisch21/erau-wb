@@ -89,8 +89,8 @@
 	})
 
 	//Flow
-	let isOverridingToAlt = false
-	let toWeightOverride = 0
+	let isOverridingToWeight = writable(false)
+	let toWeightOverride = writable(0)
 	let flowResult: CompleteFlowOutput = flow({
 		table: {
 			aircraft: aircraftData,
@@ -106,7 +106,7 @@
 		},
 		altimiter: Number(get(currentAltimiter)),
 		fieldElevation: Number(get(currentFieldElevation)),
-		toWeightOverride: toWeightOverride,
+		toWeightOverride: get(toWeightOverride),
 		performanceMultiplier: Number(get(performanceMultiplier)),
 		temperature: Number(get(currentTemp))
 	})
@@ -162,6 +162,8 @@
 		aircraftData = o
 		refresh()
 	})
+	toWeightOverride.subscribe(refresh)
+	isOverridingToWeight.subscribe(refresh)
 
 	//
 	// Functions
@@ -196,7 +198,7 @@
 			fieldElevation: Number(get(currentFieldElevation)),
 			performanceMultiplier: Number(get(performanceMultiplier)),
 			temperature: Number(get(currentTemp)),
-			toWeightOverride: toWeightOverride
+			toWeightOverride: get(isOverridingToWeight) ? get(toWeightOverride) : 0
 		})
 		//This object is so that we don't have to embed performance logic inside the new aircraft block, thereby not duplicating it.
 		let p: { toWeight: number; toMoment: number; landWeight: number } = {
@@ -455,18 +457,24 @@
 				bind:value={$performanceMultiplier}
 				class={$performanceMultiplier == '' ? 'empty' : 'success'}
 			/>
-			<input type="checkbox" id="overrideToAlt" bind:checked={isOverridingToAlt} />
-			{#if isOverridingToAlt}
+			<input type="checkbox" id="overrideToAlt" bind:checked={$isOverridingToWeight} />
+			{#if $isOverridingToWeight}
 				<label for="toWeightOverride">Select which takeoff tables to use</label>
-				<select id="toWeightOverride" bind:value={toWeightOverride}>
-					<option value="2550">2550 lbs </option><option value="2400">2400 lbs </option><option
-						value="2200"
-						>2200 lbs
-					</option></select
+				<select id="toWeightOverride" bind:value={$toWeightOverride}>
+					<option selected value="2550">2550 lbs </option><option value="2400"
+						>2400 lbs
+					</option><option value="2200">2200 lbs </option></select
 				>
-				<p>Using {toWeightOverride}lbs performance tables</p>
+				<p>Using {$toWeightOverride}lbs performance tables</p>
 			{:else}
-				<p>Using {flowResult.table.takeoff.weight}lbs performance tables</p>
+				<p>
+					Using {(() => {
+						const w = flowResult.table.takeoff.weight
+						if (w > 2400) return 2550
+						if (w > 2200) return 2400
+						return 2200
+					})()}lbs performance tables
+				</p>
 			{/if}
 			<p id="perf-to-roll">Takeoff roll: {flowResult.performance.takeoffRoll}</p>
 			<p id="perf-to-50">Takeoff 50ft: {flowResult.performance.takeoffFifty}</p>
