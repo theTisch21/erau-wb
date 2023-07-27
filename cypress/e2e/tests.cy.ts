@@ -133,6 +133,40 @@ describe('Metar parsing', () => {
 			temp: -2
 		})
 	})
+	it('Partial METARs', () => {
+		expect(decodeMetar('KPRC 271853Z 17004KT 9SM SCT110 A3022 RMK AO2 SLPNO $')).deep.equal({
+			wind: {
+				speed: 4,
+				isGusting: false
+			},
+			altimiter: 29.21
+		})
+		expect(
+			decodeMetar('KPRC 271753Z 09003KT 10SM CLR A3023 RMK AO2 SLPNO 10322 20194 50000 $')
+		).deep.equal({
+			altimiter: 30.23,
+			wind: {
+				speed: 3,
+				isGusting: false
+			}
+		})
+		expect(decodeMetar('KPRC 271753Z 10SM CLR A3023 RMK AO2 SLPNO 10322 20194 50000 $')).deep.equal(
+			{
+				altimiter: 30.23
+			}
+		)
+		expect(decodeMetar('KPRC 271653Z 05003KT 9SM CLR 31/11 RMK AO2 SLP136 T03110111')).deep.equal({
+			wind: {
+				speed: 23,
+				isGusting: true,
+				gust: 30
+			},
+			temp: 31
+		})
+		expect(decodeMetar('KPRC 271653Z 9SM CLRRMK AO2 SLP136 T03110111')).deep.equal({})
+		expect(decodeMetar('Unable to load metar!')).deep.equal({})
+		expect(decodeMetar('')).deep.equal({})
+	})
 })
 
 describe('Aircraft Lookups', () => {
