@@ -139,7 +139,7 @@ describe('Metar parsing', () => {
 				speed: 4,
 				isGusting: false
 			},
-			altimiter: 29.21
+			altimiter: 30.22
 		})
 		expect(
 			decodeMetar('KPRC 271753Z 09003KT 10SM CLR A3023 RMK AO2 SLPNO 10322 20194 50000 $')
