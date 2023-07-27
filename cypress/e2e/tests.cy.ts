@@ -157,9 +157,8 @@ describe('Metar parsing', () => {
 		)
 		expect(decodeMetar('KPRC 271653Z 05003KT 9SM CLR 31/11 RMK AO2 SLP136 T03110111')).deep.equal({
 			wind: {
-				speed: 23,
-				isGusting: true,
-				gust: 30
+				speed: 3,
+				isGusting: false
 			},
 			temp: 31
 		})
