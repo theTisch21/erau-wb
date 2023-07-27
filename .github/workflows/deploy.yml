@@ -56,7 +56,7 @@ jobs:
       - name: Execute deploy script
         env:
           SSH_KEY_PATH: ${{ github.workspace }}/../private.key
-        run: "ssh -i $SSH_KEY_PATH sam@erauwb.com -p 42069 'cd erau-wb && screen -X quit && screen -d -m ./start.sh'"
+        run: "ssh -i $SSH_KEY_PATH sam@erauwb.com -p 42069 'cd erau-wb && screen -X quit && screen -d -m /usr/bin/bash -c ./start.sh'"
 
       - name: Wait for server to start pinging
         run: timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' https://erauwb.com)" != "200" ]]; do sleep 5; done' || false
