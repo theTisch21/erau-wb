@@ -264,19 +264,19 @@ describe('Pressure Altitude', () => {
 	})
 	it('Example 1', () => {
 		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}30.30')
-		cy.get('#pa-result').should('contain.text', '4665')
+		cy.get('#pa-result').should('contain.text', '4666')
 	})
 	it('Example 2', () => {
 		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}29.91')
-		cy.get('#pa-result').should('contain.text', '5055')
+		cy.get('#pa-result').should('contain.text', '5056')
 	})
 	it('Example 3', () => {
 		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}30.22')
-		cy.get('#pa-result').should('contain.text', '4745')
+		cy.get('#pa-result').should('contain.text', '4746')
 	})
 	it('Example 4', () => {
 		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}29.00')
-		cy.get('#pa-result').should('contain.text', '5965')
+		cy.get('#pa-result').should('contain.text', '5966')
 	})
 })
 

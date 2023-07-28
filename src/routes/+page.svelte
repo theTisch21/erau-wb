@@ -57,7 +57,7 @@
 	let isRoundingDown = writable(false)
 	let performanceMultiplier = writable('1')
 	let currentAltimiter = writable('')
-	let currentFieldElevation = writable('')
+	let currentFieldElevation = writable('5045')
 	let currentPressureAltitude = writable('')
 	let currentTemp = writable('')
 
@@ -155,6 +155,8 @@
 	//Performance
 	currentTemp.subscribe(refresh)
 	currentPressureAltitude.subscribe(refresh)
+	currentAltimiter.subscribe(refresh)
+	currentFieldElevation.subscribe(refresh)
 	isRoundingDown.subscribe(refresh)
 	performanceMultiplier.subscribe(refresh)
 	//Override
@@ -432,7 +434,7 @@
 			<h2>Maneuvering speed:</h2>
 			<p>Va = {flowResult.maneuveringSpeed} kts</p>
 		</div>
-		<PressureAlt pressureAltitude={currentPressureAltitude} altimiter={currentAltimiter} />
+		<PressureAlt fieldElevation={currentFieldElevation} altimiter={currentAltimiter}>{flowResult.pressureAltitude}</PressureAlt>
 		<div id="Performance">
 			<h2>Performance data</h2>
 			<input
