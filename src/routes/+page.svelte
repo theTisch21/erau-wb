@@ -329,7 +329,7 @@
 	</head>
 	<body>
 		<div id="header">
-			<h1>Welcome to Sam's ERAU Cessna 172 Weight and Balance Calculator!</h1>
+			<h1>Welcome to Traffic Cone's ERAU Cessna 172 Weight and Balance Calculator!</h1>
 			<h2>
 				You are using V2.5 <a href="https://github.com/thetisch21/erau-wb/blob/main/CHANGELOG.md"
 					>What's new?</a
@@ -346,8 +346,8 @@
 				your preflight or check with the numbers on ETA to ensure accurate calculations.
 			</p>
 			<p>
-				Notice something out of date? Send me an email: <a href="mailto:sam@erauwb.com"
-					>sam@erauwb.com</a
+				Notice something out of date? Send me an email: <a href="mailto:admin@erauwb.com"
+					>admin@erauwb.com</a
 				>
 			</p>
 		</div>
