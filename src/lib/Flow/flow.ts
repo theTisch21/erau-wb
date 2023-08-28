@@ -30,7 +30,12 @@ export type CompleteFlowOutput = {
 
 export function flow(input: CompleteFlowInput): CompleteFlowOutput {
 	const calculatedTable = calculateTable(input.table)
-	const maneuveringSpeed = round(Math.sqrt(calculatedTable.landing.weight / 2550) * 105)
+	let maneuveringSpeed
+	if (!calculatedTable.changeAircraft) {
+		maneuveringSpeed = round(Math.sqrt(calculatedTable.landing.weight / 2550) * 105)
+	} else {
+		maneuveringSpeed = round(Math.sqrt(calculatedTable.changeAircraft.landing.weight / 2550) * 105)
+	}
 	const pressureAltitude = roundToPrecision(
 		(29.92 - Number(input.altimiter)) * 1000 + Number(input.fieldElevation),
 		1

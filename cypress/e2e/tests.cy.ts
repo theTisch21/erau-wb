@@ -412,7 +412,7 @@ describe('Performance multiplier', () => {
 		cy.get('#perf-land-50').should('contain.text', '1386')
 	})
 })
-//We don't do performance testing specifically, as that's covered by the example sheets.
+//We don't do performance testing or maneuvering speed specifically, as that's covered by the example sheets.
 
 describe('Example sheets', () => {
 	beforeEach(() => {
@@ -621,6 +621,9 @@ describe('Example sheets', () => {
 		cy.get('#perf-land-roll').should('contain.text', '672')
 		cy.get('#perf-land-50').should('contain.text', '1488')
 
+		//Maneuvering speed before aircraft change
+		cy.get('#va-output').should('contain.text', '99.3')
+
 		//Change in aircraft
 		cy.get('#new-aircraft-button').click()
 		cy.get('#new-aircraft-input').type('R-55')
@@ -643,6 +646,9 @@ describe('Example sheets', () => {
 		cy.get('#perf-climb').should('contain.text', '492.25')
 		cy.get('#perf-land-roll').should('contain.text', '672')
 		cy.get('#perf-land-50').should('contain.text', '1488')
+
+		//Maneuvering speed after change
+		cy.get('#va-output').should('contain.text', '100.3')
 	})
 	it('5', () => {
 		cy.get('#aircraft-input').type('R-57')
@@ -681,6 +687,9 @@ describe('Example sheets', () => {
 		cy.get('#land-arm').should('contain.text', '42')
 		cy.get('#land-moment').should('contain.text', '98241')
 
+		//Maneuvering speed before aircraft change
+		cy.get('#va-output').should('contain.text', '100.3')
+
 		//Change in aircraft
 		cy.get('#new-aircraft-button').click()
 		cy.get('#new-aircraft-input').type('R- 4')
@@ -705,5 +714,8 @@ describe('Example sheets', () => {
 		cy.get('#perf-climb').should('contain.text', '642.75')
 		cy.get('#perf-land-roll').should('contain.text', '630')
 		cy.get('#perf-land-50').should('contain.text', '1425')
+
+		//Maneuvering speed after change
+		cy.get('#va-output').should('contain.text', '100.0')
 	})
 })

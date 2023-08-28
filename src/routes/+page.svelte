@@ -425,7 +425,7 @@
 		</div>
 		<div id="Va">
 			<h2>Maneuvering speed:</h2>
-			<p>Va = {flowResult.maneuveringSpeed} kts</p>
+			<p id="va-output">Va = {flowResult.maneuveringSpeed} kts</p>
 		</div>
 		<PressureAlt fieldElevation={currentFieldElevation} altimiter={currentAltimiter}
 			>{flowResult.pressureAltitude}</PressureAlt
