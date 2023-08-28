@@ -1,12 +1,12 @@
 <h1>About this</h1>
 <p>
-	Hello!<br />Let's be honest, weight and balance is <em>tedious</em>. I
-	created an excel sheet a while back to make it easier. Over time, I kept adding new features, like
-	the ability to automatically pull the empty weight and moment from each aircraft, and the ability
-	to easily do the change aircraft calculations. I've gotten a lot of requests for the sheet, and
-	not everyone is excel-savvy, so I created this web tool to make it easy to use. Using a web tool
-	also allows me to do things like validate that the aircraft is not overweight, check that the
-	moment is within limits, and it can work on any device without setup.
+	Hello!<br />Let's be honest, weight and balance is <em>tedious</em>. I created an excel sheet a
+	while back to make it easier. Over time, I kept adding new features, like the ability to
+	automatically pull the empty weight and moment from each aircraft, and the ability to easily do
+	the change aircraft calculations. I've gotten a lot of requests for the sheet, and not everyone is
+	excel-savvy, so I created this web tool to make it easy to use. Using a web tool also allows me to
+	do things like validate that the aircraft is not overweight, check that the moment is within
+	limits, and it can work on any device without setup.
 </p>
 <p>
 	This site is hosted on <a href="https://azure.microsoft.com">Microsoft Azure</a>. It's built off
