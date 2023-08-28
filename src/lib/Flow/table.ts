@@ -27,6 +27,7 @@ export type TableInput = {
 		taxiBurn: number //Should be negative
 		flightBurn: number //Should be negative
 	}
+	changeInAircraft?: DataLine
 }
 
 export type TableOutput = {
@@ -42,6 +43,11 @@ export type TableOutput = {
 	takeoff: DataLine
 	flight: DataFuelLine
 	landing: DataLine
+	changeAircraft?: {
+		diff: DataLine
+		takeoff: DataLine
+		landing: DataLine
+	}
 }
 
 function arm(weight: number, moment: number): number {
@@ -146,18 +152,69 @@ export function calculateTable(input: TableInput): TableOutput {
 		moment: round(m),
 		arm: arm(w, m)
 	}
-	return {
-		aircraft: aircraft,
-		frontSeats: frontSeats,
-		rearSeats: rearSeats,
-		frontBags: frontBags,
-		aftBags: aftBags,
-		zeroFuel: zeroFuel,
-		rampFuel: rampFuel,
-		ramp: ramp,
-		taxi: taxi,
-		takeoff: takeoff,
-		flight: flight,
-		landing: landing
+
+	//Change in aircraft?
+	if (!input.changeInAircraft) {
+		//NOT changing
+		return {
+			aircraft: aircraft,
+			frontSeats: frontSeats,
+			rearSeats: rearSeats,
+			frontBags: frontBags,
+			aftBags: aftBags,
+			zeroFuel: zeroFuel,
+			rampFuel: rampFuel,
+			ramp: ramp,
+			taxi: taxi,
+			takeoff: takeoff,
+			flight: flight,
+			landing: landing
+		}
+	} else {
+		//Changing
+		//Difference between aircraft
+		const diff: DataLine = {
+			weight: round(input.changeInAircraft.weight - input.aircraft.weight),
+			moment: round(input.changeInAircraft.moment - input.aircraft.moment),
+			arm: round(input.changeInAircraft.arm - input.aircraft.arm)
+		}
+
+		//Difference between takeoff
+		w = round(takeoff.weight + diff.weight)
+		m = round(takeoff.moment + diff.moment)
+		const chgTakeoff: DataLine = {
+			weight: w,
+			moment: m,
+			arm: arm(w, m)
+		}
+
+		//Difference between landing
+		w = round(landing.weight + diff.weight)
+		m = round(landing.moment + diff.moment)
+		const chgLanding: DataLine = {
+			weight: w,
+			moment: m,
+			arm: arm(w, m)
+		}
+
+		return {
+			aircraft: aircraft,
+			frontSeats: frontSeats,
+			rearSeats: rearSeats,
+			frontBags: frontBags,
+			aftBags: aftBags,
+			zeroFuel: zeroFuel,
+			rampFuel: rampFuel,
+			ramp: ramp,
+			taxi: taxi,
+			takeoff: takeoff,
+			flight: flight,
+			landing: landing,
+			changeAircraft: {
+				diff: diff,
+				takeoff: chgTakeoff,
+				landing: chgLanding
+			}
+		}
 	}
 }

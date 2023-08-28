@@ -70,13 +70,7 @@
 	let newAircraft = false
 	let newAircraftInputFail = false
 	let newAircraftName = writable('')
-	let newAircraftData: Aircraft = { name: '', tailNumber: '', weight: 0, arm: 0, moment: 0 }
-	let newAircraftTotals = {
-		takeoffWeight: 0,
-		takeoffMoment: 0,
-		landWeight: 0,
-		landMoment: 0
-	}
+	let newAircraftData: Aircraft | undefined
 
 	//Aircraft overrides
 	let isOverriding = writable(false)
@@ -194,7 +188,8 @@
 					start: Number(get(rampFuel)),
 					taxiBurn: Number(get(taxiFuel)),
 					flightBurn: Number(get(flightFuel))
-				}
+				},
+				changeInAircraft: newAircraftData
 			},
 			altimiter: Number(get(currentAltimiter)),
 			fieldElevation: Number(get(currentFieldElevation)),
@@ -397,32 +392,30 @@
 				style="font-size: large;"
 				class={newAircraftInputFail ? ($newAircraftName != '' ? 'fail' : 'empty') : 'empty'}
 			/>
-			<table>
-				<tbody>
-					<tr>
-						<td>Difference</td>
-						<td id="diff-weight">{round(newAircraftData.weight - aircraftData.weight)}</td>
-						<td id="diff-arm">{round(aircraftData.arm - newAircraftData.arm)}</td>
-						<td id="diff-moment">{round(newAircraftData.moment - aircraftData.moment)}</td>
-					</tr>
-					<tr class="output">
-						<td>New Takeoff weight</td>
-						<td id="new-takeoff-weight">{newAircraftTotals.takeoffWeight}</td>
-						<td id="new-takeoff-arm"
-							>{round(newAircraftTotals.takeoffMoment / newAircraftTotals.takeoffWeight)}</td
-						>
-						<td id="new-takeoff-moment">{newAircraftTotals.takeoffMoment}</td>
-					</tr>
-					<tr class="output">
-						<td>New Landing weight</td>
-						<td id="new-land-weight">{newAircraftTotals.landWeight}</td>
-						<td id="new-land-arm"
-							>{round(newAircraftTotals.landMoment / newAircraftTotals.landWeight)}</td
-						>
-						<td id="new-land-moment">{newAircraftTotals.landMoment}</td>
-					</tr>
-				</tbody>
-			</table>
+			{#if flowResult.table.changeAircraft}
+				<table>
+					<tbody>
+						<tr>
+							<td>Difference</td>
+							<td id="diff-weight">{flowResult.table.changeAircraft.diff.weight}</td>
+							<td id="diff-arm">{flowResult.table.changeAircraft.diff.arm}</td>
+							<td id="diff-moment">{flowResult.table.changeAircraft.diff.moment}</td>
+						</tr>
+						<tr class="output">
+							<td>New Takeoff weight</td>
+							<td id="new-takeoff-weight">{flowResult.table.changeAircraft.takeoff.weight}</td>
+							<td id="new-takeoff-arm">{flowResult.table.changeAircraft.takeoff.arm}</td>
+							<td id="new-takeoff-moment">{flowResult.table.changeAircraft.takeoff.moment}</td>
+						</tr>
+						<tr class="output">
+							<td>New Landing weight</td>
+							<td id="new-land-weight">{flowResult.table.changeAircraft.landing.weight}</td>
+							<td id="new-land-arm">{flowResult.table.changeAircraft.landing.arm}</td>
+							<td id="new-land-moment">{flowResult.table.changeAircraft.landing.moment}</td>
+						</tr>
+					</tbody>
+				</table>
+			{/if}
 		</div>
 		<div id="validation" class={validationResult.result ? 'good' : 'bad'}>
 			<h1>{validationResult.comment}</h1>
@@ -434,7 +427,9 @@
 			<h2>Maneuvering speed:</h2>
 			<p>Va = {flowResult.maneuveringSpeed} kts</p>
 		</div>
-		<PressureAlt fieldElevation={currentFieldElevation} altimiter={currentAltimiter}>{flowResult.pressureAltitude}</PressureAlt>
+		<PressureAlt fieldElevation={currentFieldElevation} altimiter={currentAltimiter}
+			>{flowResult.pressureAltitude}</PressureAlt
+		>
 		<div id="Performance">
 			<h2>Performance data</h2>
 			<input

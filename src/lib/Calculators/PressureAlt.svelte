@@ -19,7 +19,7 @@
 		placeholder="Current Altimiter"
 		class={$altimiter == '' ? 'empty' : 'success'}
 	/>
-	<p id="pa-result"><slot></slot>ft</p>
+	<p id="pa-result"><slot />ft</p>
 </main>
 
 <style>

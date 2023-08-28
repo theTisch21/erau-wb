@@ -35,8 +35,14 @@ export function flow(input: CompleteFlowInput): CompleteFlowOutput {
 		(29.92 - Number(input.altimiter)) * 1000 + Number(input.fieldElevation),
 		1
 	)
+	let takeoffWeight: number
+	if (!calculatedTable.changeAircraft) {
+		takeoffWeight = calculatedTable.takeoff.weight
+	} else {
+		takeoffWeight = calculatedTable.changeAircraft?.takeoff.weight
+	}
 	const performanceData = calculatePerformanceData(
-		calculatedTable.takeoff.weight,
+		takeoffWeight,
 		pressureAltitude,
 		input.temperature,
 		input.performanceMultiplier,
