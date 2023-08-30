@@ -1,6 +1,6 @@
 import { interpolate } from '$lib/interpolate'
 import { roundToPrecision, round } from '$lib/round'
-import { calculateWindMultiplier } from '../windmultiplier'
+import { calculateWindMultiplier } from './windMultiplier'
 
 export type AltitudeLine = {
 	altitude: number
@@ -457,38 +457,23 @@ export function calculatePerformanceData(
 	TOWeight: number,
 	altitude: number,
 	temp: number,
-	down = false,
-	winds: number
-): { out: PerformanceOutput; notes: string; downOption: boolean } {
+	winds: number,
+	toWeightOverride = 0
+): PerformanceOutput {
 	const multiplier = calculateWindMultiplier(winds)
-	let notes = ''
-	let downOption = false
 	const out: PerformanceOutput = { takeoffRoll: 0, takeoffFifty: 0, landRoll: 0, landFifty: 0 }
 	out.landRoll = round(findNumberFromTable(landingGroundRoll, altitude, temp) * multiplier)
 	out.landFifty = round(findNumberFromTable(landingFiftyFeet, altitude, temp) * multiplier)
-	//If the user has requested to round down
-	if (down) {
-		//By subtracting, we automatically move it to the next lower category.
-		TOWeight -= 50
-		notes = "Ok, we've rounded down."
-		downOption = true
+	//If the user has requested to override takeoff weight
+	if (toWeightOverride != 0) {
+		TOWeight = toWeightOverride
 	}
 	if (TOWeight > 2400) {
 		//Use 2550 tables
-		if (TOWeight - 2400 < 50) {
-			notes +=
-				"The takeoff weight is close to 2400, but we've rounded up to 2550 for safety. Click the box to round down"
-			downOption = true
-		}
 		out.takeoffRoll = round(findNumberFromTable(takeoff2550ground, altitude, temp) * multiplier)
 		out.takeoffFifty = round(findNumberFromTable(takeoff2550fifty, altitude, temp) * multiplier)
 	} else if (TOWeight > 2200) {
 		//Use 2400 tables
-		if (TOWeight - 2200 < 50) {
-			notes +=
-				"The takeoff weight is close to 2200, but we've rounded up to 2400 for safety. Click the box to round down"
-			downOption = true
-		}
 		out.takeoffRoll = round(findNumberFromTable(takeoff2400ground, altitude, temp) * multiplier)
 		out.takeoffFifty = round(findNumberFromTable(takeoff2400fifty, altitude, temp) * multiplier)
 	} else {
@@ -497,5 +482,5 @@ export function calculatePerformanceData(
 		out.takeoffFifty = round(findNumberFromTable(takeoff2200fifty, altitude, temp) * multiplier)
 	}
 
-	return { out: out, notes: notes, downOption: downOption }
+	return out
 }

@@ -1,20 +1,10 @@
-import type { LineItem, FuelLineItem } from './classes'
-import { round, roundToPrecision } from './round'
+import type { LineItem, FuelLineItem } from '../classes'
+import { round, roundToPrecision } from '../round'
+import type { TableOutput } from './table'
 export type LimitResult = { result: boolean; comment: string; overweightGallons?: number }
-export function calcLimits(
-	weight: number,
-	moment: number,
-	input: {
-		frontSeats: LineItem
-		rearSeats: LineItem
-		frontBag: LineItem
-		rearBag: LineItem
-		rampFuel: FuelLineItem
-		taxiBurn: FuelLineItem
-		flightBurn: FuelLineItem
-	}
-): LimitResult {
-	const arm = moment / weight
+export function calcLimits(input: TableOutput): LimitResult {
+	const weight = input.takeoff.weight
+	const arm = input.takeoff.moment / weight
 	//Max gross weight
 	if (weight > 2550) {
 		const gallonDifference = roundToPrecision((weight - 2550) / 6, 1)
@@ -28,13 +18,13 @@ export function calcLimits(
 	if (arm > 47.2) return { result: false, comment: 'CG Too far aft' }
 	if (arm < 35) return { result: false, comment: 'CG Too far forward' }
 	//Baggage compartment limits
-	if (input.frontBag.weight > 120) {
+	if (input.frontBags.weight > 120) {
 		return { result: false, comment: 'Too much weight in forward baggage' }
 	}
-	if (input.rearBag.weight > 50) {
+	if (input.aftBags.weight > 50) {
 		return { result: false, comment: 'Too much weight in aft baggage' }
 	}
-	if (input.frontBag.weight + input.rearBag.weight > 120) {
+	if (input.frontBags.weight + input.aftBags.weight > 120) {
 		return { result: false, comment: 'Too much weight in baggage compartments' }
 	}
 	//Got this equation from this regression: https://www.desmos.com/calculator/nakx2n6pby

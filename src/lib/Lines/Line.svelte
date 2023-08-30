@@ -1,22 +1,10 @@
 <script lang="ts">
 	import '../../routes/global.css'
-	import type { LineItem } from '$lib/classes'
-	import { writable, type Writable } from 'svelte/store'
-	export let data: LineItem
+	import type { Writable } from 'svelte/store'
+	export let input: Writable<string>
+	export let arm: string
 	export let name: string
 	export let testTag: string
-	export let defaultValue: number | string | null = null
-	let input = writable('')
-	input.subscribe((weight) => {
-		data.setWeight(weight)
-	})
-	let output = 0
-	data.subscribeToMoment((moment) => {
-		output = moment
-	})
-	if (defaultValue != null) {
-		input.set(defaultValue.toString())
-	}
 </script>
 
 <tr>
@@ -24,8 +12,10 @@
 	<td id="{testTag}-weight"
 		><input type="text" bind:value={$input} class={$input == '' ? 'empty' : 'success'} /></td
 	>
-	<td id="{testTag}-arm">{data.arm}</td>
-	<td id="{testTag}-moment">{output}</td>
+	<td id="{testTag}-arm">{arm}</td>
+	<td id="{testTag}-moment"
+		><slot><p>If you are seeing this message, please let Sam know</p></slot></td
+	>
 </tr>
 
 <style>
