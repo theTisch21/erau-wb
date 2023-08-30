@@ -3,6 +3,7 @@ let delay = 1000
 let url = 'http://127.0.0.1:3000'
 
 import { decodeMetar } from '../../src/lib/Calculators/metar'
+import { calculateTable, type TableInput, type TableOutput } from '../../src/lib/Flow/table'
 
 describe('Metar parsing', () => {
 	it('Simple metars', () => {
@@ -133,6 +134,118 @@ describe('Metar parsing', () => {
 			temp: -2
 		})
 	})
+	it('Partial METARs', () => {
+		expect(decodeMetar('KPRC 271853Z 17004KT 9SM SCT110 A3022 RMK AO2 SLPNO $')).deep.equal({
+			wind: {
+				speed: 4,
+				isGusting: false
+			},
+			altimiter: 30.22
+		})
+		expect(
+			decodeMetar('KPRC 271753Z 09003KT 10SM CLR A3023 RMK AO2 SLPNO 10322 20194 50000 $')
+		).deep.equal({
+			altimiter: 30.23,
+			wind: {
+				speed: 3,
+				isGusting: false
+			}
+		})
+		expect(decodeMetar('KPRC 271753Z 10SM CLR A3023 RMK AO2 SLPNO 10322 20194 50000 $')).deep.equal(
+			{
+				altimiter: 30.23
+			}
+		)
+		expect(decodeMetar('KPRC 271653Z 05003KT 9SM CLR 31/11 RMK AO2 SLP136 T03110111')).deep.equal({
+			wind: {
+				speed: 3,
+				isGusting: false
+			},
+			temp: 31
+		})
+		expect(decodeMetar('KPRC 271653Z 9SM CLRRMK AO2 SLP136 T03110111')).deep.equal({})
+		expect(decodeMetar('Unable to load metar!')).deep.equal({})
+		expect(decodeMetar('')).deep.equal({})
+	})
+})
+
+describe('table calculations', () => {
+	it('1', () => {
+		expect(
+			calculateTable({
+				aircraft: { weight: 1706.4, arm: 41.4762, moment: 70775 },
+				frontSeats: 350,
+				rearSeats: 20,
+				frontBags: 17,
+				aftBags: 0,
+				fuel: { start: 53, taxiBurn: 1.4, flightBurn: 15 }
+			})
+		).deep.equal({
+			aircraft: {
+				weight: 1706.4,
+				arm: 41.4762,
+				moment: 70775
+			},
+			frontSeats: {
+				weight: 350,
+				arm: 37,
+				moment: 12950
+			},
+			rearSeats: {
+				weight: 20,
+				arm: 73,
+				moment: 1460
+			},
+			frontBags: {
+				weight: 17,
+				arm: 95,
+				moment: 1615
+			},
+			aftBags: {
+				weight: 0,
+				arm: 123,
+				moment: 0
+			},
+			zeroFuel: {
+				weight: 2093.4,
+				moment: 86800,
+				arm: 41.47
+			},
+			rampFuel: {
+				gallons: 53,
+				weight: 318,
+				arm: 48,
+				moment: 15264
+			},
+			ramp: {
+				weight: 2411.4,
+				moment: 102064,
+				arm: 42.33
+			},
+			taxi: {
+				gallons: -1.4,
+				weight: -8.4,
+				arm: 48,
+				moment: -403.2
+			},
+			takeoff: {
+				weight: 2403,
+				moment: 101660.8,
+				arm: 42.31
+			},
+			flight: {
+				gallons: -15,
+				weight: -90,
+				arm: 48,
+				moment: -4320
+			},
+			landing: {
+				weight: 2313,
+				moment: 97340.8,
+				arm: 42.09
+			}
+		})
+	})
 })
 
 describe('Aircraft Lookups', () => {
@@ -184,19 +297,19 @@ describe('Pressure Altitude', () => {
 	})
 	it('Example 1', () => {
 		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}30.30')
-		cy.get('#pa-result').should('contain.text', '4665')
+		cy.get('#pa-result').should('contain.text', '4666')
 	})
 	it('Example 2', () => {
 		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}29.91')
-		cy.get('#pa-result').should('contain.text', '5055')
+		cy.get('#pa-result').should('contain.text', '5056')
 	})
 	it('Example 3', () => {
 		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}30.22')
-		cy.get('#pa-result').should('contain.text', '4745')
+		cy.get('#pa-result').should('contain.text', '4746')
 	})
 	it('Example 4', () => {
 		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}29.00')
-		cy.get('#pa-result').should('contain.text', '5965')
+		cy.get('#pa-result').should('contain.text', '5966')
 	})
 })
 
@@ -304,16 +417,28 @@ describe('Max fuel button', () => {
 	})
 })
 
-describe('Performance multiplier', () => {
+describe('Winds', () => {
 	beforeEach(() => {
 		cy.visit(url)
 		cy.wait(delay)
 	})
 
-	it('Increase multiplier', () => {
+	it('Calm wind', () => {
 		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}29.92')
 		cy.get('#perf-temp-input').type('{selectAll}{backspace}10')
-		cy.get('#perf-multiplier-input').type('{selectAll}{backspace}1.2')
+		cy.get('#perf-wind-input').type('{selectAll}{backspace}0')
+		cy.get('#perf-to-roll').should('contain.text', '1130')
+		cy.get('#perf-to-50').should('contain.text', '1940')
+		cy.get('#perf-climb').should('contain.text', '482.5')
+		cy.get('#perf-land-roll').should('contain.text', '705')
+		cy.get('#perf-land-50').should('contain.text', '1540')
+	})
+
+	it('Tailwind 1', () => {
+		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}29.92')
+		cy.get('#perf-temp-input').type('{selectAll}{backspace}10')
+		cy.get('#perf-wind-tailwind').click()
+		cy.get('#perf-wind-input').type('{selectAll}{backspace}5')
 		cy.get('#perf-to-roll').should('contain.text', '1356')
 		cy.get('#perf-to-50').should('contain.text', '2328')
 		cy.get('#perf-climb').should('contain.text', '482.5')
@@ -321,18 +446,41 @@ describe('Performance multiplier', () => {
 		cy.get('#perf-land-50').should('contain.text', '1848')
 	})
 
-	it('Decrease multiplier', () => {
+	it('Headwind 1', () => {
 		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}29.92')
 		cy.get('#perf-temp-input').type('{selectAll}{backspace}10')
-		cy.get('#perf-multiplier-input').type('{selectAll}{backspace}.9')
+		cy.get('#perf-wind-input').type('{selectAll}{backspace}11')
 		cy.get('#perf-to-roll').should('contain.text', '1017')
 		cy.get('#perf-to-50').should('contain.text', '1746')
 		cy.get('#perf-climb').should('contain.text', '482.5')
 		cy.get('#perf-land-roll').should('contain.text', '634')
 		cy.get('#perf-land-50').should('contain.text', '1386')
 	})
+
+	it('Tailwind 2', () => {
+		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}29.92')
+		cy.get('#perf-temp-input').type('{selectAll}{backspace}10')
+		cy.get('#perf-wind-tailwind').click()
+		cy.get('#perf-wind-input').type('{selectAll}{backspace}10')
+		cy.get('#perf-to-roll').should('contain.text', '1695')
+		cy.get('#perf-to-50').should('contain.text', '2910')
+		cy.get('#perf-climb').should('contain.text', '482.5')
+		cy.get('#perf-land-roll').should('contain.text', '1057')
+		cy.get('#perf-land-50').should('contain.text', '2310')
+	})
+
+	it('Headwind 2', () => {
+		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}29.92')
+		cy.get('#perf-temp-input').type('{selectAll}{backspace}10')
+		cy.get('#perf-wind-input').type('{selectAll}{backspace}29')
+		cy.get('#perf-to-roll').should('contain.text', '791')
+		cy.get('#perf-to-50').should('contain.text', '1358')
+		cy.get('#perf-climb').should('contain.text', '482.5')
+		cy.get('#perf-land-roll').should('contain.text', '493')
+		cy.get('#perf-land-50').should('contain.text', '1078')
+	})
 })
-//We don't do performance testing specifically, as that's covered by the example sheets.
+//We don't do performance testing or maneuvering speed specifically, as that's covered by the example sheets.
 
 describe('Example sheets', () => {
 	beforeEach(() => {
@@ -541,6 +689,9 @@ describe('Example sheets', () => {
 		cy.get('#perf-land-roll').should('contain.text', '672')
 		cy.get('#perf-land-50').should('contain.text', '1488')
 
+		//Maneuvering speed before aircraft change
+		cy.get('#va-output').should('contain.text', '99.3')
+
 		//Change in aircraft
 		cy.get('#new-aircraft-button').click()
 		cy.get('#new-aircraft-input').type('R-55')
@@ -563,6 +714,9 @@ describe('Example sheets', () => {
 		cy.get('#perf-climb').should('contain.text', '492.25')
 		cy.get('#perf-land-roll').should('contain.text', '672')
 		cy.get('#perf-land-50').should('contain.text', '1488')
+
+		//Maneuvering speed after change
+		cy.get('#va-output').should('contain.text', '100.3')
 	})
 	it('5', () => {
 		cy.get('#aircraft-input').type('R-57')
@@ -601,6 +755,9 @@ describe('Example sheets', () => {
 		cy.get('#land-arm').should('contain.text', '42')
 		cy.get('#land-moment').should('contain.text', '98241')
 
+		//Maneuvering speed before aircraft change
+		cy.get('#va-output').should('contain.text', '100.3')
+
 		//Change in aircraft
 		cy.get('#new-aircraft-button').click()
 		cy.get('#new-aircraft-input').type('R- 4')
@@ -625,5 +782,8 @@ describe('Example sheets', () => {
 		cy.get('#perf-climb').should('contain.text', '642.75')
 		cy.get('#perf-land-roll').should('contain.text', '630')
 		cy.get('#perf-land-50').should('contain.text', '1425')
+
+		//Maneuvering speed after change
+		cy.get('#va-output').should('contain.text', '100.0')
 	})
 })
