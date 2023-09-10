@@ -1,3 +1,7 @@
+# v3.1 Warning colors
+
+Changes the colors of warnings and notices to be less intense and compliant with accessibility standards.
+
 # v3.0 Linear flow
 
 Takes out a lot of the jank of the inner code. Everything now runs through a linear flow.

@@ -241,7 +241,7 @@
 		<div id="header">
 			<h1>Welcome to Traffic Cone's ERAU Cessna 172 Weight and Balance Calculator!</h1>
 			<h2>
-				You are using V3.0 <a href="https://github.com/thetisch21/erau-wb/blob/main/CHANGELOG.md"
+				You are using V3.1 <a href="https://github.com/thetisch21/erau-wb/blob/main/CHANGELOG.md"
 					>What's new?</a
 				>
 			</h2>
@@ -535,17 +535,21 @@
 		background-color: green;
 	}
 	#validation.bad {
-		background-color: red;
-		color: white;
+		background-color: #F44;
+		color: black;
 	}
 	.warning {
 		padding: 2em;
-		background-color: red;
-		color: white;
+		background-color: #F44;
+		color: black;
+		font-size: larger;
+		font-weight: bold;
 	}
 	.notice {
 		padding: 2em;
-		background-color: yellow;
+		background-color: #ff4;
 		color: black;
+		font-size: larger;
+		font-weight: bold;
 	}
 </style>
