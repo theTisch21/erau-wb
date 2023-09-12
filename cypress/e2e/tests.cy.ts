@@ -267,13 +267,6 @@ describe('Aircraft Lookups', () => {
 		cy.get('#aircraft-arm').should('contain.text', '41')
 		cy.get('#aircraft-moment').should('contain.text', '70880')
 	})
-	it('R-32', () => {
-		cy.get('#aircraft-input').type('{selectAll}{backspace}')
-		cy.get('#aircraft-input').type('R-32')
-		cy.get('#aircraft-weight').should('contain.text', '1686')
-		cy.get('#aircraft-arm').should('contain.text', '40')
-		cy.get('#aircraft-moment').should('contain.text', '68099')
-	})
 	it('R-69', () => {
 		cy.get('#aircraft-input').type('{selectAll}{backspace}')
 		cy.get('#aircraft-input').type('R-69')

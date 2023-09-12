@@ -9,6 +9,7 @@ export type Aircraft = {
 const list: Aircraft[] = [
 	{ name: 'E1', tailNumber: 'N31ER', weight: 1225, arm: 32.0473, moment: 39258 },
 	{ name: 'E2', tailNumber: 'N42ER', weight: 1200.04, arm: 31.25, moment: 37501.25 },
+	{ name: 'E3', tailNumber: 'N4349U', weight: 1126, arm: 33.033, moment: 37195.16 },
 	{ name: 'R- 1', tailNumber: 'N912MA', weight: 1325.72, arm: 12.4164, moment: 16460.72 },
 	{ name: 'R- 2', tailNumber: 'N602ER', weight: 1707.7, arm: 41.071, moment: 70137 },
 	{ name: 'R- 3', tailNumber: 'N603ER', weight: 1712.4, arm: 40.8164, moment: 69894 },
@@ -25,16 +26,16 @@ const list: Aircraft[] = [
 	{ name: 'R-15', tailNumber: 'N615ER', weight: 1707.7, arm: 41.071, moment: 70137 },
 	{ name: 'R-16', tailNumber: 'N516ER', weight: 1714.7, arm: 41.3367, moment: 70880 },
 	{ name: 'R-17', tailNumber: 'N617ER', weight: 1713.4, arm: 41.1608, moment: 70525 },
+	{ name: 'R-18', tailNumber: 'N718ER', weight: 1713.4, arm: 41.3529, moment: 70854 },
 	{ name: 'R-19', tailNumber: 'N619ER', weight: 1714.8, arm: 41.6707, moment: 71457 },
 	{ name: 'R-22', tailNumber: 'N522ER', weight: 1714.7, arm: 41.3367, moment: 70880 },
 	{ name: 'R-23', tailNumber: 'N236TH', weight: 1689.8, arm: 41.1339, moment: 69508 },
+	{ name: 'R-24', tailNumber: 'N724ER', weight: 1713.4, arm: 41.3529, moment: 70854 },
 	{ name: 'R-25', tailNumber: 'N235TH', weight: 1690.1, arm: 41.4679, moment: 70084.9 },
+	{ name: 'R-26', tailNumber: 'N726ER', weight: 1726.8, arm: 41.7779, moment: 72142 },
+	{ name: 'R-28', tailNumber: 'N728ER', weight: 1714.7, arm: 41.3367, moment: 70880 },
 	{ name: 'R-29', tailNumber: 'N629ER', weight: 1711.4, arm: 41.1704, moment: 70459 },
-	{ name: 'R-32', tailNumber: 'N632ER', weight: 1686.36, arm: 40.3824, moment: 68099.23 },
-	{ name: 'R-33', tailNumber: 'N633ER', weight: 1681.56, arm: 40.3506, moment: 67851.96 },
-	{ name: 'R-34', tailNumber: 'N634ER', weight: 1687.33, arm: 40.947, moment: 69091.04 },
-	{ name: 'R-35', tailNumber: 'N635ER', weight: 1686.36, arm: 40.3824, moment: 68099.23 },
-	{ name: 'R-36', tailNumber: 'N636ER', weight: 1683.96, arm: 40.3787, moment: 67996.13 },
+	{ name: 'R-30', tailNumber: 'N730ER', weight: 1714.7, arm: 41.3367, moment: 70880 },
 	{ name: 'R-37', tailNumber: 'N637ER', weight: 1683.96, arm: 40.3787, moment: 67996.13 },
 	{ name: 'R-39', tailNumber: 'N639ER', weight: 1684.73, arm: 40.5176, moment: 68261.29 },
 	{ name: 'R-40', tailNumber: 'N640ER', weight: 1683.06, arm: 40.7674, moment: 68613.95 },
@@ -45,8 +46,8 @@ const list: Aircraft[] = [
 	{ name: 'R-45', tailNumber: 'N645ER', weight: 1678.26, arm: 40.7611, moment: 68407.75 },
 	{ name: 'R-46', tailNumber: 'N646ER', weight: 1682.6, arm: 40.7563, moment: 68576.47 },
 	{ name: 'R-47', tailNumber: 'N647ER', weight: 1680.2, arm: 40.7531, moment: 68473.37 },
-	{ name: 'R-48', tailNumber: 'N648ER', weight: 1682.6, arm: 40.7563, moment: 68576.47 },
-	{ name: 'R-49 SPIN', tailNumber: 'N649ER', weight: 1652.7, arm: 39.9534, moment: 66030.94 },
+	{ name: 'R-48', tailNumber: 'N648ER', weight: 1677.8, arm: 40.75, moment: 68370.27 },
+	{ name: 'R-49', tailNumber: 'N649ER', weight: 1652.7, arm: 39.9534, moment: 66030.94 },
 	{ name: 'R-52', tailNumber: 'N652ER', weight: 1680.88, arm: 40.6932, moment: 68400.37 },
 	{ name: 'R-53', tailNumber: 'N653ER', weight: 1723.7, arm: 41.5826, moment: 71676 },
 	{ name: 'R-54', tailNumber: 'N554ER', weight: 1714.7, arm: 41.3367, moment: 70880 },
@@ -56,7 +57,7 @@ const list: Aircraft[] = [
 	{ name: 'R-58', tailNumber: 'N658ER', weight: 1706.4, arm: 41.4762, moment: 70775 },
 	{ name: 'R-59', tailNumber: 'N659ER', weight: 1706.4, arm: 41.4762, moment: 70775 },
 	{ name: 'R-60', tailNumber: 'N660ER', weight: 1706.4, arm: 41.4762, moment: 70775 },
-	{ name: 'R-61 SPIN', tailNumber: 'N661ER', weight: 1679.5875, arm: 40.7339, moment: 68416.12 },
+	{ name: 'R-61', tailNumber: 'N661ER', weight: 1679.5875, arm: 40.7339, moment: 68416.12 },
 	{ name: 'R-62', tailNumber: 'N662ER', weight: 1706.4, arm: 41.4762, moment: 70775 },
 	{ name: 'R-64', tailNumber: 'N664ER', weight: 1708.4, arm: 41.437, moment: 70791 },
 	{ name: 'R-65', tailNumber: 'N565ER', weight: 1714.7, arm: 41.3367, moment: 70880 },
@@ -86,9 +87,8 @@ const list: Aircraft[] = [
 export async function lookupAircraft(name: string): Promise<Aircraft | null> {
 	let out = null
 	name = name.trim()
-	if (name.toLowerCase().charAt(5) == 'w') {
-		name = name.substring(0, 4)
-	}
+	//Anything after the first 4 characters is irrelevant, so we cut it to 4
+	name = name.substring(0, 4)
 	list.forEach((plane) => {
 		if (plane.name == name) out = plane
 	})
