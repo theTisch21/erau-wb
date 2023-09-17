@@ -57,7 +57,8 @@ jobs:
         env:
           SSH_KEY_PATH: ${{ github.workspace }}/../private.key
           SSH_PORT: ${{secrets.SERVER_SSH_PORT}}
-        run: "ssh -i $SSH_KEY_PATH sam@erauwb.com -p $SSH_PORT 'cd erau-wb && screen -X quit && screen -d -m /usr/bin/bash -c ./start.sh'"
+          SSH_HOST: ${{secrets.SERVER_SSH_HOST}}
+        run: "ssh -i $SSH_KEY_PATH $SSH_HOST -p $SSH_PORT 'cd erau-wb && screen -X quit && screen -d -m /usr/bin/bash -c ./start.sh'"
 
       - name: Wait for server to start pinging
         run: timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' https://erauwb.com)" != "200" ]]; do sleep 5; done' || false
