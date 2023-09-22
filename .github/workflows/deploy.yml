@@ -1,0 +1,64 @@
+name: Deploy
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  Test:
+    strategy:
+      fail-fast: true
+      matrix:
+        browser: ['electron', 'firefox', 'edge', 'chrome']
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install dependancies
+        run: yarn
+
+      - name: Check Formatting
+        run: yarn format-check
+
+      - name: Setup dummy env file
+        run: |
+          touch .env
+          echo API_TOKEN = abcd >> .env
+
+      - name: Build server
+        run: yarn build
+
+      - name: Run tests for ${{matrix.browser}}
+        run: 'yarn test:${{matrix.browser}}'
+
+  Deploy:
+    needs: Test
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Create SSH key
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_PRIVATE_KEY" > ../private.key
+          sudo chmod 600 ../private.key
+          echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+        shell: bash
+        env:
+          SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
+          SSH_KNOWN_HOSTS: ${{secrets.SSH_KNOWN_HOSTS}}
+          SSH_KEY_PATH: ${{ github.workspace }}/../private.key
+
+      - name: Execute deploy script
+        env:
+          SSH_KEY_PATH: ${{ github.workspace }}/../private.key
+          SSH_PORT: ${{secrets.SERVER_SSH_PORT}}
+          SSH_HOST: ${{secrets.SERVER_SSH_HOST}}
+        run: "ssh -i $SSH_KEY_PATH $SSH_HOST -p $SSH_PORT 'cd erau-wb && screen -X quit && screen -d -m /usr/bin/bash -c ./start.sh'"
+
+      - name: Wait for server to start pinging
+        run: timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' https://erauwb.com)" != "200" ]]; do sleep 5; done' || false
