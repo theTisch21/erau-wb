@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { writable } from "svelte/store"
-	import type { newAccountData } from "./+server"
 	import { goto } from "$app/navigation"
+	import type { newUserData } from "$lib/Database/accountWrangler"
     let email = ""
     let password = ""
     let confirmPassword = ""
@@ -20,7 +20,7 @@
             error = "Email must be an ERAU email address"
         }
         if(error == "") { //No errors, proceed with creation
-            const accountData: newAccountData = {
+            const accountData: newUserData = {
                 email: email,
                 password: password,
                 name: name,
@@ -31,8 +31,11 @@
                 body: JSON.stringify(accountData),
                 headers: new Headers({"content-type": "application/json"})
             })
-            if(await response.text() == "OK") {
+            let t = await response.text()
+            if(t == "OK") {
                 await goto("/")
+            } else {
+                error = t
             }
         }
     }

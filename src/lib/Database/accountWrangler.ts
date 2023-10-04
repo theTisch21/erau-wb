@@ -2,6 +2,7 @@ import { getDb } from "./db"
 import type { Collection } from "mongodb"
 const db = getDb()
 import crypto from 'crypto';
+import type { data } from "cypress/types/jquery";
 
 //Types
 export type User = {
@@ -9,6 +10,12 @@ export type User = {
     salt: string,
     passwordHash: string,
     name: string,
+    etaName: string,
+    optionalData?: {
+        weight: number,
+        instructorWeight: number,
+        gearWeight: number
+    }
 }
 
 export type Session = {
@@ -17,9 +24,11 @@ export type Session = {
     createdAt: Date,
 }
 
-export type UserData = {
-    weight: number,
-    insructorWeight: number,
+export type newUserData = {
+    email: string,
+    password: string,
+    name: string,
+    etaName: string
 }
 
 //Collections
@@ -58,14 +67,15 @@ async function changePassword(username: string, oldPassword: string, newPassword
     return {newSession: await generateSession(username)}
 }
 
-async function createUser(username: string, password: string, name: string) {
+export async function createUser(data : newUserData) {
     const newSalt = crypto.randomBytes(64).toString('hex')
-    const passwordHash = hash(password + newSalt)
+    const passwordHash = hash(data.password + newSalt)
     const newUser = {
-        username: username,
+        username: data.email,
         salt: newSalt,
         passwordHash: passwordHash,
-        name: name
+        name: data.name,
+        etaName: data.etaName
     }
     accountColl.insertOne(newUser)
 }
@@ -74,6 +84,8 @@ async function createUser(username: string, password: string, name: string) {
 
 //Check for expiration index
 {
+    //Creates the session namespace, TODO get rid of
+    await sessionColl.insertOne({username: "TESTING", token: "abcd", createdAt: new Date()})
     const indexes = await sessionColl.listIndexes().toArray()
     let isThere = false
     for(const i in indexes) {
@@ -91,7 +103,7 @@ async function generateSession(username: string): Promise<Session> {
     let newToken: string
     do {
         newToken = crypto.randomBytes(64).toString("hex")
-    } while (await sessionColl.countDocuments({token: newToken}) > 0) //Check that there are no duplicate tokens
+    } while (await sessionColl.countDocuments({token: newToken, username: username}) > 0) //Check that there are no duplicate tokens for a user
     const newSession: Session = {
         username: username,
         token: newToken,
@@ -101,8 +113,8 @@ async function generateSession(username: string): Promise<Session> {
     return newSession
 }
 
-async function getSession(token: string): Promise<Session | null> {
-    return await sessionColl.findOne({token: token})
+async function getSession(token: string, username: string): Promise<Session | null> {
+    return await sessionColl.findOne({token: token, username: username})
 }
 
 async function deleteAllSessions(username: string) {
