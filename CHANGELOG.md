@@ -1,3 +1,7 @@
+# v3.2 New AWC api
+
+With the release of the new AWC API, this update allows the calculator to properly pull data from the new service. Temperatures and altimiters will now load properly.
+
 # v3.1 Warning colors
 
 Changes the colors of warnings and notices to be less intense and compliant with accessibility standards.
