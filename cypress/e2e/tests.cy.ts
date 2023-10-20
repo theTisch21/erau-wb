@@ -410,6 +410,8 @@ describe('Max fuel button', () => {
 	})
 })
 
+// Performance and overrides
+
 describe('Winds', () => {
 	beforeEach(() => {
 		cy.visit(url)
@@ -473,7 +475,17 @@ describe('Winds', () => {
 		cy.get('#perf-land-50').should('contain.text', '1078')
 	})
 })
-//We don't do performance testing or maneuvering speed specifically, as that's covered by the example sheets.
+//We don't do general performance testing or maneuvering speed specifically, as that's covered by the example sheets.
+
+//Takeoff weight override TODO
+describe('Takeoff weight override', () => {
+	
+})
+
+//ROC Altitude TODO
+describe('Rate of climb', () => {
+
+})
 
 describe('Example sheets', () => {
 	beforeEach(() => {
