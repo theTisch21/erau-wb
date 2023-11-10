@@ -128,6 +128,11 @@
 		if (newPlane != null) {
 			inputFail = false
 			aircraftData = newPlane
+			if (a.toLowerCase().startsWith('t')) {
+				addNotice(
+					"You are using a TEST aircraft! This aircraft's data is set and will never change. Do not use this for actual weight and balance!"
+				)
+			}
 			refresh()
 		} else {
 			inputFail = true
@@ -241,7 +246,7 @@
 		<div id="header">
 			<h1>Welcome to Traffic Cone's ERAU Cessna 172 Weight and Balance Calculator!</h1>
 			<h2>
-				You are using V3.2 <a href="https://github.com/thetisch21/erau-wb/blob/main/CHANGELOG.md"
+				You are using V3.3 <a href="https://github.com/thetisch21/erau-wb/blob/main/CHANGELOG.md"
 					>What's new?</a
 				>
 			</h2>
@@ -251,7 +256,7 @@
 				data from ETA
 			</p>
 			<p>
-				<strong>Please note again:</strong> These numbers from ETA are up to date as of September 12
+				<strong>Please note again:</strong> These numbers from ETA are up to date as of November 10
 				2023, but may not be completely up to date. <br />Please double-check with the POH during
 				your preflight or check with the numbers on ETA to ensure accurate calculations.
 			</p>

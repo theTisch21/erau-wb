@@ -260,23 +260,23 @@ describe('Aircraft Lookups', () => {
 		cy.get('#aircraft-arm').should('contain.text', '12')
 		cy.get('#aircraft-moment').should('contain.text', '16460')
 	})
-	it('R-22', () => {
+	it('T-22', () => {
 		cy.get('#aircraft-input').type('{selectAll}{backspace}')
-		cy.get('#aircraft-input').type('R-22')
+		cy.get('#aircraft-input').type('T-22')
 		cy.get('#aircraft-weight').should('contain.text', '1714')
 		cy.get('#aircraft-arm').should('contain.text', '41')
 		cy.get('#aircraft-moment').should('contain.text', '70880')
 	})
-	it('R-69', () => {
+	it('T-69', () => {
 		cy.get('#aircraft-input').type('{selectAll}{backspace}')
-		cy.get('#aircraft-input').type('R-69')
+		cy.get('#aircraft-input').type('T-69')
 		cy.get('#aircraft-weight').should('contain.text', '1706')
 		cy.get('#aircraft-arm').should('contain.text', '41')
 		cy.get('#aircraft-moment').should('contain.text', '70775')
 	})
-	it('R-73', () => {
+	it('T-73', () => {
 		cy.get('#aircraft-input').type('{selectAll}{backspace}')
-		cy.get('#aircraft-input').type('R-73')
+		cy.get('#aircraft-input').type('T-73')
 		cy.get('#aircraft-weight').should('contain.text', '1714')
 		cy.get('#aircraft-arm').should('contain.text', '41')
 		cy.get('#aircraft-moment').should('contain.text', '71457')
@@ -400,7 +400,7 @@ describe('Max fuel button', () => {
 		cy.get('#rampFuel-weight').should('contain.text', '306')
 	})
 	it('Test 2', () => {
-		cy.get('#aircraft-input').type('R-69')
+		cy.get('#aircraft-input').type('T-69')
 		cy.get('#fs-weight').type('350')
 		cy.get('#rs-weight').type('200')
 		cy.get('#validation').should('contain.text', '6 gallons')
@@ -528,7 +528,7 @@ describe('Example sheets', () => {
 		cy.get('#perf-land-50').should('contain.text', '1480')
 	})
 	it('2', () => {
-		cy.get('#aircraft-input').type('R-68')
+		cy.get('#aircraft-input').type('T-68')
 		cy.get('#fs-weight').type('350')
 		cy.get('#fs-moment').should('contain.text', '12950')
 		cy.get('#rs-weight').type('20')
@@ -574,7 +574,7 @@ describe('Example sheets', () => {
 		cy.get('#perf-land-50').should('contain.text', '1552')
 	})
 	it('3', () => {
-		cy.get('#aircraft-input').type('R-57')
+		cy.get('#aircraft-input').type('T-57')
 		cy.get('#fs-weight').type('350')
 		cy.get('#fs-moment').should('contain.text', '12950')
 		cy.get('#rs-weight').type('20')
@@ -637,7 +637,7 @@ describe('Example sheets', () => {
 	})
 
 	it('4', () => {
-		cy.get('#aircraft-input').type('R-44')
+		cy.get('#aircraft-input').type('T-44')
 		cy.get('#fs-weight').type('350')
 		cy.get('#fs-moment').should('contain.text', '12950')
 		cy.get('#rs-weight').type('20')
@@ -687,7 +687,7 @@ describe('Example sheets', () => {
 
 		//Change in aircraft
 		cy.get('#new-aircraft-button').click()
-		cy.get('#new-aircraft-input').type('R-55')
+		cy.get('#new-aircraft-input').type('T-55')
 
 		cy.get('#diff-weight').should('contain.text', '48')
 		cy.get('#diff-arm').should('contain.text', '0')
@@ -712,7 +712,7 @@ describe('Example sheets', () => {
 		cy.get('#va-output').should('contain.text', '100.3')
 	})
 	it('5', () => {
-		cy.get('#aircraft-input').type('R-57')
+		cy.get('#aircraft-input').type('T-57')
 		cy.get('#fs-weight').type('350')
 		cy.get('#fs-moment').should('contain.text', '12950')
 		cy.get('#rs-weight').type('20')

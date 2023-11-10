@@ -1,3 +1,8 @@
+# v3.3 Update aircraft + test aircraft
+
+This update updates all the aircraft data from ETA
+This also changes the internal tests to use specific test aircraft, rather than real aircraft which can change over time. This will prevent tests from breaking each time aircraft data is updated.
+
 # v3.2 New AWC api
 
 With the release of the new AWC API, this update allows the calculator to properly pull data from the new service. Temperatures and altimiters will now load properly.
