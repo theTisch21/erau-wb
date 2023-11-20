@@ -458,6 +458,8 @@
 				bind:value={$wind}
 				class={$wind == '' ? 'empty' : 'success'}
 			/>
+			<br />
+			<label for="overrideToAlt">Override Takeoff Weight:</label>
 			<input type="checkbox" id="overrideToAlt" bind:checked={$isOverridingToWeight} />
 			{#if $isOverridingToWeight}
 				<label for="toWeightOverride">Select which takeoff tables to use</label>
