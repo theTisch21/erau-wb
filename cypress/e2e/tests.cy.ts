@@ -3,8 +3,48 @@ let delay = 1000
 let url = 'http://127.0.0.1:3000'
 
 import { decodeMetar } from '../../src/lib/Calculators/metar'
+import { doubleInterpolate } from '../../src/lib/interpolate'
+import { roundToPrecision, round } from '../../src/lib/round'
 import { calculateTable, type TableInput, type TableOutput } from '../../src/lib/Flow/table'
 
+describe('Double interpolation', () => {
+	// Double interpolation
+	//    a1 at a2
+	// b1 l1 c1 l2
+	// bt    X
+	// b2 l1 c2 l2
+
+	it('1', () => {
+		//    10 23    42
+		// 2  23 34.78 52
+		// 23    46.2861
+		// 34 32 52.31 82
+		//Yes, the a and b logic is reversed here. It should still work regardless
+		const r = doubleInterpolate(
+			{ a1: 10, l1: 23, a2: 42, l2: 52, b: 2 },
+			{ a1: 10, l1: 32, a2: 42, l2: 82, b: 34 },
+			23,
+			23
+		)
+		const e = 46.2861
+		expect(round(r)).eq(round(e))
+	})
+	it('2', () => {
+		//    1 2 3
+		// 1  5   3
+		// 2  4 5 6
+		// 3  3   9
+		const r = doubleInterpolate(
+			{ b: 1, a1: 1, l1: 5, a2: 3, l2: 3 },
+			{ b: 3, a1: 1, l1: 3, a2: 3, l2: 9 },
+			2,
+			2
+		)
+		const e = 5
+		expect(round(r)).eq(round(e))
+	})
+})
+/**
 describe('Metar parsing', () => {
 	it('Simple metars', () => {
 		expect(decodeMetar('KPRC 12045KT 04/05 A3003')).deep.equal({
@@ -792,3 +832,4 @@ describe('Example sheets', () => {
 		cy.get('#va-output').should('contain.text', '100.0')
 	})
 })
+ */

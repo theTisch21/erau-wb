@@ -17,12 +17,12 @@ export function lineInterpolate(input: interpolateLine, targeta: number): number
 }
 
 // Double interpolation
-//    b1 bt b2
-// a1 l1    l2
-// at c1 X  c2
-// a2 l1    l2
+//    a1 at a2
+// b1 l1    l2
+// bt c1 X  c2
+// b2 l1    l2
 // We interpolate between a first, then b using the 2 computed values (c). This is so that we can interpolate just using the lines, then interpolate between the results
-// a is which line (row) you are on, l is the value from that line at the specified b value (column)
+// b is which line (row) you are on, l is the value from that line at the specified a (column) value
 
 export function doubleInterpolate(
 	lowerLine: dualInterpolateLine,
@@ -32,8 +32,5 @@ export function doubleInterpolate(
 ) {
 	const c1 = lineInterpolate(lowerLine, targeta)
 	const c2 = lineInterpolate(upperLine, targeta)
-	return lineInterpolate(
-		{ a1: lowerLine.b, a2: upperLine.b, l1: c1, l2: c2 },
-		targetb
-	)
+	return lineInterpolate({ a1: lowerLine.b, a2: upperLine.b, l1: c1, l2: c2 }, targetb)
 }
