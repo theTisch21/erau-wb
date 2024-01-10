@@ -77,11 +77,27 @@
 	let newAircraft = false
 	let newAircraftInputFail = false
 	let newAircraftName = writable('')
-	let newAircraftData: Aircraft | undefined
+	let newAircraftData: Aircraft = {
+		name: '',
+		tailNumber: '',
+		weight: 0,
+		arm: 0,
+		moment: 0
+	}
 
 	//Aircraft overrides
 	let isOverriding = writable(false)
 	let overrideData: Writable<Aircraft> = writable({
+		name: '',
+		tailNumber: '',
+		weight: 0,
+		arm: 0,
+		moment: 0
+	})
+
+	//Change in aircraft overrides
+	let isOverridingChangeInAircraft = writable(false)
+	let changeOverrideData: Writable<Aircraft> = writable({
 		name: '',
 		tailNumber: '',
 		weight: 0,
@@ -168,6 +184,10 @@
 	//Override
 	overrideData.subscribe((o) => {
 		aircraftData = o
+		refresh()
+	})
+	changeOverrideData.subscribe((o) => {
+		newAircraftData = o
 		refresh()
 	})
 	toWeightOverride.subscribe(refresh)
@@ -386,6 +406,7 @@
 		</div>
 		<div id="newAircraft" hidden={!newAircraft}>
 			<input
+				hidden={$isOverridingChangeInAircraft}
 				type="text"
 				id="new-aircraft-input"
 				placeholder="Copy from ETA"
@@ -395,8 +416,24 @@
 				class={newAircraftInputFail ? ($newAircraftName != '' ? 'fail' : 'empty') : 'empty'}
 			/>
 			{#if flowResult.table.changeAircraft}
+				<button
+					id="change-aircraft-override-button"
+					hidden={$isOverridingChangeInAircraft}
+					on:click={() => {
+						isOverridingChangeInAircraft.set(true)
+					}}>Override new aircraft values</button
+				>
 				<table>
 					<tbody>
+						{#if $isOverridingChangeInAircraft}
+							<OverrideLine
+								data={changeOverrideData}
+								name="New aircraft"
+								testTag="changeAircraft"
+							/>
+						{:else}
+							<OutputLine data={newAircraftData} name="New aircraft" testTag="changeAircraft" />
+						{/if}
 						<tr>
 							<td>Difference</td>
 							<td id="diff-weight">{flowResult.table.changeAircraft.diff.weight}</td>
