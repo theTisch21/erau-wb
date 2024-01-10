@@ -223,6 +223,7 @@
 					taxiBurn: Number(get(taxiFuel)),
 					flightBurn: Number(get(flightFuel))
 				},
+				isChangingAircraft: newAircraft,
 				changeInAircraft: newAircraftData
 			},
 			altimiter: Number(get(currentAltimiter)),
@@ -415,14 +416,14 @@
 				style="font-size: large;"
 				class={newAircraftInputFail ? ($newAircraftName != '' ? 'fail' : 'empty') : 'empty'}
 			/>
+			<button
+				id="change-aircraft-override-button"
+				hidden={$isOverridingChangeInAircraft}
+				on:click={() => {
+					isOverridingChangeInAircraft.set(true)
+				}}>Override new aircraft values</button
+			>
 			{#if flowResult.table.changeAircraft}
-				<button
-					id="change-aircraft-override-button"
-					hidden={$isOverridingChangeInAircraft}
-					on:click={() => {
-						isOverridingChangeInAircraft.set(true)
-					}}>Override new aircraft values</button
-				>
 				<table>
 					<tbody>
 						{#if $isOverridingChangeInAircraft}

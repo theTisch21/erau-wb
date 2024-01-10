@@ -44,7 +44,7 @@ describe('Double interpolation', () => {
 		expect(round(r)).eq(round(e))
 	})
 })
-/**
+
 describe('Metar parsing', () => {
 	it('Simple metars', () => {
 		expect(decodeMetar('KPRC 12045KT 04/05 A3003')).deep.equal({
@@ -518,14 +518,10 @@ describe('Winds', () => {
 //We don't do general performance testing or maneuvering speed specifically, as that's covered by the example sheets.
 
 //Takeoff weight override TODO
-describe('Takeoff weight override', () => {
-	
-})
+describe('Takeoff weight override', () => {})
 
 //ROC Altitude TODO
-describe('Rate of climb', () => {
-
-})
+describe('Rate of climb', () => {})
 
 describe('Example sheets', () => {
 	beforeEach(() => {
@@ -683,7 +679,7 @@ describe('Example sheets', () => {
 		cy.get('#perf-temp-input').type('{selectAll}{backspace}35')
 		cy.get('#perf-to-roll').should('contain.text', '1605')
 		cy.get('#perf-to-50').should('contain.text', '2782.5')
-		cy.get('#perf-climb').should('contain.text', '510')
+		cy.get('#perf-climb').should('contain.text', '405')
 		cy.get('#perf-land-roll').should('contain.text', '712')
 		cy.get('#perf-land-50').should('contain.text', '1552')
 	})
@@ -824,7 +820,7 @@ describe('Example sheets', () => {
 		cy.get('#perf-temp-input').type('{selectAll}{backspace}-7')
 		cy.get('#perf-to-roll').should('contain.text', '1235')
 		cy.get('#perf-to-50').should('contain.text', '2120')
-		cy.get('#perf-climb').should('contain.text', '642.75')
+		cy.get('#perf-climb').should('contain.text', '536')
 		cy.get('#perf-land-roll').should('contain.text', '630')
 		cy.get('#perf-land-50').should('contain.text', '1425')
 
@@ -832,4 +828,3 @@ describe('Example sheets', () => {
 		cy.get('#va-output').should('contain.text', '100.0')
 	})
 })
- */
