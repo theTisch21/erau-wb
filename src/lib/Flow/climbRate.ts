@@ -20,6 +20,7 @@ const climbRateList: ClimbLine[] = [
 	{ altitude: 12000, climbSpeed: 72, cm20: 255, c0: 195, c20: 135, c40: NaN }
 ]
 export function getClimbLine(altitude: number): ClimbLine {
+	if (Number.isNaN(altitude)) return getClimbLine(12000) //If invalid input is passed, err on the side of caution. TODO make this throw an error
 	altitude = roundToPrecision(altitude, 0.001, false) //Round to next thousand up
 
 	if ((altitude / 1000) % 2 != 0) {
