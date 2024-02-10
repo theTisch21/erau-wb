@@ -1,5 +1,5 @@
 import { interpolate } from '$lib/interpolate'
-import { roundToPrecision } from '$lib/round'
+import { round, roundToPrecision } from '$lib/round'
 
 export type ClimbLine = {
 	altitude: number
@@ -19,47 +19,73 @@ const climbRateList: ClimbLine[] = [
 	{ altitude: 10000, climbSpeed: 72, cm20: 360, c0: 300, c20: 240, c40: 180 },
 	{ altitude: 12000, climbSpeed: 72, cm20: 255, c0: 195, c20: 135, c40: NaN }
 ]
-export function getClimbLine(altitude: number): ClimbLine {
-	if (Number.isNaN(altitude)) return getClimbLine(12000) //If invalid input is passed, err on the side of caution. TODO make this throw an error
-	altitude = roundToPrecision(altitude, 0.001, false) //Round to next thousand up
 
-	if ((altitude / 1000) % 2 != 0) {
-		//If thousand is not even
-		altitude += 1000
-	}
-
-	if (altitude > 12000) {
-		return getClimbLine(12000)
-	}
+function getClimbLine(altitude: number): ClimbLine { //Does not interpolate, will throw error if not found
 	let out = null
 	climbRateList.forEach((line) => {
 		if (line.altitude == altitude) out = line
 	})
-	if (out == null) {
-		return getClimbLine(altitude + 2000) //Go to next thousand
-	}
+	if(out == null) throw new Error("WBXXXX internal error")
 	return out
 }
 
-export function getClimbRate(altitude: number, temp: number): { rate: number; altitude: number } {
-	const line: ClimbLine = getClimbLine(altitude)
+export function getClimbRate(altitude: number, temp: number): number {
 	//There's no data for 12000 and 40, so check for that
 	if (altitude > 10000 && temp > 20) {
-		//TODO warn user
+		throw new Error("WBXXXX Pressure altitude exceeds 10,000ft and temperature 20°C. There is no data available for this range")
 	}
+
+	if (temp > 40) throw new Error("WBXXXX Temperature is > 40°C")
+
+	if (Number.isNaN(altitude)) throw new Error("WBXXXX Climb altitude invalid") //If invalid input is passed, err on the side of caution. TODO make this throw an error
+	if (altitude > 12000) {
+		throw new Error("WBXXXX Pressure altitude greater than 12,000ft")
+	}
+	if (altitude < 0) {
+		throw new Error("WBXXXX Pressure altitude less than 0ft")
+	}
+	
+
+	let upperAltitude = roundToPrecision(altitude, 0.001, false) //Get next thousand up
+	if ((upperAltitude / 1000) % 2 != 0) {
+		//If thousand is not even
+		upperAltitude += 1000
+	}
+
+	let lowerAltitude = roundToPrecision(altitude, 0.001, true) //Get last thousand down
+	if ((lowerAltitude / 1000) % 2 != 0) {
+		//If thousand is not even
+		lowerAltitude -= 1000
+	}
+
+	console.log("u " + upperAltitude)
+	console.log("l " + lowerAltitude)
+	const upperLine = getClimbLine(upperAltitude)
+	const lowerLine = getClimbLine(lowerAltitude)
+
+
+	let lower: number
+	let upper: number
 	if (temp < -20) {
-		return { rate: line.cm20, altitude: line.altitude }
+		lower = lowerLine.cm20
+		upper = upperLine.cm20
 	} else if (temp < 0) {
 		//Use -20 - 0
-		return { rate: interpolate(line.cm20, line.c0, (20 + temp) / 20), altitude: line.altitude }
+		lower = interpolate(lowerLine.cm20, lowerLine.c0, (20 + temp) / 20)
+		upper = interpolate(upperLine.cm20, upperLine.c0, (20 + temp) / 20)
 	} else if (temp < 20) {
 		//Use 0-20
-		return { rate: interpolate(line.c0, line.c20, temp / 20), altitude: line.altitude }
-	} else if (temp < 40) {
-		//Use 20 - 40
-		return { rate: interpolate(line.c20, line.c40, (temp - 20) / 20), altitude: line.altitude }
+		lower = interpolate(lowerLine.c0, lowerLine.c20, temp / 20)
+		upper = interpolate(upperLine.c0, upperLine.c20, temp / 20)
 	} else {
-		//Use 40
-		return { rate: line.c40, altitude: line.altitude }
+		//Use 20 - 40
+		lower = interpolate(lowerLine.c20, lowerLine.c40, (temp - 20) / 20)
+		upper = interpolate(upperLine.c20, upperLine.c40, (temp - 20) / 20)
 	}
+	
+	if ((altitude / 1000) % 2 == 0) { //If already an even thousand, no need to interpolate
+		return lower
+	}
+
+	return round(interpolate(lower, upper, (altitude-lowerAltitude)/2000), true)
 }

@@ -192,6 +192,8 @@
 	})
 	toWeightOverride.subscribe(refresh)
 	isOverridingToWeight.subscribe(refresh)
+	isOverridingChangeInAircraft.subscribe(refresh)
+	changeOverrideData.subscribe(refresh)
 	climbAltOverride.subscribe(refresh)
 	isOverridingClimbAlt.subscribe(refresh)
 
@@ -211,7 +213,8 @@
 
 	function refresh() {
 		//Complete linear flow
-		flowResult = flow({
+		try {
+			flowResult = flow({
 			table: {
 				aircraft: aircraftData,
 				frontSeats: Number(get(frontSeatsInput)),
@@ -233,6 +236,9 @@
 			toWeightOverride: get(isOverridingToWeight) ? get(toWeightOverride) : 0,
 			climbAlt: get(isOverridingClimbAlt) ? Number(get(climbAltOverride)) : 6000
 		})
+		} catch (error) {
+			window.alert(error)
+		}
 	}
 
 	//

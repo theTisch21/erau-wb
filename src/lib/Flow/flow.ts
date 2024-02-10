@@ -22,7 +22,6 @@ export type CompleteFlowOutput = {
 		takeoffRoll: number
 		takeoffFifty: number
 		climbRate: number
-		climbAlt: number
 		landRoll: number
 		landFifty: number
 	}
@@ -65,8 +64,7 @@ export function flow(input: CompleteFlowInput): CompleteFlowOutput {
 		maneuveringSpeed: maneuveringSpeed,
 		performance: {
 			...performanceData,
-			climbAlt: climbData.altitude,
-			climbRate: climbData.rate
+			climbRate: climbData
 		},
 		validation: limitData
 	}
