@@ -27,6 +27,7 @@ export type TableInput = {
 		taxiBurn: number //Should be negative
 		flightBurn: number //Should be negative
 	}
+	isChangingAircraft?: boolean
 	changeInAircraft?: DataLine
 }
 
@@ -154,7 +155,7 @@ export function calculateTable(input: TableInput): TableOutput {
 	}
 
 	//Change in aircraft?
-	if (!input.changeInAircraft) {
+	if (!input.isChangingAircraft || !input.changeInAircraft) {
 		//NOT changing
 		return {
 			aircraft: aircraft,

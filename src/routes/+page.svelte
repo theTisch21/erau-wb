@@ -77,11 +77,27 @@
 	let newAircraft = false
 	let newAircraftInputFail = false
 	let newAircraftName = writable('')
-	let newAircraftData: Aircraft | undefined
+	let newAircraftData: Aircraft = {
+		name: '',
+		tailNumber: '',
+		weight: 0,
+		arm: 0,
+		moment: 0
+	}
 
 	//Aircraft overrides
 	let isOverriding = writable(false)
 	let overrideData: Writable<Aircraft> = writable({
+		name: '',
+		tailNumber: '',
+		weight: 0,
+		arm: 0,
+		moment: 0
+	})
+
+	//Change in aircraft overrides
+	let isOverridingChangeInAircraft = writable(false)
+	let changeOverrideData: Writable<Aircraft> = writable({
 		name: '',
 		tailNumber: '',
 		weight: 0,
@@ -94,6 +110,8 @@
 	//Flow
 	let isOverridingToWeight = writable(false)
 	let toWeightOverride = writable(0)
+	let isOverridingClimbAlt = writable(false)
+	let climbAltOverride = writable('')
 	let flowResult: CompleteFlowOutput = flow({
 		table: {
 			aircraft: aircraftData,
@@ -111,7 +129,8 @@
 		fieldElevation: Number(get(currentFieldElevation)),
 		headwind: get(isTailwind) ? -1 * Number(get(wind)) : Number(get(wind)),
 		toWeightOverride: get(toWeightOverride),
-		temperature: Number(get(currentTemp))
+		temperature: Number(get(currentTemp)),
+		climbAlt: get(isOverridingClimbAlt) ? Number(get(climbAltOverride)) : 6000
 	})
 
 	//
@@ -172,8 +191,16 @@
 		aircraftData = o
 		refresh()
 	})
+	changeOverrideData.subscribe((o) => {
+		newAircraftData = o
+		refresh()
+	})
 	toWeightOverride.subscribe(refresh)
 	isOverridingToWeight.subscribe(refresh)
+	isOverridingChangeInAircraft.subscribe(refresh)
+	changeOverrideData.subscribe(refresh)
+	climbAltOverride.subscribe(refresh)
+	isOverridingClimbAlt.subscribe(refresh)
 
 	//
 	// Functions
@@ -191,26 +218,32 @@
 
 	function refresh() {
 		//Complete linear flow
-		flowResult = flow({
-			table: {
-				aircraft: aircraftData,
-				frontSeats: Number(get(frontSeatsInput)),
-				rearSeats: Number(get(rearSeatsInput)),
-				frontBags: Number(get(frontBagInput)),
-				aftBags: Number(get(rearBagInput)),
-				fuel: {
-					start: Number(get(rampFuel)),
-					taxiBurn: Number(get(taxiFuel)),
-					flightBurn: Number(get(flightFuel))
+		try {
+			flowResult = flow({
+				table: {
+					aircraft: aircraftData,
+					frontSeats: Number(get(frontSeatsInput)),
+					rearSeats: Number(get(rearSeatsInput)),
+					frontBags: Number(get(frontBagInput)),
+					aftBags: Number(get(rearBagInput)),
+					fuel: {
+						start: Number(get(rampFuel)),
+						taxiBurn: Number(get(taxiFuel)),
+						flightBurn: Number(get(flightFuel))
+					},
+					isChangingAircraft: newAircraft,
+					changeInAircraft: newAircraftData
 				},
-				changeInAircraft: newAircraftData
-			},
-			altimiter: Number(get(currentAltimiter)),
-			fieldElevation: Number(get(currentFieldElevation)),
-			headwind: get(isTailwind) ? -1 * Number(get(wind)) : Number(get(wind)),
-			temperature: Number(get(currentTemp)),
-			toWeightOverride: get(isOverridingToWeight) ? get(toWeightOverride) : 0
-		})
+				altimiter: Number(get(currentAltimiter)),
+				fieldElevation: Number(get(currentFieldElevation)),
+				headwind: get(isTailwind) ? -1 * Number(get(wind)) : Number(get(wind)),
+				temperature: Number(get(currentTemp)),
+				toWeightOverride: get(isOverridingToWeight) ? get(toWeightOverride) : 0,
+				climbAlt: get(isOverridingClimbAlt) ? Number(get(climbAltOverride)) : 6000
+			})
+		} catch (error) {
+			window.alert(error)
+		}
 	}
 
 	//
@@ -385,6 +418,7 @@
 		</div>
 		<div id="newAircraft" hidden={!newAircraft}>
 			<input
+				hidden={$isOverridingChangeInAircraft}
 				type="text"
 				id="new-aircraft-input"
 				placeholder="Copy from ETA"
@@ -393,9 +427,25 @@
 				style="font-size: large;"
 				class={newAircraftInputFail ? ($newAircraftName != '' ? 'fail' : 'empty') : 'empty'}
 			/>
+			<button
+				id="change-aircraft-override-button"
+				hidden={$isOverridingChangeInAircraft}
+				on:click={() => {
+					isOverridingChangeInAircraft.set(true)
+				}}>Override new aircraft values</button
+			>
 			{#if flowResult.table.changeAircraft}
 				<table>
 					<tbody>
+						{#if $isOverridingChangeInAircraft}
+							<OverrideLine
+								data={changeOverrideData}
+								name="New aircraft"
+								testTag="change-aircraft-override"
+							/>
+						{:else}
+							<OutputLine data={newAircraftData} name="New aircraft" testTag="changeAircraft" />
+						{/if}
 						<tr>
 							<td>Difference</td>
 							<td id="diff-weight">{flowResult.table.changeAircraft.diff.weight}</td>
@@ -433,6 +483,7 @@
 		>
 		<div id="Performance">
 			<h2>Performance data</h2>
+			<h3>Temperature</h3>
 			<label for="perf-temp-input">Temperature °C</label><br />
 			<input
 				type="text"
@@ -442,7 +493,7 @@
 				bind:value={$currentTemp}
 				class={$currentTemp == '' ? 'empty' : 'success'}
 			/>
-			<h2>Wind</h2>
+			<h3>Wind</h3>
 			<p>
 				{#if $isTailwind}Enter the current tailwind in knots. If you have a headwind, uncheck the
 					checkbox below
@@ -457,13 +508,13 @@
 				title="Winds"
 				bind:value={$wind}
 				class={$wind == '' ? 'empty' : 'success'}
-			/>
-			<br />
-			<label for="overrideToAlt">Override Takeoff Weight:</label>
-			<input type="checkbox" id="overrideToAlt" bind:checked={$isOverridingToWeight} />
+			/><br />
+			<h3>Weight</h3>
+			<label for="override-to-weight-box">Override Takeoff Weight:</label>
+			<input type="checkbox" id="override-to-weight-box" bind:checked={$isOverridingToWeight} />
 			{#if $isOverridingToWeight}
-				<label for="toWeightOverride">Select which takeoff tables to use</label>
-				<select id="toWeightOverride" bind:value={$toWeightOverride}>
+				<label for="to-weight-override">Select which takeoff tables to use</label>
+				<select id="to-weight-override" bind:value={$toWeightOverride}>
 					<option selected value="2550">2550 lbs </option><option value="2400"
 						>2400 lbs
 					</option><option value="2200">2200 lbs </option></select
@@ -472,17 +523,33 @@
 			{:else}
 				<p>
 					Using {(() => {
-						const w = flowResult.table.takeoff.weight
-						if (w > 2400) return 2550
-						if (w > 2200) return 2400
+						if (flowResult.table.takeoff.weight > 2400) return 2550
+						if (flowResult.table.takeoff.weight > 2200) return 2400
 						return 2200
 					})()}lbs performance tables
 				</p>
 			{/if}
+			<h3>Altitude</h3>
+			<p>Using 6000ft (traffic pattern altitude)</p>
+			<label for="override-climb-alt">Override rate of climb altitude:</label>
+			<input type="checkbox" id="override-climb-alt" bind:checked={$isOverridingClimbAlt} />
+			{#if $isOverridingClimbAlt}
+				<input
+					type="text"
+					id="perf-climb-alt"
+					placeholder="Altitude"
+					title="Climb altitude"
+					bind:value={$climbAltOverride}
+					class={$climbAltOverride == '' ? 'empty' : 'success'}
+				/><br />
+			{/if}
+			<h3>Result</h3>
 			<p id="perf-to-roll">Takeoff roll: {flowResult.performance.takeoffRoll}</p>
 			<p id="perf-to-50">Takeoff 50ft: {flowResult.performance.takeoffFifty}</p>
 			<p id="perf-climb">
-				Climb rate: {flowResult.performance.climbRate} @ {flowResult.performance.climbAlt}ft
+				Climb rate: {flowResult.performance.climbRate} @ {$isOverridingClimbAlt
+					? $climbAltOverride
+					: 6000}ft
 			</p>
 			<p id="perf-land-roll">Land roll: {flowResult.performance.landRoll}</p>
 			<p id="perf-land-50">Land 50ft: {flowResult.performance.landFifty}</p>

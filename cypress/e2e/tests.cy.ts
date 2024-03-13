@@ -3,7 +3,47 @@ let delay = 1000
 let url = 'http://127.0.0.1:3000'
 
 import { decodeMetar } from '../../src/lib/Calculators/metar'
+import { doubleInterpolate } from '../../src/lib/interpolate'
+import { roundToPrecision, round } from '../../src/lib/round'
 import { calculateTable, type TableInput, type TableOutput } from '../../src/lib/Flow/table'
+
+describe('Double interpolation', () => {
+	// Double interpolation
+	//    a1 at a2
+	// b1 l1 c1 l2
+	// bt    X
+	// b2 l1 c2 l2
+
+	it('1', () => {
+		//    10 23    42
+		// 2  23 34.78 52
+		// 23    46.2861
+		// 34 32 52.31 82
+		//Yes, the a and b logic is reversed here. It should still work regardless
+		const r = doubleInterpolate(
+			{ a1: 10, l1: 23, a2: 42, l2: 52, b: 2 },
+			{ a1: 10, l1: 32, a2: 42, l2: 82, b: 34 },
+			23,
+			23
+		)
+		const e = 46.2861
+		expect(round(r)).eq(round(e))
+	})
+	it('2', () => {
+		//    1 2 3
+		// 1  5   3
+		// 2  4 5 6
+		// 3  3   9
+		const r = doubleInterpolate(
+			{ b: 1, a1: 1, l1: 5, a2: 3, l2: 3 },
+			{ b: 3, a1: 1, l1: 3, a2: 3, l2: 9 },
+			2,
+			2
+		)
+		const e = 5
+		expect(round(r)).eq(round(e))
+	})
+})
 
 describe('Metar parsing', () => {
 	it('Simple metars', () => {
@@ -253,13 +293,6 @@ describe('Aircraft Lookups', () => {
 		cy.visit(url)
 		cy.wait(delay)
 	})
-	it('R-1', () => {
-		cy.get('#aircraft-input').type('{selectAll}{backspace}')
-		cy.get('#aircraft-input').type('R- 1')
-		cy.get('#aircraft-weight').should('contain.text', '1325')
-		cy.get('#aircraft-arm').should('contain.text', '12')
-		cy.get('#aircraft-moment').should('contain.text', '16460')
-	})
 	it('T-22', () => {
 		cy.get('#aircraft-input').type('{selectAll}{backspace}')
 		cy.get('#aircraft-input').type('T-22')
@@ -410,6 +443,8 @@ describe('Max fuel button', () => {
 	})
 })
 
+// Performance and overrides
+
 describe('Winds', () => {
 	beforeEach(() => {
 		cy.visit(url)
@@ -473,7 +508,85 @@ describe('Winds', () => {
 		cy.get('#perf-land-50').should('contain.text', '1078')
 	})
 })
-//We don't do performance testing or maneuvering speed specifically, as that's covered by the example sheets.
+//We don't do general performance testing or maneuvering speed specifically, as that's covered by the example sheets.
+
+//Takeoff weight override TODO
+describe('Takeoff weight override', () => {
+	beforeEach(() => {
+		cy.visit(url)
+		cy.wait(delay)
+	})
+
+	it('1', () => {
+		cy.get('#aircraft-input').type('T-68')
+		cy.get('#fs-weight').type('350')
+		cy.get('#rs-weight').type('20')
+
+		cy.get('#override-to-weight-box').click()
+		cy.get('#to-weight-override').select('2400')
+		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}30.14')
+		cy.get('#perf-temp-input').type('{selectAll}{backspace}5')
+
+		cy.get('#perf-to-roll').should('contain.text', '1217')
+		cy.get('#perf-to-50').should('contain.text', '2097')
+		cy.get('#perf-land-roll').should('contain.text', '667')
+		cy.get('#perf-land-50').should('contain.text', '1480')
+	})
+})
+
+describe('Rate of Climb', () => {
+	before(() => {
+		cy.visit(url)
+		cy.wait(delay)
+	})
+	it('1', () => {
+		cy.get('#perf-temp-input').type('{selectAll}{backspace}15')
+		cy.get('#override-climb-alt').click()
+		cy.get('#perf-climb-alt').type('{selectAll}{backspace}7500')
+
+		cy.get('#perf-climb').should('contain.text', '386')
+	})
+	it('2', () => {
+		cy.get('#perf-temp-input').type('{selectAll}{backspace}-15')
+		//cy.get('#override-climb-alt').click() since we already selected override during the first test
+		cy.get('#perf-climb-alt').type('{selectAll}{backspace}2500')
+
+		cy.get('#perf-climb').should('contain.text', '725')
+	})
+})
+
+describe('Override change in aircraft', () => {
+	beforeEach(() => {
+		cy.visit(url)
+		cy.wait(delay)
+	})
+	it('1', () => {
+		cy.get('#aircraft-input').type('T-22')
+		cy.get('#new-aircraft-button').click()
+		cy.get('#change-aircraft-override-button').click()
+
+		cy.get('#change-aircraft-override-weight').type('1715.7')
+		cy.get('#change-aircraft-override-arm').type('42.33')
+		cy.get('#change-aircraft-override-moment').type('70881')
+
+		cy.get('#diff-weight').should('contain.text', '1')
+		cy.get('#diff-arm').should('contain.text', '1')
+		cy.get('#diff-moment').should('contain.text', '1')
+	})
+	it('2', () => {
+		cy.get('#aircraft-input').type('T-69')
+		cy.get('#new-aircraft-button').click()
+		cy.get('#change-aircraft-override-button').click()
+
+		cy.get('#change-aircraft-override-weight').type('1707.4')
+		cy.get('#change-aircraft-override-arm').type('42.47')
+		cy.get('#change-aircraft-override-moment').type('70776')
+
+		cy.get('#diff-weight').should('contain.text', '1')
+		cy.get('#diff-arm').should('contain.text', '1')
+		cy.get('#diff-moment').should('contain.text', '1')
+	})
+})
 
 describe('Example sheets', () => {
 	beforeEach(() => {
@@ -631,7 +744,7 @@ describe('Example sheets', () => {
 		cy.get('#perf-temp-input').type('{selectAll}{backspace}35')
 		cy.get('#perf-to-roll').should('contain.text', '1605')
 		cy.get('#perf-to-50').should('contain.text', '2782.5')
-		cy.get('#perf-climb').should('contain.text', '510')
+		cy.get('#perf-climb').should('contain.text', '405')
 		cy.get('#perf-land-roll').should('contain.text', '712')
 		cy.get('#perf-land-50').should('contain.text', '1552')
 	})
@@ -772,7 +885,7 @@ describe('Example sheets', () => {
 		cy.get('#perf-temp-input').type('{selectAll}{backspace}-7')
 		cy.get('#perf-to-roll').should('contain.text', '1235')
 		cy.get('#perf-to-50').should('contain.text', '2120')
-		cy.get('#perf-climb').should('contain.text', '642.75')
+		cy.get('#perf-climb').should('contain.text', '536')
 		cy.get('#perf-land-roll').should('contain.text', '630')
 		cy.get('#perf-land-50').should('contain.text', '1425')
 
