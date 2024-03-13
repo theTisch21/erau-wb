@@ -1,3 +1,7 @@
+# v3.4 QOL 2
+
+Another small quality of life update. This adds an override for change in aircraft and for the rate of climb altitude.
+
 # v3.3 Update aircraft + test aircraft
 
 This update updates all the aircraft data from ETA
