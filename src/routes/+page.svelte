@@ -441,7 +441,7 @@
 							<OverrideLine
 								data={changeOverrideData}
 								name="New aircraft"
-								testTag="changeAircraft"
+								testTag="change-aircraft-override"
 							/>
 						{:else}
 							<OutputLine data={newAircraftData} name="New aircraft" testTag="changeAircraft" />
