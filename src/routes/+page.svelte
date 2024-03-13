@@ -220,27 +220,27 @@
 		//Complete linear flow
 		try {
 			flowResult = flow({
-			table: {
-				aircraft: aircraftData,
-				frontSeats: Number(get(frontSeatsInput)),
-				rearSeats: Number(get(rearSeatsInput)),
-				frontBags: Number(get(frontBagInput)),
-				aftBags: Number(get(rearBagInput)),
-				fuel: {
-					start: Number(get(rampFuel)),
-					taxiBurn: Number(get(taxiFuel)),
-					flightBurn: Number(get(flightFuel))
+				table: {
+					aircraft: aircraftData,
+					frontSeats: Number(get(frontSeatsInput)),
+					rearSeats: Number(get(rearSeatsInput)),
+					frontBags: Number(get(frontBagInput)),
+					aftBags: Number(get(rearBagInput)),
+					fuel: {
+						start: Number(get(rampFuel)),
+						taxiBurn: Number(get(taxiFuel)),
+						flightBurn: Number(get(flightFuel))
+					},
+					isChangingAircraft: newAircraft,
+					changeInAircraft: newAircraftData
 				},
-				isChangingAircraft: newAircraft,
-				changeInAircraft: newAircraftData
-			},
-			altimiter: Number(get(currentAltimiter)),
-			fieldElevation: Number(get(currentFieldElevation)),
-			headwind: get(isTailwind) ? -1 * Number(get(wind)) : Number(get(wind)),
-			temperature: Number(get(currentTemp)),
-			toWeightOverride: get(isOverridingToWeight) ? get(toWeightOverride) : 0,
-			climbAlt: get(isOverridingClimbAlt) ? Number(get(climbAltOverride)) : 6000
-		})
+				altimiter: Number(get(currentAltimiter)),
+				fieldElevation: Number(get(currentFieldElevation)),
+				headwind: get(isTailwind) ? -1 * Number(get(wind)) : Number(get(wind)),
+				temperature: Number(get(currentTemp)),
+				toWeightOverride: get(isOverridingToWeight) ? get(toWeightOverride) : 0,
+				climbAlt: get(isOverridingClimbAlt) ? Number(get(climbAltOverride)) : 6000
+			})
 		} catch (error) {
 			window.alert(error)
 		}

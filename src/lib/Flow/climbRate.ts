@@ -20,31 +20,33 @@ const climbRateList: ClimbLine[] = [
 	{ altitude: 12000, climbSpeed: 72, cm20: 255, c0: 195, c20: 135, c40: NaN }
 ]
 
-function getClimbLine(altitude: number): ClimbLine { //Does not interpolate, will throw error if not found
+function getClimbLine(altitude: number): ClimbLine {
+	//Does not interpolate, will throw error if not found
 	let out = null
 	climbRateList.forEach((line) => {
 		if (line.altitude == altitude) out = line
 	})
-	if(out == null) throw new Error("WBXXXX internal error")
+	if (out == null) throw new Error('WBXXXX internal error')
 	return out
 }
 
 export function getClimbRate(altitude: number, temp: number): number {
 	//There's no data for 12000 and 40, so check for that
 	if (altitude > 10000 && temp > 20) {
-		throw new Error("WBXXXX Pressure altitude exceeds 10,000ft and temperature 20°C. There is no data available for this range")
+		throw new Error(
+			'WBXXXX Pressure altitude exceeds 10,000ft and temperature 20°C. There is no data available for this range'
+		)
 	}
 
-	if (temp > 40) throw new Error("WBXXXX Temperature is > 40°C")
+	if (temp > 40) throw new Error('WBXXXX Temperature is > 40°C')
 
-	if (Number.isNaN(altitude)) throw new Error("WBXXXX Climb altitude invalid") //If invalid input is passed, err on the side of caution. TODO make this throw an error
+	if (Number.isNaN(altitude)) throw new Error('WBXXXX Climb altitude invalid') //If invalid input is passed, err on the side of caution. TODO make this throw an error
 	if (altitude > 12000) {
-		throw new Error("WBXXXX Pressure altitude greater than 12,000ft")
+		throw new Error('WBXXXX Pressure altitude greater than 12,000ft')
 	}
 	if (altitude < 0) {
-		throw new Error("WBXXXX Pressure altitude less than 0ft")
+		throw new Error('WBXXXX Pressure altitude less than 0ft')
 	}
-	
 
 	let upperAltitude = roundToPrecision(altitude, 0.001, false) //Get next thousand up
 	if ((upperAltitude / 1000) % 2 != 0) {
@@ -60,7 +62,6 @@ export function getClimbRate(altitude: number, temp: number): number {
 
 	const upperLine = getClimbLine(upperAltitude)
 	const lowerLine = getClimbLine(lowerAltitude)
-
 
 	let lower: number
 	let upper: number
@@ -80,10 +81,11 @@ export function getClimbRate(altitude: number, temp: number): number {
 		lower = interpolate(lowerLine.c20, lowerLine.c40, (temp - 20) / 20)
 		upper = interpolate(upperLine.c20, upperLine.c40, (temp - 20) / 20)
 	}
-	
-	if ((altitude / 1000) % 2 == 0) { //If already an even thousand, no need to interpolate
+
+	if ((altitude / 1000) % 2 == 0) {
+		//If already an even thousand, no need to interpolate
 		return lower
 	}
 
-	return round(interpolate(lower, upper, (altitude-lowerAltitude)/2000), true)
+	return round(interpolate(lower, upper, (altitude - lowerAltitude) / 2000), true)
 }

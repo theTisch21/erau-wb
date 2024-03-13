@@ -565,10 +565,10 @@ describe('Override change in aircraft', () => {
 		cy.get('#new-aircraft-button').click()
 		cy.get('#change-aircraft-override-button').click()
 
-		cy.get('#change-aircraft-override-weight').type("1715.7")
-		cy.get('#change-aircraft-override-arm').type("42.33")
-		cy.get('#change-aircraft-override-moment').type("70881")
-		
+		cy.get('#change-aircraft-override-weight').type('1715.7')
+		cy.get('#change-aircraft-override-arm').type('42.33')
+		cy.get('#change-aircraft-override-moment').type('70881')
+
 		cy.get('#diff-weight').should('contain.text', '1')
 		cy.get('#diff-arm').should('contain.text', '1')
 		cy.get('#diff-moment').should('contain.text', '1')
@@ -578,16 +578,15 @@ describe('Override change in aircraft', () => {
 		cy.get('#new-aircraft-button').click()
 		cy.get('#change-aircraft-override-button').click()
 
-		cy.get('#change-aircraft-override-weight').type("1707.4")
-		cy.get('#change-aircraft-override-arm').type("42.47")
-		cy.get('#change-aircraft-override-moment').type("70776")
-		
+		cy.get('#change-aircraft-override-weight').type('1707.4')
+		cy.get('#change-aircraft-override-arm').type('42.47')
+		cy.get('#change-aircraft-override-moment').type('70776')
+
 		cy.get('#diff-weight').should('contain.text', '1')
 		cy.get('#diff-arm').should('contain.text', '1')
 		cy.get('#diff-moment').should('contain.text', '1')
 	})
 })
-
 
 describe('Example sheets', () => {
 	beforeEach(() => {
