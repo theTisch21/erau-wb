@@ -147,6 +147,11 @@
 		if (newPlane != null) {
 			inputFail = false
 			aircraftData = newPlane
+			if (a.toLowerCase().startsWith('t')) {
+				addNotice(
+					"You are using a TEST aircraft! This aircraft's data is set and will never change. Do not use this for actual weight and balance!"
+				)
+			}
 			refresh()
 		} else {
 			inputFail = true
@@ -274,7 +279,7 @@
 		<div id="header">
 			<h1>Welcome to Traffic Cone's ERAU Cessna 172 Weight and Balance Calculator!</h1>
 			<h2>
-				You are using V3.2 <a href="https://github.com/thetisch21/erau-wb/blob/main/CHANGELOG.md"
+				You are using V3.3 <a href="https://github.com/thetisch21/erau-wb/blob/main/CHANGELOG.md"
 					>What's new?</a
 				>
 			</h2>
@@ -284,7 +289,7 @@
 				data from ETA
 			</p>
 			<p>
-				<strong>Please note again:</strong> These numbers from ETA are up to date as of September 12
+				<strong>Please note again:</strong> These numbers from ETA are up to date as of November 10
 				2023, but may not be completely up to date. <br />Please double-check with the POH during
 				your preflight or check with the numbers on ETA to ensure accurate calculations.
 			</p>
@@ -505,6 +510,8 @@
 				class={$wind == '' ? 'empty' : 'success'}
 			/><br />
 			<h3>Weight</h3>
+			<label for="override-to-weight-box">Override Takeoff Weight:</label>
+			<input type="checkbox" id="override-to-weight-box" bind:checked={$isOverridingToWeight} />
 			{#if $isOverridingToWeight}
 				<label for="to-weight-override">Select which takeoff tables to use</label>
 				<select id="to-weight-override" bind:value={$toWeightOverride}>
@@ -522,8 +529,6 @@
 					})()}lbs performance tables
 				</p>
 			{/if}
-			<label for="override-to-weigt">Override takeoff weight:</label>
-			<input type="checkbox" id="override-to-weigt" bind:checked={$isOverridingToWeight} />
 			<h3>Altitude</h3>
 			<p>Using 6000ft (traffic pattern altitude)</p>
 			<label for="override-climb-alt">Override rate of climb altitude:</label>
