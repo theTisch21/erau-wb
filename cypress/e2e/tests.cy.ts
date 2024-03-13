@@ -511,7 +511,28 @@ describe('Winds', () => {
 //We don't do general performance testing or maneuvering speed specifically, as that's covered by the example sheets.
 
 //Takeoff weight override TODO
-describe('Takeoff weight override', () => {})
+describe('Takeoff weight override', () => {
+	beforeEach(() => {
+		cy.visit(url)
+		cy.wait(delay)
+	})
+
+	it('1', () => {
+		cy.get('#aircraft-input').type('T-68')
+		cy.get('#fs-weight').type('350')
+		cy.get('#rs-weight').type('20')
+
+		cy.get('#override-to-weight-box').click()
+		cy.get('#to-weight-override').select('2400')
+		cy.get('#pa-currentAltimiter').type('{selectAll}{backspace}30.14')
+		cy.get('#perf-temp-input').type('{selectAll}{backspace}5')
+
+		cy.get('#perf-to-roll').should('contain.text', '1217')
+		cy.get('#perf-to-50').should('contain.text', '2097')
+		cy.get('#perf-land-roll').should('contain.text', '667')
+		cy.get('#perf-land-50').should('contain.text', '1480')
+	})
+})
 
 describe('Rate of Climb', () => {
 	before(() => {
