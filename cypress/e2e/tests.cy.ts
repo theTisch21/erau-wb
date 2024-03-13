@@ -520,8 +520,27 @@ describe('Winds', () => {
 //Takeoff weight override TODO
 describe('Takeoff weight override', () => {})
 
-//ROC Altitude TODO
-describe('Rate of climb', () => {})
+describe('Rate of Climb', () => {
+	before(() => {
+		cy.visit(url)
+		cy.wait(delay)
+	})
+	it('1', () => {
+		cy.get('#perf-temp-input').type('{selectAll}{backspace}15')
+		cy.get('#override-climb-alt').click()
+		cy.get('#perf-climb-alt').type('{selectAll}{backspace}7500')
+
+		cy.get('#perf-climb').should('contain.text', '386')
+	})
+	it('2', () => {
+		cy.get('#perf-temp-input').type('{selectAll}{backspace}-15')
+		//cy.get('#override-climb-alt').click() since we already selected override during the first test
+		cy.get('#perf-climb-alt').type('{selectAll}{backspace}2500')
+
+		cy.get('#perf-climb').should('contain.text', '725')
+	})
+})
+
 
 describe('Example sheets', () => {
 	beforeEach(() => {

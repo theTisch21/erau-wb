@@ -506,8 +506,8 @@
 			/><br />
 			<h3>Weight</h3>
 			{#if $isOverridingToWeight}
-				<label for="toWeightOverride">Select which takeoff tables to use</label>
-				<select id="toWeightOverride" bind:value={$toWeightOverride}>
+				<label for="to-weight-override">Select which takeoff tables to use</label>
+				<select id="to-weight-override" bind:value={$toWeightOverride}>
 					<option selected value="2550">2550 lbs </option><option value="2400"
 						>2400 lbs
 					</option><option value="2200">2200 lbs </option></select
@@ -522,12 +522,12 @@
 					})()}lbs performance tables
 				</p>
 			{/if}
-			<label for="overrideToWeight">Override takeoff weight:</label>
-			<input type="checkbox" id="overrideToWeight" bind:checked={$isOverridingToWeight} />
+			<label for="override-to-weigt">Override takeoff weight:</label>
+			<input type="checkbox" id="override-to-weigt" bind:checked={$isOverridingToWeight} />
 			<h3>Altitude</h3>
 			<p>Using 6000ft (traffic pattern altitude)</p>
-			<label for="overrideClimbAlt">Override rate of climb altitude:</label>
-			<input type="checkbox" id="overrideClimbAlt" bind:checked={$isOverridingClimbAlt} />
+			<label for="override-climb-alt">Override rate of climb altitude:</label>
+			<input type="checkbox" id="override-climb-alt" bind:checked={$isOverridingClimbAlt} />
 			{#if $isOverridingClimbAlt}
 				<input
 					type="text"

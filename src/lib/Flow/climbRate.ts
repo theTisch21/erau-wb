@@ -58,8 +58,6 @@ export function getClimbRate(altitude: number, temp: number): number {
 		lowerAltitude -= 1000
 	}
 
-	console.log("u " + upperAltitude)
-	console.log("l " + lowerAltitude)
 	const upperLine = getClimbLine(upperAltitude)
 	const lowerLine = getClimbLine(lowerAltitude)
 
