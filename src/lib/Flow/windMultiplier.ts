@@ -7,9 +7,11 @@ export function calculateWindMultiplier(wind: number): number {
 		while (wind >= 9) {
 			wind -= 9
 			multi -= 0.1
+			if(multi <= 0) throw new Error("WBXXXX Headwind too high")
 		}
 		return round(multi, true)
 	} else {
+		if(wind > 10) throw new Error("WBXXXX Tailwind too high")
 		while (wind <= -2) {
 			wind += 2
 			multi += 0.1
