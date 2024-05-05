@@ -3,6 +3,16 @@ import { calculateTable, type TableInput, type TableOutput } from './table'
 import { round, roundToPrecision } from '../round'
 import { calculatePerformanceData } from './toLandPerformance'
 import { getClimbRate } from './climbRate'
+import { WB } from '$lib/WBError'
+
+export enum Component {
+	StartAndEnd,
+	Table,
+	PressureAltitude,
+	PerfTemp,
+	Wind,
+	PerfResult
+}
 
 export type CompleteFlowInput = {
 	table: TableInput
@@ -31,8 +41,6 @@ export type CompleteFlowOutput = {
 export function flow(input: CompleteFlowInput): CompleteFlowOutput {
 	const calculatedTable = calculateTable(input.table)
 	let maneuveringSpeed
-	// Check that weight isn't over max
-	if(calculatedTable.landing.weight > 2550) throw new Error("WBXXXX Landing weight greater than 2550lbs")
 	// If changing aircraft, use new lnd weight
 	if (!calculatedTable.changeAircraft) {
 		maneuveringSpeed = round(Math.sqrt(calculatedTable.landing.weight / 2550) * 105, true)
@@ -42,11 +50,19 @@ export function flow(input: CompleteFlowInput): CompleteFlowOutput {
 			true
 		)
 	}
+	if (input.altimiter > 35 || input.altimiter < 20) {
+		throw new WB(9999, 'Invalid altimiter setting detected', Component.PressureAltitude)
+	}
 	const pressureAltitude = roundToPrecision(
 		(29.92 - Number(input.altimiter)) * 1000 + Number(input.fieldElevation),
 		1
 	)
-	if(pressureAltitude > 12000) throw new Error("WBXXXX Pressure altitude greater than 12,000ft, performance data unavailable")
+	if (pressureAltitude > 12000)
+		throw new WB(
+			9999,
+			'Pressure altitude greater than 12,000ft, performance data unavailable',
+			Component.PerfResult
+		)
 	let takeoffWeight: number
 	if (!calculatedTable.changeAircraft) {
 		takeoffWeight = calculatedTable.takeoff.weight

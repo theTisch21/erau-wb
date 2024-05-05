@@ -17,6 +17,7 @@
 	import { flow, type CompleteFlowOutput } from '$lib/Flow/flow'
 	import { get } from 'svelte/store'
 	import type { LimitResult } from '$lib/Flow/limitCalc'
+	import type { WB } from '$lib/WBError'
 
 	//
 	// Notice
@@ -112,26 +113,88 @@
 	let toWeightOverride = writable(0)
 	let isOverridingClimbAlt = writable(false)
 	let climbAltOverride = writable('')
-	let flowResult: CompleteFlowOutput = flow({
+	let flowResult: CompleteFlowOutput = {
 		table: {
-			aircraft: aircraftData,
-			frontSeats: Number(get(frontSeatsInput)),
-			rearSeats: Number(get(rearSeatsInput)),
-			frontBags: Number(get(frontBagInput)),
-			aftBags: Number(get(rearBagInput)),
-			fuel: {
-				start: Number(get(rampFuel)),
-				taxiBurn: Number(get(taxiFuel)),
-				flightBurn: Number(get(flightFuel))
-			}
+			aircraft: {
+				weight: 0,
+				arm: 0,
+				moment: 0
+			},
+			frontSeats: {
+				weight: 0,
+				arm: 0,
+				moment: 0
+			},
+			rearSeats: {
+				weight: 0,
+				arm: 0,
+				moment: 0
+			},
+			frontBags: {
+				weight: 0,
+				arm: 0,
+				moment: 0
+			},
+			aftBags: {
+				weight: 0,
+				arm: 0,
+				moment: 0
+			},
+			zeroFuel: {
+				weight: 0,
+				arm: 0,
+				moment: 0
+			},
+			rampFuel: {
+				weight: 0,
+				gallons: 0,
+				arm: 0,
+				moment: 0
+			},
+			ramp: {
+				weight: 0,
+				arm: 0,
+				moment: 0
+			},
+			taxi: {
+				weight: 0,
+				gallons: 0,
+				arm: 0,
+				moment: 0
+			},
+			takeoff: {
+				weight: 0,
+				arm: 0,
+				moment: 0
+			},
+			flight: {
+				weight: 0,
+				gallons: 0,
+				arm: 0,
+				moment: 0
+			},
+			landing: {
+				weight: 0,
+				arm: 0,
+				moment: 0
+			},
+			changeAircraft: undefined
 		},
-		altimiter: Number(get(currentAltimiter)),
-		fieldElevation: Number(get(currentFieldElevation)),
-		headwind: get(isTailwind) ? -1 * Number(get(wind)) : Number(get(wind)),
-		toWeightOverride: get(toWeightOverride),
-		temperature: Number(get(currentTemp)),
-		climbAlt: get(isOverridingClimbAlt) ? Number(get(climbAltOverride)) : 6000
-	})
+		pressureAltitude: 0,
+		maneuveringSpeed: 0,
+		performance: {
+			takeoffRoll: 0,
+			takeoffFifty: 0,
+			climbRate: 0,
+			landRoll: 0,
+			landFifty: 0
+		},
+		validation: {
+			result: true,
+			comment: '',
+			overweightGallons: undefined
+		}
+	}
 
 	//
 	// Subscriptions
@@ -217,6 +280,7 @@
 	//
 
 	function refresh() {
+		//throw new Error("HEY!! F U!!")
 		//Complete linear flow
 		try {
 			flowResult = flow({
@@ -242,7 +306,14 @@
 				climbAlt: get(isOverridingClimbAlt) ? Number(get(climbAltOverride)) : 6000
 			})
 		} catch (error) {
-			window.alert(error)
+			//Detect if this is a WB error by checking if it has the WB code property
+			if ((error as any).wbcode == undefined) addNotice(String(error))
+			else {
+				//if error is a WB error
+				let wbError: WB = error as WB
+				//TODO currently just adds to notice, should be more prominent in location of component
+				addNotice(wbError.formatted)
+			}
 		}
 	}
 

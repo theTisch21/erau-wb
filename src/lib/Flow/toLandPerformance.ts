@@ -1,3 +1,5 @@
+import { WB } from '$lib/WBError'
+import { Component } from './flow'
 import { interpolate } from '$lib/interpolate'
 import { roundToPrecision, round } from '$lib/round'
 import { calculateWindMultiplier } from './windMultiplier'
@@ -417,27 +419,24 @@ function findNumberFromTable(table: AltitudeLine[], altitude: number, temp: numb
 	let line: AltitudeLine = { altitude: -1, c0: -1, c10: -1, c20: -1, c30: -1, c40: -1 }
 	altitude = roundToPrecision(altitude, 0.001)
 
-	if(altitude > 12000) throw new Error("WBXXXX Pressure Altitude greater than 12,000ft")
+	if (altitude > 12000) throw new WB(9999, 'Pressure Altitude greater than 12,000ft')
 
-		if(altitude < 0) throw new Error("WBXXXX Pressure altitude less than 0")
+	if (altitude < 0) throw new WB(9999, 'Pressure altitude less than 0')
 
-			if((altitude / 1000) % 2 != 0) {
-
-				result = findNumberFromTable(table, altitude + 1000, temp)
-
-			}
-
+	if ((altitude / 1000) % 2 != 0) {
+		result = findNumberFromTable(table, altitude + 1000, temp)
+	}
 
 	table.forEach((newLine) => {
 		if (newLine.altitude == altitude) line = newLine
 	})
 	if (line.altitude == -1) {
-		throw new Error("WBXXXX Altitude not in table")
+		throw new WB(9999, 'Altitude not in table', Component.PerfResult)
 	}
 	//Interpolate for temperature
 	if (temp > 40) {
 		result = findNumberFromTable(table, altitude, 40)
-		throw new Error("WBXXXX Temperature too hot, over 40˚C")
+		throw new WB(9999, 'Temperature too hot, over 40˚C')
 	} else if (temp >= 30) {
 		//Using the 30-40 block
 		result = interpolate(line.c30, line.c40, (temp - 30) / 10)
@@ -479,7 +478,7 @@ export function calculatePerformanceData(
 	if (toWeightOverride != 0) {
 		TOWeight = toWeightOverride
 	}
-	if(TOWeight > 2550) throw new Error("WBXXXX Takeoff weight greater than 2550lbs")
+	if (TOWeight > 2550) throw new WB(9999, 'Takeoff weight greater than 2550lbs', Component.Table)
 	if (TOWeight > 2400) {
 		//Use 2550 tables
 		out.takeoffRoll = round(findNumberFromTable(takeoff2550ground, altitude, temp) * multiplier)
