@@ -69,6 +69,7 @@ export function flow(input: CompleteFlowInput): CompleteFlowOutput {
 	} else {
 		takeoffWeight = calculatedTable.changeAircraft?.takeoff.weight
 	}
+	if(takeoffWeight > 2550) throw new WB(9999, "Takeoff weight greater than 2550, performance data unavailable.", Component.Table)
 	const performanceData = calculatePerformanceData(
 		takeoffWeight,
 		pressureAltitude,
