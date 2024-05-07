@@ -321,7 +321,7 @@
 			})
 		} catch (error) {
 			//Detect if this is a WB error by checking if it has the WB code property
-			if ((error as any).wbcode == undefined) handleError(new WB(9999, String(error)))
+			if ((error as any).wbcode == undefined) handleError(new WB(999, String(error)))
 			else {
 				//if error is a WB error
 				let wbError: WB = error as WB

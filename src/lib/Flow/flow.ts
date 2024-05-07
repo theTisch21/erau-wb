@@ -51,7 +51,7 @@ export function flow(input: CompleteFlowInput): CompleteFlowOutput {
 		)
 	}
 	if (input.altimiter > 35 || input.altimiter < 25) {
-		throw new WB(9999, 'Invalid altimiter setting detected', Component.PressureAltitude)
+		throw new WB(107, 'Invalid altimiter setting detected', Component.PressureAltitude)
 	}
 	const pressureAltitude = roundToPrecision(
 		(29.92 - Number(input.altimiter)) * 1000 + Number(input.fieldElevation),

@@ -419,9 +419,9 @@ function findNumberFromTable(table: AltitudeLine[], altitude: number, temp: numb
 	let line: AltitudeLine = { altitude: -1, c0: -1, c10: -1, c20: -1, c30: -1, c40: -1 }
 	altitude = roundToPrecision(altitude, 0.001)
 
-	if (altitude > 12000) throw new WB(9999, 'Pressure Altitude greater than 12,000ft')
+	if (altitude > 12000) throw new WB(108, 'Pressure Altitude greater than 12,000ft')
 
-	if (altitude < 0) throw new WB(9999, 'Pressure altitude less than 0')
+	if (altitude < 0) throw new WB(109, 'Pressure altitude less than 0')
 
 	if ((altitude / 1000) % 2 != 0) {
 		result = findNumberFromTable(table, altitude + 1000, temp)
@@ -431,12 +431,12 @@ function findNumberFromTable(table: AltitudeLine[], altitude: number, temp: numb
 		if (newLine.altitude == altitude) line = newLine
 	})
 	if (line.altitude == -1) {
-		throw new WB(9999, 'Altitude not in table', Component.PerfResult)
+		throw new WB(110, 'Altitude not in table', Component.PerfResult)
 	}
 	//Interpolate for temperature
 	if (temp > 40) {
 		result = findNumberFromTable(table, altitude, 40)
-		throw new WB(9999, 'Temperature too hot, over 40˚C')
+		throw new WB(111, 'Temperature too hot, over 40˚C')
 	} else if (temp >= 30) {
 		//Using the 30-40 block
 		result = interpolate(line.c30, line.c40, (temp - 30) / 10)
@@ -471,10 +471,10 @@ export function calculatePerformanceData(
 	toWeightOverride = 0
 ): PerformanceOutput {
 	//Altitude and temp checks are performed
-	if (winds < -10) throw new WB(9999, 'Tailwind cannot exceed 10kts per PIM 5-24', Component.Wind)
+	if (winds < -10) throw new WB(112, 'Tailwind cannot exceed 10kts per PIM 5-24', Component.Wind)
 	if (winds >= 90)
 		throw new WB(
-			9999,
+			113,
 			'Headwind cannot exceed 89kts, takeoff/landing distances would be zero. I doubt ERAU will even let you fly',
 			Component.Wind
 		)

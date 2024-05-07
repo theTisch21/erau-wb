@@ -28,7 +28,7 @@ function getClimbLine(altitude: number): ClimbLine {
 	climbRateList.forEach((line) => {
 		if (line.altitude == altitude) out = line
 	})
-	if (out == null) throw new WB(9999, 'internal error')
+	if (out == null) throw new WB(103, 'internal error')
 	return out
 }
 
@@ -42,11 +42,11 @@ export function getClimbRate(altitude: number, temp: number): number {
 		)
 	}
 
-	if (temp > 40) throw new WB(9999, 'Temperature is > 40°C', Component.PerfTemp)
+	if (temp > 40) throw new WB(104, 'Temperature is > 40°C', Component.PerfTemp)
 
-	if (Number.isNaN(altitude)) throw new WB(9999, 'Climb altitude invalid', Component.PerfResult) //If invalid input is passed, err on the side of caution. TODO make this throw an error
+	if (Number.isNaN(altitude)) throw new WB(105, 'Climb altitude invalid', Component.PerfResult) //If invalid input is passed, err on the side of caution. TODO make this throw an error
 	if (altitude > 12000) {
-		throw new WB(9999, 'Pressure altitude greater than 12,000ft', Component.PressureAltitude)
+		throw new WB(106, 'Pressure altitude greater than 12,000ft', Component.PressureAltitude)
 	}
 	if (altitude < -10000) {
 		throw new WB(
