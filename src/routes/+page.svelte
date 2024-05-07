@@ -376,16 +376,6 @@
 	</head>
 	<body>
 		<div id="header">
-			<p>
-				{#each $errorWritable as e}
-					{e.formatted}<br />
-				{/each}
-				<br />
-
-				{#each $persistientErrors as e}
-					{e.formatted}<br />
-				{/each}
-			</p>
 			<h1>Welcome to Traffic Cone's ERAU Cessna 172 Weight and Balance Calculator!</h1>
 			<h2>
 				You are using V3.4 <a href="https://github.com/thetisch21/erau-wb/blob/main/CHANGELOG.md"
@@ -661,6 +651,7 @@
 			<p id="perf-land-50">Land 50ft: {flowResult.performance.landFifty}</p>
 		</div>
 		<ErrorShower component={Component.PerfResult} alerts={errorWritable} />
+		<ErrorShower component={Component.StartAndEnd} alerts={errorWritable} />
 	</body>
 </main>
 
