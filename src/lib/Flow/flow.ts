@@ -67,7 +67,7 @@ export function flow(input: CompleteFlowInput): CompleteFlowOutput {
 	if (!calculatedTable.changeAircraft) {
 		takeoffWeight = calculatedTable.takeoff.weight
 	} else {
-		takeoffWeight = calculatedTable.changeAircraft?.takeoff.weight
+		takeoffWeight = calculatedTable.changeAircraft.takeoff.weight
 	}
 	if (takeoffWeight < 0)
 		throw new WB(
