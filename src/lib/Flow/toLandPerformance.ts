@@ -470,6 +470,9 @@ export function calculatePerformanceData(
 	winds: number,
 	toWeightOverride = 0
 ): PerformanceOutput {
+	//Altitude and temp checks are performed 
+	if(winds < -10) throw new WB(9999, "Tailwind cannot exceed 10kts per PIM 5-24", Component.Wind)
+	if(winds >= 90) throw new WB(9999, "Headwind cannot exceed 89kts, takeoff/landing distances would be zero. I doubt ERAU will even let you fly", Component.Wind)
 	const multiplier = calculateWindMultiplier(winds)
 	const out: PerformanceOutput = { takeoffRoll: 0, takeoffFifty: 0, landRoll: 0, landFifty: 0 }
 	out.landRoll = round(findNumberFromTable(landingGroundRoll, altitude, temp) * multiplier)
@@ -478,7 +481,6 @@ export function calculatePerformanceData(
 	if (toWeightOverride != 0) {
 		TOWeight = toWeightOverride
 	}
-	if (TOWeight > 2550) throw new WB(9999, 'Takeoff weight greater than 2550lbs', Component.Table)
 	if (TOWeight > 2400) {
 		//Use 2550 tables
 		out.takeoffRoll = round(findNumberFromTable(takeoff2550ground, altitude, temp) * multiplier)

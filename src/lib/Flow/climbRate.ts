@@ -1,5 +1,7 @@
+import { WB } from '$lib/WBError'
 import { interpolate } from '$lib/interpolate'
 import { round, roundToPrecision } from '$lib/round'
+import { Component } from './flow'
 
 export type ClimbLine = {
 	altitude: number
@@ -26,27 +28,26 @@ function getClimbLine(altitude: number): ClimbLine {
 	climbRateList.forEach((line) => {
 		if (line.altitude == altitude) out = line
 	})
-	if (out == null) throw new Error('WBXXXX internal error')
+	if (out == null) throw new WB(9999, 'internal error')
 	return out
 }
 
 export function getClimbRate(altitude: number, temp: number): number {
 	//There's no data for 12000 and 40, so check for that
 	if (altitude > 10000 && temp > 20) {
-		throw new Error(
-			'WBXXXX Pressure altitude exceeds 10,000ft and temperature 20°C. There is no data available for this range'
-		)
+		throw new WB(9999, 'Pressure altitude exceeds 10,000ft and temperature 20°C. There is no data available for this range', Component.PerfTemp)
 	}
 
-	if (temp > 40) throw new Error('WBXXXX Temperature is > 40°C')
+	if (temp > 40) throw new WB(9999, 'Temperature is > 40°C', Component.PerfTemp)
 
-	if (Number.isNaN(altitude)) throw new Error('WBXXXX Climb altitude invalid') //If invalid input is passed, err on the side of caution. TODO make this throw an error
+	if (Number.isNaN(altitude)) throw new WB(9999, 'Climb altitude invalid', Component.PerfResult) //If invalid input is passed, err on the side of caution. TODO make this throw an error
 	if (altitude > 12000) {
-		throw new Error('WBXXXX Pressure altitude greater than 12,000ft')
+		throw new WB(9999, 'Pressure altitude greater than 12,000ft', Component.PressureAltitude)
 	}
-	if (altitude < 0) {
-		throw new Error('WBXXXX Pressure altitude less than 0ft')
+	if (altitude < -10000) {
+		throw new WB(9999, 'Pressure altitude less than negative 10,000ft, data likely not valid', Component.PressureAltitude)
 	}
+	if(altitude < 0) altitude = 0
 
 	let upperAltitude = roundToPrecision(altitude, 0.001, false) //Get next thousand up
 	if ((upperAltitude / 1000) % 2 != 0) {

@@ -50,7 +50,7 @@ export function flow(input: CompleteFlowInput): CompleteFlowOutput {
 			true
 		)
 	}
-	if (input.altimiter > 35 || input.altimiter < 20) {
+	if (input.altimiter > 35 || input.altimiter < 25) {
 		throw new WB(9999, 'Invalid altimiter setting detected', Component.PressureAltitude)
 	}
 	const pressureAltitude = roundToPrecision(
@@ -61,7 +61,7 @@ export function flow(input: CompleteFlowInput): CompleteFlowOutput {
 		throw new WB(
 			9999,
 			'Pressure altitude greater than 12,000ft, performance data unavailable',
-			Component.PerfResult
+			Component.PressureAltitude
 		)
 	let takeoffWeight: number
 	if (!calculatedTable.changeAircraft) {
@@ -69,7 +69,8 @@ export function flow(input: CompleteFlowInput): CompleteFlowOutput {
 	} else {
 		takeoffWeight = calculatedTable.changeAircraft?.takeoff.weight
 	}
-	if(takeoffWeight > 2550) throw new WB(9999, "Takeoff weight greater than 2550, performance data unavailable.", Component.Table)
+	if(takeoffWeight < 0) throw new WB(9999, "Takeoff weight less than 0lbs, data likely invalid. Cannot continue.", Component.Table)
+	if(takeoffWeight > 10000) throw new WB(9999, "Takeoff weight greater than 10,000lbs, data likely invalid. Cannot continue.", Component.Table)
 	const performanceData = calculatePerformanceData(
 		takeoffWeight,
 		pressureAltitude,
