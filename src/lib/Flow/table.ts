@@ -102,7 +102,12 @@ export function calculateTable(input: TableInput): TableOutput {
 	}
 
 	//Ramp fuel
-	if(input.fuel.start > 53) throw new WB(9999, "Fuel entered is more than 53 gallons, which is above max capacity", Component.Table)
+	if (input.fuel.start > 53)
+		throw new WB(
+			9999,
+			'Fuel entered is more than 53 gallons, which is above max capacity',
+			Component.Table
+		)
 	f = input.fuel.start
 	const rampFuel: DataFuelLine = {
 		gallons: f,

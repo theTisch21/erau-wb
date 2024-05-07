@@ -35,7 +35,11 @@ function getClimbLine(altitude: number): ClimbLine {
 export function getClimbRate(altitude: number, temp: number): number {
 	//There's no data for 12000 and 40, so check for that
 	if (altitude > 10000 && temp > 20) {
-		throw new WB(9999, 'Pressure altitude exceeds 10,000ft and temperature 20°C. There is no data available for this range', Component.PerfTemp)
+		throw new WB(
+			9999,
+			'Pressure altitude exceeds 10,000ft and temperature 20°C. There is no data available for this range',
+			Component.PerfTemp
+		)
 	}
 
 	if (temp > 40) throw new WB(9999, 'Temperature is > 40°C', Component.PerfTemp)
@@ -45,9 +49,13 @@ export function getClimbRate(altitude: number, temp: number): number {
 		throw new WB(9999, 'Pressure altitude greater than 12,000ft', Component.PressureAltitude)
 	}
 	if (altitude < -10000) {
-		throw new WB(9999, 'Pressure altitude less than negative 10,000ft, data likely not valid', Component.PressureAltitude)
+		throw new WB(
+			9999,
+			'Pressure altitude less than negative 10,000ft, data likely not valid',
+			Component.PressureAltitude
+		)
 	}
-	if(altitude < 0) altitude = 0
+	if (altitude < 0) altitude = 0
 
 	let upperAltitude = roundToPrecision(altitude, 0.001, false) //Get next thousand up
 	if ((upperAltitude / 1000) % 2 != 0) {

@@ -470,9 +470,14 @@ export function calculatePerformanceData(
 	winds: number,
 	toWeightOverride = 0
 ): PerformanceOutput {
-	//Altitude and temp checks are performed 
-	if(winds < -10) throw new WB(9999, "Tailwind cannot exceed 10kts per PIM 5-24", Component.Wind)
-	if(winds >= 90) throw new WB(9999, "Headwind cannot exceed 89kts, takeoff/landing distances would be zero. I doubt ERAU will even let you fly", Component.Wind)
+	//Altitude and temp checks are performed
+	if (winds < -10) throw new WB(9999, 'Tailwind cannot exceed 10kts per PIM 5-24', Component.Wind)
+	if (winds >= 90)
+		throw new WB(
+			9999,
+			'Headwind cannot exceed 89kts, takeoff/landing distances would be zero. I doubt ERAU will even let you fly',
+			Component.Wind
+		)
 	const multiplier = calculateWindMultiplier(winds)
 	const out: PerformanceOutput = { takeoffRoll: 0, takeoffFifty: 0, landRoll: 0, landFifty: 0 }
 	out.landRoll = round(findNumberFromTable(landingGroundRoll, altitude, temp) * multiplier)

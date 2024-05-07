@@ -32,7 +32,7 @@
 		errorWritable.set([...persistient])
 	}
 	function handleError(error: WB, persistient: boolean = false) {
-		if(persistient) {
+		if (persistient) {
 			let p = get(persistientErrors)
 			p.push(error)
 			persistientErrors.set(p)
@@ -221,7 +221,11 @@
 			aircraftData = newPlane
 			if (a.toLowerCase().startsWith('t')) {
 				handleError(
-					new WB(9999, "You are using a TEST aircraft! This aircraft's data is set and will never change. Do not use this for actual weight and balance!", Component.Table)
+					new WB(
+						9999,
+						"You are using a TEST aircraft! This aircraft's data is set and will never change. Do not use this for actual weight and balance!",
+						Component.Table
+					)
 				)
 			}
 			refresh()
@@ -338,12 +342,26 @@
 		if (metar.temp != null) {
 			$currentTemp = metar.temp.toString()
 		} else {
-			handleError(new WB(9999, 'Unable to get temperature from METAR. Please add it manually', Component.PerfTemp), true)
+			handleError(
+				new WB(
+					9999,
+					'Unable to get temperature from METAR. Please add it manually',
+					Component.PerfTemp
+				),
+				true
+			)
 		}
 		if (metar.altimiter != null) {
 			$currentAltimiter = metar.altimiter.toString()
 		} else {
-			handleError(new WB(9999, 'Unable to get altimiter from METAR. Please add it manually', Component.PressureAltitude), true)
+			handleError(
+				new WB(
+					9999,
+					'Unable to get altimiter from METAR. Please add it manually',
+					Component.PressureAltitude
+				),
+				true
+			)
 		}
 
 		//User data
@@ -360,12 +378,12 @@
 		<div id="header">
 			<p>
 				{#each $errorWritable as e}
-					{e.formatted}<br>
+					{e.formatted}<br />
 				{/each}
-				<br>
+				<br />
 
 				{#each $persistientErrors as e}
-					{e.formatted}<br>
+					{e.formatted}<br />
 				{/each}
 			</p>
 			<h1>Welcome to Traffic Cone's ERAU Cessna 172 Weight and Balance Calculator!</h1>

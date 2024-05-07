@@ -69,8 +69,18 @@ export function flow(input: CompleteFlowInput): CompleteFlowOutput {
 	} else {
 		takeoffWeight = calculatedTable.changeAircraft?.takeoff.weight
 	}
-	if(takeoffWeight < 0) throw new WB(9999, "Takeoff weight less than 0lbs, data likely invalid. Cannot continue.", Component.Table)
-	if(takeoffWeight > 10000) throw new WB(9999, "Takeoff weight greater than 10,000lbs, data likely invalid. Cannot continue.", Component.Table)
+	if (takeoffWeight < 0)
+		throw new WB(
+			9999,
+			'Takeoff weight less than 0lbs, data likely invalid. Cannot continue.',
+			Component.Table
+		)
+	if (takeoffWeight > 10000)
+		throw new WB(
+			9999,
+			'Takeoff weight greater than 10,000lbs, data likely invalid. Cannot continue.',
+			Component.Table
+		)
 	const performanceData = calculatePerformanceData(
 		takeoffWeight,
 		pressureAltitude,
