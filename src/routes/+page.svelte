@@ -383,10 +383,13 @@
 				>
 			</h2>
 			<p>Fill out the info below to calculate weight and balance for your aircraft!</p>
-			<p><strong>DISCLAIMER:</strong> These calculations are provided as reference, with no guarantee of accuracy, 
-				and should be checked against your own calculations. You, as either the pilot in command or acting pilot in command, 
-				are ultimately responsible for ensuring accurate weight and balance and performance calculations, 
-				and verifying they are within the limits outlined in the Pilot's Operating Handbook and the ERAU Flight Operations Manual.</p>
+			<p>
+				<strong>DISCLAIMER:</strong> These calculations are provided as reference, with no guarantee
+				of accuracy, and should be checked against your own calculations. You, as either the pilot in
+				command or acting pilot in command, are ultimately responsible for ensuring accurate weight and
+				balance and performance calculations, and verifying they are within the limits outlined in the
+				Pilot's Operating Handbook and the ERAU Flight Operations Manual.
+			</p>
 			<p>
 				<strong>Please note:</strong> All numbers are rounded UP to 2 decimal places, except for the
 				data from ETA
