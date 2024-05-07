@@ -26,24 +26,18 @@
 
 	let persistientErrors: Writable<WB[]> = writable([])
 	let errorWritable: Writable<WB[]> = writable([])
+	// Most errors can be cleared if the user changes their input. This function is called every refresh to make sure those errors don't build up.
 	function wipeTempErrors() {
-		console.log((get(persistientErrors).length))
-		console.log(get(errorWritable).length);
-		
-		errorWritable.set(get(persistientErrors))
-		console.log(get(errorWritable).length);
-		
+		let persistient = get(persistientErrors)
+		errorWritable.set([...persistient])
 	}
 	function handleError(error: WB, persistient: boolean = false) {
 		if(persistient) {
-			console.log("persistient");
-			
 			let p = get(persistientErrors)
 			p.push(error)
 			persistientErrors.set(p)
 		}
-		console.log("error");
-		
+		// For any error
 		let e = get(errorWritable)
 		e.push(error)
 		errorWritable.set(e)

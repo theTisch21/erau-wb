@@ -16,16 +16,21 @@
     })
 </script>
 
-<div class="notice">
-    <h1>ALERT</h1>
+<main>
+    {#if alertArray.length > 0}
+    <div class="notice">
+        <h1>ALERT</h1>
         {#each alertArray as a}
-            <p>{a.formatted}</p>
+        <p>{a.formatted}</p>
         {/each}
-</div>
-
+    </div>
+    {/if}
+</main>
+    
 <style>
 	.notice {
 		padding: 2em;
+        margin: 1em 0;
 		background-color: #f70;
 		color: black;
 		font-size: larger;
