@@ -1,4 +1,4 @@
-/// <reference types="cypress" />
+/// <reference types="@cypress/xpath" />
 let delay = 1000
 let url = 'http://127.0.0.1:3000'
 
@@ -289,7 +289,7 @@ describe('table calculations', () => {
 })
 
 describe('Aircraft Lookups', () => {
-	before(() => {
+	beforeEach(() => {
 		cy.visit(url)
 		cy.wait(delay)
 	})
@@ -317,7 +317,7 @@ describe('Aircraft Lookups', () => {
 })
 
 describe('Pressure Altitude', () => {
-	before(() => {
+	beforeEach(() => {
 		cy.visit(url)
 		cy.wait(delay)
 	})
@@ -340,7 +340,7 @@ describe('Pressure Altitude', () => {
 })
 
 describe('Aircraft overrides', () => {
-	before(() => {
+	beforeEach(() => {
 		cy.visit(url)
 		cy.wait(delay)
 		//Click override
@@ -535,7 +535,7 @@ describe('Takeoff weight override', () => {
 })
 
 describe('Rate of Climb', () => {
-	before(() => {
+	beforeEach(() => {
 		cy.visit(url)
 		cy.wait(delay)
 	})
@@ -548,7 +548,7 @@ describe('Rate of Climb', () => {
 	})
 	it('2', () => {
 		cy.get('#perf-temp-input').type('{selectAll}{backspace}-15')
-		//cy.get('#override-climb-alt').click() since we already selected override during the first test
+		cy.get('#override-climb-alt').click()
 		cy.get('#perf-climb-alt').type('{selectAll}{backspace}2500')
 
 		cy.get('#perf-climb').should('contain.text', '725')

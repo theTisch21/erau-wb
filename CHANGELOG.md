@@ -1,3 +1,7 @@
+# v3.5 Validation
+
+This update adds several checks for valid input, and error codes for invalid input. This also replaces the notice system with the error management system, consolidating error reporting
+
 # v3.4 QOL 2
 
 Another small quality of life update. This adds an override for change in aircraft and for the rate of climb altitude.
