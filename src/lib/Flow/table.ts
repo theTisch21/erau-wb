@@ -1,4 +1,6 @@
+import { WB } from '$lib/WBError'
 import { round, roundToPrecision } from '$lib/round'
+import { Component } from './flow'
 
 const ARMS = {
 	frontSeats: 37,
@@ -27,6 +29,7 @@ export type TableInput = {
 		taxiBurn: number //Should be negative
 		flightBurn: number //Should be negative
 	}
+	isChangingAircraft?: boolean
 	changeInAircraft?: DataLine
 }
 
@@ -59,7 +62,6 @@ function fround(input: number, down = false): number {
 }
 
 export function calculateTable(input: TableInput): TableOutput {
-	//TODO What
 	const aircraft: DataLine = {
 		weight: input.aircraft.weight,
 		arm: input.aircraft.arm,
@@ -100,6 +102,12 @@ export function calculateTable(input: TableInput): TableOutput {
 	}
 
 	//Ramp fuel
+	if (input.fuel.start > 53)
+		throw new WB(
+			9999,
+			'Fuel entered is more than 53 gallons, which is above max capacity',
+			Component.Table
+		)
 	f = input.fuel.start
 	const rampFuel: DataFuelLine = {
 		gallons: f,
@@ -154,7 +162,7 @@ export function calculateTable(input: TableInput): TableOutput {
 	}
 
 	//Change in aircraft?
-	if (!input.changeInAircraft) {
+	if (!input.isChangingAircraft || !input.changeInAircraft) {
 		//NOT changing
 		return {
 			aircraft: aircraft,

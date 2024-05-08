@@ -1,3 +1,24 @@
+# v3.5.1 Disclaimer
+
+Adds a general disclaimer for the data provided.
+
+# v3.5 Validation
+
+This update adds several checks for valid input, and error codes for invalid input. This also replaces the notice system with the error management system, consolidating error reporting.
+
+# v3.4 QOL 2
+
+Another small quality of life update. This adds an override for change in aircraft and for the rate of climb altitude.
+
+# v3.3 Update aircraft + test aircraft
+
+This update updates all the aircraft data from ETA
+This also changes the internal tests to use specific test aircraft, rather than real aircraft which can change over time. This will prevent tests from breaking each time aircraft data is updated.
+
+# v3.2 New AWC api
+
+With the release of the new AWC API, this update allows the calculator to properly pull data from the new service. Temperatures and altimiters will now load properly.
+
 # v3.1 Warning colors
 
 Changes the colors of warnings and notices to be less intense and compliant with accessibility standards.

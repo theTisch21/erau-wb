@@ -21,14 +21,29 @@
 
 <tr>
 	<td>{name}</td>
-	<td id="{testTag}-weight"
-		><input type="text" bind:value={$iweight} class={$iweight == '' ? 'empty' : 'success'} /></td
+	<td
+		><input
+			id="{testTag}-weight"
+			type="text"
+			bind:value={$iweight}
+			class={$iweight == '' ? 'empty' : 'success'}
+		/></td
 	>
-	<td id="{testTag}-arm"
-		><input type="text" bind:value={$iarm} class={$iarm == '' ? 'empty' : 'success'} /></td
+	<td
+		><input
+			id="{testTag}-arm"
+			type="text"
+			bind:value={$iarm}
+			class={$iarm == '' ? 'empty' : 'success'}
+		/></td
 	>
-	<td id="{testTag}-moment"
-		><input type="text" bind:value={$imoment} class={$imoment == '' ? 'empty' : 'success'} /></td
+	<td
+		><input
+			id="{testTag}-moment"
+			type="text"
+			bind:value={$imoment}
+			class={$imoment == '' ? 'empty' : 'success'}
+		/></td
 	>
 </tr>
 
