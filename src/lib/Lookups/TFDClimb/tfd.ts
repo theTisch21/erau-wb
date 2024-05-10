@@ -1,3 +1,5 @@
+import { Component } from '$lib/Flow/flow'
+import { WB } from '$lib/WBError'
 import { interpolate } from '$lib/interpolate'
 import { round, roundTo2Thousand, roundToPrecision } from '$lib/round'
 
@@ -35,7 +37,7 @@ const tfdList: tfdLine[] = [
 
 function getTfdLine(altitude: number): tfdLine {
 	let out = null
-	if (altitude > 12000) return getTfdLine(12000)
+	if (altitude > 12000) throw new WB(888,"Altitude greater than 12,000ft. No data available.", Component.TFDSAD)
 	tfdList.forEach((item) => {
 		if (item.altitude == altitude) {
 			out = item
@@ -48,15 +50,12 @@ function getTfdLine(altitude: number): tfdLine {
 }
 
 function getInterpolatedTfdLine(altitude: number, temp: number): tfdLine {
-	if (Number.isNaN(altitude)) altitude = 0
-	if (altitude > 12000) {
-		throw new Error(
-			"Altitude above service ceiling. Are you sure whatever you're doing is worth it?"
-		)
-	}
-	const upperAlt = roundTo2Thousand(altitude, false) //Round to next 2thousand up
+	if (Number.isNaN(altitude)) throw new WB(888, "Altitude not a number", Component.TFDSAD)
+	if (altitude > 12000) throw new WB(888, "Altitude above 12,000ft. No data available.", Component.TFDSAD)
+	if (altitude < 0) throw new WB(888, "Altitude less than 0. No data available.", Component.TFDSAD)
+	const upperAlt = roundToPrecision(altitude, .001, false) //Round to next thousand up
 	console.log(upperAlt)
-	const lowerAlt = roundTo2Thousand(altitude, true) //Round to next 2thousand down
+	const lowerAlt = roundToPrecision(altitude, .001, true) //Round to next thousand down
 	console.log(lowerAlt)
 
 	if (upperAlt == lowerAlt) return getTfdLine(upperAlt) //No interpolation needed
@@ -90,17 +89,23 @@ export function calculateTFD(
 	endAlt: number,
 	endTemp: number
 ): tfdOutput {
+	console.log("START");
+	
 	console.log(startAlt)
 	console.log(startTemp)
 	console.log(endAlt)
 	console.log(endTemp)
+	console.log("CALC");
+	
 	const startLine = getInterpolatedTfdLine(startAlt, startTemp)
 	const endLine = getInterpolatedTfdLine(endAlt, endTemp)
+	console.log("LINES");
+	
 	console.log(startLine)
 	console.log(endLine)
-	const time = endLine.time - startLine.time
-	const fuel = endLine.fuel - startLine.fuel
-	const distance = endLine.distance - startLine.distance
+	const time = roundToPrecision(endLine.time - startLine.time, 10)
+	const fuel = round(endLine.fuel - startLine.fuel)
+	const distance = roundToPrecision(endLine.distance - startLine.distance, 10)
 	return {
 		time: time,
 		fuel: fuel,

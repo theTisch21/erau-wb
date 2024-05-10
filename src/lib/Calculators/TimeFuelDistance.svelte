@@ -1,7 +1,18 @@
 <script lang="ts">
+	import ErrorShower from '$lib/ErrorShower.svelte'
+	import { Component } from '$lib/Flow/flow'
 	import { calculateTFD, type tfdOutput } from '$lib/Lookups/TFDClimb/tfd'
+	import type { WB } from '$lib/WBError'
 	import { round } from '$lib/round'
-	import { get, writable } from 'svelte/store'
+	import { get, writable, type Writable } from 'svelte/store'
+
+	let errorWritable: Writable<WB[]> = writable([])
+	function handleError(error: WB) {
+		error.component = Component.TFDSAD
+		let e = get(errorWritable)
+		e.push(error)
+		errorWritable.set(e)
+	}
 
 	let output: tfdOutput = calculateTFD(0, 0, 0, 0)
 
@@ -16,12 +27,23 @@
 	endTemp.subscribe(refresh)
 
 	function refresh() {
-		output = calculateTFD(
-			Number(get(startAlt)),
-			Number(get(startTemp)),
-			Number(get(endAlt)),
-			Number(get(endTemp))
-		)
+		errorWritable.set([])
+		try {
+			output = calculateTFD(
+				Number(get(startAlt)),
+				Number(get(startTemp)),
+				Number(get(endAlt)),
+				Number(get(endTemp))
+			)
+		} catch (error) {
+			//Detect if this is a WB error by checking if it has the WB code property
+			if ((error as any).wbcode == undefined) handleError(new WB(999, String(error)))
+			else {
+				//if error is a WB error
+				let wbError: WB = error as WB
+				handleError(wbError)
+			}
+		}
 		console.log(output)
 	}
 </script>
@@ -70,6 +92,7 @@
 	<p id="tfd-t-t">Time: {round(output.endLine.time)}</p>
 	<p id="tfd-t-f">Fuel: {round(output.endLine.fuel)}</p>
 	<p id="tfd-t-d">Distance: {round(output.endLine.distance)}</p>
+	<ErrorShower component={Component.TFDSAD} alerts={errorWritable} />
 </main>
 
 <style>

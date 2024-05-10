@@ -11,7 +11,8 @@ export enum Component {
 	PressureAltitude,
 	PerfTemp,
 	Wind,
-	PerfResult
+	PerfResult,
+	TFDSAD
 }
 
 export type CompleteFlowInput = {
