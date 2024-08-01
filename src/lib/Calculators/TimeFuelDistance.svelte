@@ -2,7 +2,7 @@
 	import ErrorShower from '$lib/ErrorShower.svelte'
 	import { Component } from '$lib/Flow/flow'
 	import { calculateTFD, type tfdOutput } from '$lib/Lookups/TFDClimb/tfd'
-	import type { WB } from '$lib/WBError'
+	import { WB } from '$lib/WBError'
 	import { round } from '$lib/round'
 	import { get, writable, type Writable } from 'svelte/store'
 
@@ -41,7 +41,6 @@
 			else {
 				//if error is a WB error
 				let wbError: WB = error as WB
-				handleError(wbError)
 			}
 		}
 		console.log(output)
@@ -78,20 +77,33 @@
 		placeholder="End temperature °C"
 		class={$endTemp == '' ? 'empty' : 'success'}
 	/><br />
-	<p>{JSON.stringify(output)}</p>
+
 	<h3>Result:</h3>
 	<p id="tfd-res-t">Time: {round(output.time)}</p>
 	<p id="tfd-res-f">Fuel: {round(output.fuel)}</p>
-	<p id="tfd-res-f-taxi">Fuel (+ 1.4 gal. for taxi): {round(output.fuel) + 1.4}</p>
+	<p id="tfd-res-f-taxi">Fuel (+ 1.4 gal. for taxi): {round(output.fuel)}</p>
 	<p id="tfd-res-d">Distance: {round(output.distance)}</p>
-	<h3>Bottom of climb:</h3>
+
+	<h3>Bottom of climb (original):</h3>
 	<p id="tfd-b-t">Time: {round(output.startLine.time)}</p>
 	<p id="tfd-b-f">Fuel: {round(output.startLine.fuel)}</p>
 	<p id="tfd-b-d">Distance: {round(output.startLine.distance)}</p>
-	<h3>Top of climb:</h3>
+
+	<h3>Bottom of climb (temperature corrected):</h3>
+	<p id="tfd-b-t">Time: {round(output.modifiedStartLine.time)}</p>
+	<p id="tfd-b-f">Fuel: {round(output.modifiedStartLine.fuel)}</p>
+	<p id="tfd-b-d">Distance: {round(output.modifiedStartLine.distance)}</p>
+
+	<h3>Top of climb (original):</h3>
 	<p id="tfd-t-t">Time: {round(output.endLine.time)}</p>
 	<p id="tfd-t-f">Fuel: {round(output.endLine.fuel)}</p>
 	<p id="tfd-t-d">Distance: {round(output.endLine.distance)}</p>
+
+	<h3>Top of climb (temperature corrected):</h3>
+	<p id="tfd-t-t">Time: {round(output.modifiedEndLine.time)}</p>
+	<p id="tfd-t-f">Fuel: {round(output.modifiedEndLine.fuel)}</p>
+	<p id="tfd-t-d">Distance: {round(output.modifiedEndLine.distance)}</p>
+
 	<ErrorShower component={Component.TFDSAD} alerts={errorWritable} />
 </main>
 

@@ -1,25 +1,30 @@
 import { Component } from '$lib/Flow/flow'
 import { WB } from '$lib/WBError'
 import { interpolate } from '$lib/interpolate'
-import { round, roundTo2Thousand, roundToPrecision } from '$lib/round'
+import { round, roundToPrecision } from '$lib/round'
 
 export type tfdOutput = {
 	time: number
 	fuel: number
 	distance: number
-	startLine: tfdLine
-	endLine: tfdLine
+	startLine: tfdSrcLine
+	modifiedStartLine: tfdLine
+	endLine: tfdSrcLine
+	modifiedEndLine: tfdLine
 }
 
 export type tfdLine = {
 	altitude: number
-	stdTemp: number
 	time: number
 	fuel: number
 	distance: number
 }
 
-const tfdList: tfdLine[] = [
+export type tfdSrcLine = tfdLine & {
+	stdTemp: number
+}
+
+const tfdList: tfdSrcLine[] = [
 	{ altitude: 0, stdTemp: 15, time: 0, fuel: 0, distance: 0 },
 	{ altitude: 1000, stdTemp: 13, time: 1, fuel: 0.4, distance: 2 },
 	{ altitude: 2000, stdTemp: 11, time: 3, fuel: 0.8, distance: 4 },
@@ -35,52 +40,63 @@ const tfdList: tfdLine[] = [
 	{ altitude: 12000, stdTemp: -9, time: 28, fuel: 5, distance: 38 }
 ]
 
-function getTfdLine(altitude: number): tfdLine {
+function getSourceTfdLine(altitude: number): tfdSrcLine {
 	let out = null
-	if (altitude > 12000) throw new WB(888,"Altitude greater than 12,000ft. No data available.", Component.TFDSAD)
+	if (altitude > 12000)
+		throw new WB(888, 'Altitude greater than 12,000ft. No data available.', Component.TFDSAD)
 	tfdList.forEach((item) => {
 		if (item.altitude == altitude) {
 			out = item
 		}
 	})
 	if (out == null) {
-		return getTfdLine(altitude + 2000) //Go to next thousand
+		return getSourceTfdLine(altitude + 2000) //Go to next thousand
 	}
 	return out
 }
 
-function getInterpolatedTfdLine(altitude: number, temp: number): tfdLine {
-	if (Number.isNaN(altitude)) throw new WB(888, "Altitude not a number", Component.TFDSAD)
-	if (altitude > 12000) throw new WB(888, "Altitude above 12,000ft. No data available.", Component.TFDSAD)
-	if (altitude < 0) throw new WB(888, "Altitude less than 0. No data available.", Component.TFDSAD)
-	const upperAlt = roundToPrecision(altitude, .001, false) //Round to next thousand up
+function getAltitudeTfdLine(altitude: number): tfdSrcLine {
+	if (Number.isNaN(altitude)) throw new WB(888, 'Altitude not a number', Component.TFDSAD)
+	if (altitude > 12000)
+		throw new WB(888, 'Altitude above 12,000ft. No data available.', Component.TFDSAD)
+	if (altitude < 0) throw new WB(888, 'Altitude less than 0. No data available.', Component.TFDSAD)
+	const upperAlt = roundToPrecision(altitude, 0.001, false) //Round to next thousand up
 	console.log(upperAlt)
-	const lowerAlt = roundToPrecision(altitude, .001, true) //Round to next thousand down
+	const lowerAlt = roundToPrecision(altitude, 0.001, true) //Round to next thousand down
 	console.log(lowerAlt)
 
-	if (upperAlt == lowerAlt) return getTfdLine(upperAlt) //No interpolation needed
+	if (upperAlt == lowerAlt) return getSourceTfdLine(upperAlt) //No interpolation needed
 
-	const upperLine = getTfdLine(upperAlt)
+	const upperLine = getSourceTfdLine(upperAlt)
 	console.log(upperLine)
-	const lowerLine = getTfdLine(lowerAlt)
+	const lowerLine = getSourceTfdLine(lowerAlt)
 	console.log(lowerLine)
 
 	const percent = (altitude - lowerAlt) / (upperAlt - lowerAlt)
 	console.log('P ' + percent)
-	const standardTemp = interpolate(lowerLine.stdTemp, upperLine.stdTemp, percent)
-	const multi = calculateMultiplier(temp - standardTemp)
 	return {
 		altitude: round(interpolate(lowerLine.altitude, upperLine.altitude, percent)),
-		time: round(interpolate(lowerLine.time, upperLine.time, percent) * multi),
-		fuel: round(interpolate(lowerLine.fuel, upperLine.fuel, percent) * multi),
-		distance: round(interpolate(lowerLine.distance, upperLine.distance, percent) * multi),
-		stdTemp: standardTemp
+		time: round(interpolate(lowerLine.time, upperLine.time, percent)),
+		fuel: round(interpolate(lowerLine.fuel, upperLine.fuel, percent)),
+		distance: round(interpolate(lowerLine.distance, upperLine.distance, percent)),
+		stdTemp: round(interpolate(lowerLine.stdTemp, upperLine.stdTemp, percent))
 	}
 }
 
-function calculateMultiplier(temp: number): number {
-	if (temp < 0) return 1
-	return roundToPrecision(temp / 10, 10) + 1
+function modifyTfdLineForTemp(line: tfdSrcLine, temp: number): tfdLine {
+	const multi = calculateMultiplier(temp - line.stdTemp)
+	return {
+		altitude: line.altitude,
+		time: round(line.time * multi),
+		fuel: round(line.fuel * multi),
+		distance: round(line.distance * multi)
+	}
+}
+
+function calculateMultiplier(tempDiff: number): number {
+	if (tempDiff < 0) return 1
+	if (tempDiff > 100) throw new WB(888, 'Temperatures invalid')
+	return round(tempDiff / 100) + 1
 }
 
 export function calculateTFD(
@@ -89,28 +105,35 @@ export function calculateTFD(
 	endAlt: number,
 	endTemp: number
 ): tfdOutput {
-	console.log("START");
-	
+	console.log('START')
+
 	console.log(startAlt)
 	console.log(startTemp)
 	console.log(endAlt)
 	console.log(endTemp)
-	console.log("CALC");
-	
-	const startLine = getInterpolatedTfdLine(startAlt, startTemp)
-	const endLine = getInterpolatedTfdLine(endAlt, endTemp)
-	console.log("LINES");
-	
-	console.log(startLine)
-	console.log(endLine)
-	const time = roundToPrecision(endLine.time - startLine.time, 10)
-	const fuel = round(endLine.fuel - startLine.fuel)
-	const distance = roundToPrecision(endLine.distance - startLine.distance, 10)
+	console.log('CALC')
+
+	const startLine1 = getAltitudeTfdLine(startAlt)
+	const endLine1 = getAltitudeTfdLine(endAlt)
+	console.log('LINES')
+
+	console.log(startLine1)
+	console.log(endLine1)
+
+	const startLine2 = modifyTfdLineForTemp(startLine1, startTemp)
+	const endLine2 = modifyTfdLineForTemp(endLine1, endTemp)
+
+	const resultTime = roundToPrecision(endLine2.time - startLine2.time, 10)
+	const resultFuel = round(endLine2.fuel - startLine2.fuel + 1.4) //This is where the 1.4 for taxi is added
+	const resultDistance = roundToPrecision(endLine2.distance - startLine2.distance, 10)
+
 	return {
-		time: time,
-		fuel: fuel,
-		distance: distance,
-		startLine: startLine,
-		endLine: endLine
+		time: resultTime,
+		fuel: resultFuel,
+		distance: resultDistance,
+		startLine: startLine1,
+		endLine: endLine1,
+		modifiedStartLine: startLine2,
+		modifiedEndLine: endLine2
 	}
 }
