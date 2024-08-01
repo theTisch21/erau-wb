@@ -43,7 +43,6 @@
 				let wbError: WB = error as WB
 			}
 		}
-		console.log(output)
 	}
 </script>
 
@@ -81,7 +80,8 @@
 	<h3>Result:</h3>
 	<p id="tfd-res-t">Time: {round(output.time)}</p>
 	<p id="tfd-res-f">Fuel: {round(output.fuel)}</p>
-	<p id="tfd-res-f-taxi">Fuel (+ 1.4 gal. for taxi): {round(output.fuel)}</p>
+	<!--1.4 is added here, so that we can display it both original and with taxi fuel-->
+	<p id="tfd-res-f-taxi">Fuel (+ 1.4 gal. for taxi): {round(output.fuel + 1.4)}</p>
 	<p id="tfd-res-d">Distance: {round(output.distance)}</p>
 
 	<h3>Bottom of climb (original):</h3>

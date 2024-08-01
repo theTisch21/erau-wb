@@ -61,19 +61,14 @@ function getAltitudeTfdLine(altitude: number): tfdSrcLine {
 		throw new WB(888, 'Altitude above 12,000ft. No data available.', Component.TFDSAD)
 	if (altitude < 0) throw new WB(888, 'Altitude less than 0. No data available.', Component.TFDSAD)
 	const upperAlt = roundToPrecision(altitude, 0.001, false) //Round to next thousand up
-	console.log(upperAlt)
 	const lowerAlt = roundToPrecision(altitude, 0.001, true) //Round to next thousand down
-	console.log(lowerAlt)
 
 	if (upperAlt == lowerAlt) return getSourceTfdLine(upperAlt) //No interpolation needed
 
 	const upperLine = getSourceTfdLine(upperAlt)
-	console.log(upperLine)
 	const lowerLine = getSourceTfdLine(lowerAlt)
-	console.log(lowerLine)
 
 	const percent = (altitude - lowerAlt) / (upperAlt - lowerAlt)
-	console.log('P ' + percent)
 	return {
 		altitude: round(interpolate(lowerLine.altitude, upperLine.altitude, percent)),
 		time: round(interpolate(lowerLine.time, upperLine.time, percent)),
@@ -105,26 +100,15 @@ export function calculateTFD(
 	endAlt: number,
 	endTemp: number
 ): tfdOutput {
-	console.log('START')
-
-	console.log(startAlt)
-	console.log(startTemp)
-	console.log(endAlt)
-	console.log(endTemp)
-	console.log('CALC')
-
+	//Interpolate for altitudes
 	const startLine1 = getAltitudeTfdLine(startAlt)
 	const endLine1 = getAltitudeTfdLine(endAlt)
-	console.log('LINES')
-
-	console.log(startLine1)
-	console.log(endLine1)
-
+	//Correct for temperature
 	const startLine2 = modifyTfdLineForTemp(startLine1, startTemp)
 	const endLine2 = modifyTfdLineForTemp(endLine1, endTemp)
-
+	//Find the difference
 	const resultTime = roundToPrecision(endLine2.time - startLine2.time, 10)
-	const resultFuel = round(endLine2.fuel - startLine2.fuel + 1.4) //This is where the 1.4 for taxi is added
+	const resultFuel = round(endLine2.fuel - startLine2.fuel) //1.4 for taxi is not added here, it's on the frontend
 	const resultDistance = roundToPrecision(endLine2.distance - startLine2.distance, 10)
 
 	return {
