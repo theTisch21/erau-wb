@@ -4,6 +4,7 @@ import { round, roundToPrecision } from '../round'
 import { calculatePerformanceData } from './toLandPerformance'
 import { getClimbRate } from './climbRate'
 import { WB } from '$lib/WBError'
+import { getDensityAltitude } from '$lib/Calculators/climbGradient'
 
 export enum Component {
 	StartAndEnd,
@@ -27,6 +28,7 @@ export type CompleteFlowInput = {
 export type CompleteFlowOutput = {
 	table: TableOutput
 	pressureAltitude: number
+	densityAltitude: number
 	maneuveringSpeed: number
 	performance: {
 		takeoffRoll: number
@@ -63,6 +65,7 @@ export function flow(input: CompleteFlowInput): CompleteFlowOutput {
 			'Pressure altitude greater than 12,000ft, performance data unavailable',
 			Component.PressureAltitude
 		)
+	const densityAltitude = getDensityAltitude(pressureAltitude, input.temperature)
 	let takeoffWeight: number
 	if (!calculatedTable.changeAircraft) {
 		takeoffWeight = calculatedTable.takeoff.weight
@@ -93,6 +96,7 @@ export function flow(input: CompleteFlowInput): CompleteFlowOutput {
 	return {
 		table: calculatedTable,
 		pressureAltitude: pressureAltitude,
+		densityAltitude: densityAltitude,
 		maneuveringSpeed: maneuveringSpeed,
 		performance: {
 			...performanceData,
