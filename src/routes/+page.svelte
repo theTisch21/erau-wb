@@ -395,9 +395,9 @@
 				data from ETA
 			</p>
 			<p>
-				<strong>Please note again:</strong> These numbers from ETA are up to date as of June 8 2024,
-				but may not be completely up to date. <br />Please double-check with the POH during your
-				preflight or check with the numbers on ETA to ensure accurate calculations.
+				<strong>Please note again:</strong> These numbers from ETA are up to date as of August 23
+				2024, but may not be completely up to date. <br />Please double-check with the POH during
+				your preflight or check with the numbers on ETA to ensure accurate calculations.
 			</p>
 			<p>
 				Notice something out of date? Send me an email: <a href="mailto:admin@erauwb.com"
