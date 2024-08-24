@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        browser: ['electron', 'firefox', 'edge', 'chrome']
+        browser: ['electron', 'edge', 'chrome'] #Firefox removed as cypress is not properly loading it
     runs-on: ubuntu-20.04
 
     steps:
