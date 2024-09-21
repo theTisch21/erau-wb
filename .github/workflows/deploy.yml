@@ -10,14 +10,14 @@ jobs:
       fail-fast: true
       matrix:
         browser: ['electron', 'edge', 'chrome'] #Firefox removed as cypress is not properly loading it
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
       - uses: actions/checkout@v3
 
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 20
 
       - name: Install dependancies
         run: yarn
