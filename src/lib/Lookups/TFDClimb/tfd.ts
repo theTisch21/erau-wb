@@ -50,7 +50,7 @@ function getSourceTfdLine(altitude: number): tfdSrcLine {
 		}
 	})
 	if (out == null) {
-		return getSourceTfdLine(altitude + 2000) //Go to next thousand
+		return getSourceTfdLine(altitude + 1000) //Go to next thousand
 	}
 	return out
 }
@@ -108,7 +108,7 @@ export function calculateTFD(
 	const endLine2 = modifyTfdLineForTemp(endLine1, endTemp)
 	//Find the difference
 	const resultTime = roundToPrecision(endLine2.time - startLine2.time, 10)
-	const resultFuel = round(endLine2.fuel - startLine2.fuel) //1.4 for taxi is not added here, it's on the frontend
+	const resultFuel = roundToPrecision(endLine2.fuel - startLine2.fuel, 10) //1.4 for taxi is not added here, it's on the frontend
 	const resultDistance = roundToPrecision(endLine2.distance - startLine2.distance, 10)
 
 	return {

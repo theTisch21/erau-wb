@@ -3,7 +3,7 @@
 	import { Component } from '$lib/Flow/flow'
 	import { calculateTFD, type tfdOutput } from '$lib/Lookups/TFDClimb/tfd'
 	import { WB } from '$lib/WBError'
-	import { round } from '$lib/round'
+	import { round, roundToPrecision } from '$lib/round'
 	import { get, writable, type Writable } from 'svelte/store'
 
 	let errorWritable: Writable<WB[]> = writable([])
@@ -78,31 +78,31 @@
 	/><br />
 
 	<h3>Result:</h3>
-	<p id="tfd-res-t">Time: {round(output.time)}</p>
-	<p id="tfd-res-f">Fuel: {round(output.fuel)}</p>
+	<p id="tfd-res-t">Time: {output.time}</p>
+	<p id="tfd-res-f">Fuel: {output.fuel}</p>
 	<!--1.4 is added here, so that we can display it both original and with taxi fuel-->
-	<p id="tfd-res-f-taxi">Fuel (+ 1.4 gal. for taxi): {round(output.fuel + 1.4)}</p>
-	<p id="tfd-res-d">Distance: {round(output.distance)}</p>
+	<p id="tfd-res-f-taxi">Fuel (+ 1.4 gal. for taxi): {roundToPrecision(output.fuel + 1.4, 10)}</p>
+	<p id="tfd-res-d">Distance: {output.distance}</p>
 
 	<h3>Bottom of climb (original):</h3>
-	<p id="tfd-b-t">Time: {round(output.startLine.time)}</p>
-	<p id="tfd-b-f">Fuel: {round(output.startLine.fuel)}</p>
-	<p id="tfd-b-d">Distance: {round(output.startLine.distance)}</p>
+	<p id="tfd-b-t">Time: {output.startLine.time}</p>
+	<p id="tfd-b-f">Fuel: {output.startLine.fuel}</p>
+	<p id="tfd-b-d">Distance: {output.startLine.distance}</p>
 
 	<h3>Bottom of climb (temperature corrected):</h3>
-	<p id="tfd-b-t">Time: {round(output.modifiedStartLine.time)}</p>
-	<p id="tfd-b-f">Fuel: {round(output.modifiedStartLine.fuel)}</p>
-	<p id="tfd-b-d">Distance: {round(output.modifiedStartLine.distance)}</p>
+	<p id="tfd-b-t">Time: {output.modifiedStartLine.time}</p>
+	<p id="tfd-b-f">Fuel: {output.modifiedStartLine.fuel}</p>
+	<p id="tfd-b-d">Distance: {output.modifiedStartLine.distance}</p>
 
 	<h3>Top of climb (original):</h3>
-	<p id="tfd-t-t">Time: {round(output.endLine.time)}</p>
-	<p id="tfd-t-f">Fuel: {round(output.endLine.fuel)}</p>
-	<p id="tfd-t-d">Distance: {round(output.endLine.distance)}</p>
+	<p id="tfd-t-t">Time: {output.endLine.time}</p>
+	<p id="tfd-t-f">Fuel: {output.endLine.fuel}</p>
+	<p id="tfd-t-d">Distance: {output.endLine.distance}</p>
 
 	<h3>Top of climb (temperature corrected):</h3>
-	<p id="tfd-t-t">Time: {round(output.modifiedEndLine.time)}</p>
-	<p id="tfd-t-f">Fuel: {round(output.modifiedEndLine.fuel)}</p>
-	<p id="tfd-t-d">Distance: {round(output.modifiedEndLine.distance)}</p>
+	<p id="tfd-t-t">Time: {output.modifiedEndLine.time}</p>
+	<p id="tfd-t-f">Fuel: {output.modifiedEndLine.fuel}</p>
+	<p id="tfd-t-d">Distance: {output.modifiedEndLine.distance}</p>
 
 	<ErrorShower component={Component.TFDSAD} alerts={errorWritable} />
 </main>
