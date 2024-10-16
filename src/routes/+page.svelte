@@ -7,7 +7,6 @@
 	import Line from '$lib/Lines/Line.svelte'
 	import FuelLine from '$lib/Lines/FuelLine.svelte'
 	import OutputLine from '$lib/Lines/OutputLine.svelte'
-	import { round } from '$lib/round'
 	import PressureAlt from '$lib/Calculators/PressureAlt.svelte'
 	import { decodeMetar } from '$lib/Calculators/metar'
 	import { onMount } from 'svelte'
