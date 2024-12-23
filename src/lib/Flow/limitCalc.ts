@@ -4,12 +4,24 @@ export type LimitResult = { result: boolean; comment: string; overweightGallons?
 export function calcLimits(input: TableOutput): LimitResult {
 	const weight = input.takeoff.weight
 	const arm = input.takeoff.moment / weight
-	//Max gross weight
+	//Max takeofframp weight
 	if (weight > 2550) {
 		const gallonDifference = roundToPrecision((weight - 2550) / 6, 1)
 		return {
 			result: false,
 			comment: `Overweight by ${round(weight - 2550)}lbs or ${gallonDifference} gallons of fuel`,
+			overweightGallons: gallonDifference
+		}
+	}
+	//Ramp weight
+	const rampWeight = input.ramp.weight
+	if (input.ramp.weight > 2558) {
+		const gallonDifference = roundToPrecision((rampWeight - 2558) / 6, 1)
+		return {
+			result: false,
+			comment: `Ramp weight exceeded by ${round(
+				rampWeight - 2558
+			)}lbs or ${gallonDifference} gallons of fuel`,
 			overweightGallons: gallonDifference
 		}
 	}
