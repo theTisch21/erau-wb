@@ -432,7 +432,7 @@
 				<p>Tail number: {aircraftData.tailNumber}</p>
 				<button
 					on:click={() => {
-						aircraftName.set('R-55')
+						aircraftName.set('R-26')
 					}}>Set to heaviest aircraft</button
 				>
 				<button
