@@ -1,3 +1,5 @@
+import { WB } from '$lib/WBError'
+
 export type Aircraft = {
 	name: string
 	tailNumber: string
@@ -281,35 +283,35 @@ const list: Aircraft[] = [
 		moment: 70880
 	},
 	{
-		name: 'R-43',
+		name: 'R-430',
 		tailNumber: 'N430ER',
 		weight: 1682.67,
 		arm: 40.4094,
 		moment: 67995.76
 	},
 	{
-		name: 'R-47',
+		name: 'R-473',
 		tailNumber: 'N473ER',
 		weight: 1679.65,
 		arm: 40.9705,
 		moment: 68816.14
 	},
 	{
-		name: 'R-47',
+		name: 'R-479',
 		tailNumber: 'N479ER',
 		weight: 1682.75,
 		arm: 40.7568,
 		moment: 68583.49
 	},
 	{
-		name: 'R-49',
+		name: 'R-494',
 		tailNumber: 'N494ER',
 		weight: 1683.28,
 		arm: 40.7786,
 		moment: 68641.79
 	},
 	{
-		name: 'R-49',
+		name: 'R-498',
 		tailNumber: 'N498ER',
 		weight: 1681.25,
 		arm: 40.7976,
@@ -600,18 +602,26 @@ const testList: Aircraft[] = [
 	{ name: 'T-55', tailNumber: 'NTEST55', weight: 1723.7, arm: 41.5826, moment: 71676 }
 ]
 
+export function trimAircraft(input: string): string | null {
+	const pattern = /(R-[\d ]\d*).*/
+	const output = pattern.exec(input)
+	console.log(output)
+	if (output == null || output[1] == null) return null
+	return output[1]
+}
+
 export async function lookupAircraft(name: string): Promise<Aircraft | null> {
 	let out = null
-	name = name.trim()
-	//Anything after the first 4 characters is irrelevant, so we cut it to 4
-	name = name.substring(0, 4)
+	const actualName: string | null = trimAircraft(name.trim())
+	console.log(actualName)
+	if (actualName == null) return null
 	list.forEach((plane) => {
-		if (plane.name == name) out = plane
+		if (plane.name == actualName) out = plane
 	})
 	//If aircraft not found, check test list
 	if (out == null) {
 		testList.forEach((plane) => {
-			if (plane.name == name) {
+			if (plane.name == actualName) {
 				out = plane
 			}
 		})

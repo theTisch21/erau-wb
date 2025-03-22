@@ -1,6 +1,14 @@
 //This file is simply to parse the CSV data from ETA and excel to convert it to a format we can use
 
-import type { Aircraft } from './aircraft'
+import { type Aircraft } from './aircraft'
+
+function trimAircraft(input: string): string | null {
+	const pattern = /(R-[\d ]\d*).*/
+	const output = pattern.exec(input)
+	console.log(output)
+	if (output == null || output[1] == null) return null
+	return output[1]
+}
 
 export async function parse() {
 	//Tab separated file in this format: Name, N#, Empty weight, Moment, Arm, Useful Load, Max Gross Weight
@@ -92,8 +100,10 @@ export async function parse() {
 	for (let i = 0; i < array.length; i++) {
 		const a = array[i].trim()
 		const aircraftArray = a.split(/\t/)
-		let aircraftName = aircraftArray[0]
-		aircraftName = aircraftName.substring(0, 4)
+		let aircraftName: string | null = aircraftArray[0]
+		// Trims based on * and space, to properly parse 430 and like
+		aircraftName = trimAircraft(aircraftName)
+		if (aircraftName == null) throw 'HELP'
 		output.push({
 			name: aircraftName,
 			tailNumber: aircraftArray[1],
