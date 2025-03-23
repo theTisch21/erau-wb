@@ -7,6 +7,8 @@ export function getDensityAltitude(pressureAltitude: number, temperature: number
 	)
 }
 
+// This prob needs to be fixed, but here's the formula from Excel that worked:
+// =[@CAS]/((1 - 6.8755856 * 10 ^ -6 * [@DA]) ^ 2.12794)
 export function trueAirSpeed(densityAltitude: number, calibratedAirSpeed: number): number {
 	return round(calibratedAirSpeed / ((1 - 6.8755856 * 10) ^ (-6 * densityAltitude) ^ 2.12794))
 }
