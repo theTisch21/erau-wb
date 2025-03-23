@@ -3,9 +3,8 @@
 import { type Aircraft } from './aircraft'
 
 function trimAircraft(input: string): string | null {
-	const pattern = /(R-[\d ]\d*).*/
+	const pattern = /(R-[\d ]\d*).*/ //T isn't parsed here because those aircraft need to be keyed in manually
 	const output = pattern.exec(input)
-	console.log(output)
 	if (output == null || output[1] == null) return null
 	return output[1]
 }

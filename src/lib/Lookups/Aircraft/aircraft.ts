@@ -603,9 +603,8 @@ const testList: Aircraft[] = [
 ]
 
 export function trimAircraft(input: string): string | null {
-	const pattern = /(R-[\d ]\d*).*/
+	const pattern = /([RT]-[\d ]\d*).*/
 	const output = pattern.exec(input)
-	console.log(output)
 	if (output == null || output[1] == null) return null
 	return output[1]
 }
@@ -613,7 +612,6 @@ export function trimAircraft(input: string): string | null {
 export async function lookupAircraft(name: string): Promise<Aircraft | null> {
 	let out = null
 	const actualName: string | null = trimAircraft(name.trim())
-	console.log(actualName)
 	if (actualName == null) return null
 	list.forEach((plane) => {
 		if (plane.name == actualName) out = plane
