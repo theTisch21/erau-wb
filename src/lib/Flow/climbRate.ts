@@ -1,6 +1,6 @@
 import { WB } from '$lib/WBError'
 import { interpolate } from '$lib/interpolate'
-import { round, roundToPrecision } from '$lib/round'
+import { down, up } from '$lib/round'
 import { Component } from './flow'
 
 export type ClimbLine = {
@@ -57,13 +57,13 @@ export function getClimbRate(altitude: number, temp: number): number {
 	}
 	if (altitude < 0) altitude = 0
 
-	let upperAltitude = roundToPrecision(altitude, 0.001, false) //Get next thousand up
+	let upperAltitude = up(altitude, 1000) //Get next thousand up
 	if ((upperAltitude / 1000) % 2 != 0) {
 		//If thousand is not even
 		upperAltitude += 1000
 	}
 
-	let lowerAltitude = roundToPrecision(altitude, 0.001, true) //Get last thousand down
+	let lowerAltitude = down(altitude, 1000) //Get last thousand down
 	if ((lowerAltitude / 1000) % 2 != 0) {
 		//If thousand is not even
 		lowerAltitude -= 1000
@@ -96,5 +96,5 @@ export function getClimbRate(altitude: number, temp: number): number {
 		return lower
 	}
 
-	return round(interpolate(lower, upper, (altitude - lowerAltitude) / 2000), true)
+	return down(interpolate(lower, upper, (altitude - lowerAltitude) / 2000), 1)
 }

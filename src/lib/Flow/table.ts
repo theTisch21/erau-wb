@@ -1,5 +1,5 @@
 import { WB } from '$lib/WBError'
-import { round, roundToPrecision } from '$lib/round'
+import { down, up } from '$lib/round'
 import { Component } from './flow'
 
 const ARMS = {
@@ -54,11 +54,7 @@ export type TableOutput = {
 }
 
 function arm(weight: number, moment: number): number {
-	return round(moment / weight)
-}
-
-function fround(input: number, down = false): number {
-	return roundToPrecision(input, 10, down)
+	return up(moment / weight, 0.01)
 }
 
 export function calculateTable(input: TableInput): TableOutput {
@@ -70,22 +66,22 @@ export function calculateTable(input: TableInput): TableOutput {
 	const frontSeats: DataLine = {
 		weight: input.frontSeats,
 		arm: ARMS.frontSeats,
-		moment: round(input.frontSeats * ARMS.frontSeats)
+		moment: up(input.frontSeats * ARMS.frontSeats)
 	}
 	const rearSeats: DataLine = {
 		weight: input.rearSeats,
 		arm: ARMS.rearSeats,
-		moment: round(input.rearSeats * ARMS.rearSeats)
+		moment: up(input.rearSeats * ARMS.rearSeats)
 	}
 	const frontBags: DataLine = {
 		weight: input.frontBags,
 		arm: ARMS.frontBags,
-		moment: round(input.frontBags * ARMS.frontBags)
+		moment: up(input.frontBags * ARMS.frontBags)
 	}
 	const aftBags: DataLine = {
 		weight: input.aftBags,
 		arm: ARMS.aftBags,
-		moment: round(input.aftBags * ARMS.aftBags)
+		moment: up(input.aftBags * ARMS.aftBags)
 	}
 	//w, m, and f are temporary variables used to hold weight, moment, and fuel before storing them
 	let w
@@ -111,9 +107,9 @@ export function calculateTable(input: TableInput): TableOutput {
 	f = input.fuel.start
 	const rampFuel: DataFuelLine = {
 		gallons: f,
-		weight: fround(f * 6),
+		weight: up(f * 6),
 		arm: ARMS.fuel,
-		moment: round(f * 6 * ARMS.fuel)
+		moment: up(f * 6 * ARMS.fuel)
 	}
 
 	//Ramp weight
@@ -129,17 +125,17 @@ export function calculateTable(input: TableInput): TableOutput {
 	f = input.fuel.taxiBurn * -1
 	const taxi: DataFuelLine = {
 		gallons: f,
-		weight: fround(f * 6, true),
+		weight: down(f * 6),
 		arm: ARMS.fuel,
-		moment: round(f * 6 * ARMS.fuel, true)
+		moment: down(f * 6 * ARMS.fuel)
 	}
 
 	//Takeoff
 	w = ramp.weight + taxi.weight
 	m = ramp.moment + taxi.moment
 	const takeoff: DataLine = {
-		weight: round(w),
-		moment: round(m),
+		weight: up(w),
+		moment: up(m),
 		arm: arm(w, m)
 	}
 
@@ -147,17 +143,17 @@ export function calculateTable(input: TableInput): TableOutput {
 	f = input.fuel.flightBurn * -1
 	const flight: DataFuelLine = {
 		gallons: f,
-		weight: fround(f * 6),
+		weight: up(f * 6),
 		arm: ARMS.fuel,
-		moment: round(f * 6 * ARMS.fuel)
+		moment: up(f * 6 * ARMS.fuel)
 	}
 
 	//Landing weight
 	w = takeoff.weight + flight.weight
 	m = takeoff.moment + flight.moment
 	const landing: DataLine = {
-		weight: round(w),
-		moment: round(m),
+		weight: up(w),
+		moment: up(m),
 		arm: arm(w, m)
 	}
 
@@ -182,14 +178,14 @@ export function calculateTable(input: TableInput): TableOutput {
 		//Changing
 		//Difference between aircraft
 		const diff: DataLine = {
-			weight: round(input.changeInAircraft.weight - input.aircraft.weight),
-			moment: round(input.changeInAircraft.moment - input.aircraft.moment),
-			arm: round(input.changeInAircraft.arm - input.aircraft.arm)
+			weight: up(input.changeInAircraft.weight - input.aircraft.weight),
+			moment: up(input.changeInAircraft.moment - input.aircraft.moment),
+			arm: up(input.changeInAircraft.arm - input.aircraft.arm)
 		}
 
 		//Difference between takeoff
-		w = round(takeoff.weight + diff.weight)
-		m = round(takeoff.moment + diff.moment)
+		w = up(takeoff.weight + diff.weight)
+		m = up(takeoff.moment + diff.moment)
 		const chgTakeoff: DataLine = {
 			weight: w,
 			moment: m,
@@ -197,8 +193,8 @@ export function calculateTable(input: TableInput): TableOutput {
 		}
 
 		//Difference between landing
-		w = round(landing.weight + diff.weight)
-		m = round(landing.moment + diff.moment)
+		w = up(landing.weight + diff.weight)
+		m = up(landing.moment + diff.moment)
 		const chgLanding: DataLine = {
 			weight: w,
 			moment: m,

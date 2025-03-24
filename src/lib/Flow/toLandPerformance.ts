@@ -1,7 +1,7 @@
 import { WB } from '$lib/WBError'
 import { Component } from './flow'
 import { interpolate } from '$lib/interpolate'
-import { roundToPrecision, round } from '$lib/round'
+import { up } from '$lib/round'
 import { calculateWindMultiplier } from './windMultiplier'
 
 export type AltitudeLine = {
@@ -417,7 +417,7 @@ function findNumberFromTable(table: AltitudeLine[], altitude: number, temp: numb
 	let result = 0
 	//Get line
 	let line: AltitudeLine = { altitude: -1, c0: -1, c10: -1, c20: -1, c30: -1, c40: -1 }
-	altitude = roundToPrecision(altitude, 0.001)
+	altitude = up(altitude, 1000)
 
 	if (altitude > 12000) throw new WB(108, 'Pressure Altitude greater than 12,000ft')
 
@@ -453,7 +453,7 @@ function findNumberFromTable(table: AltitudeLine[], altitude: number, temp: numb
 		//Using the 0 line
 		result = line.c0
 	}
-	return round(result)
+	return up(result, 0.1)
 }
 
 export type PerformanceOutput = {
@@ -480,24 +480,24 @@ export function calculatePerformanceData(
 		)
 	const multiplier = calculateWindMultiplier(winds)
 	const out: PerformanceOutput = { takeoffRoll: 0, takeoffFifty: 0, landRoll: 0, landFifty: 0 }
-	out.landRoll = round(findNumberFromTable(landingGroundRoll, altitude, temp) * multiplier)
-	out.landFifty = round(findNumberFromTable(landingFiftyFeet, altitude, temp) * multiplier)
+	out.landRoll = up(findNumberFromTable(landingGroundRoll, altitude, temp) * multiplier, 1)
+	out.landFifty = up(findNumberFromTable(landingFiftyFeet, altitude, temp) * multiplier, 1)
 	//If the user has requested to override takeoff weight
 	if (toWeightOverride != 0) {
 		TOWeight = toWeightOverride
 	}
 	if (TOWeight > 2400) {
 		//Use 2550 tables
-		out.takeoffRoll = round(findNumberFromTable(takeoff2550ground, altitude, temp) * multiplier)
-		out.takeoffFifty = round(findNumberFromTable(takeoff2550fifty, altitude, temp) * multiplier)
+		out.takeoffRoll = up(findNumberFromTable(takeoff2550ground, altitude, temp) * multiplier, 1)
+		out.takeoffFifty = up(findNumberFromTable(takeoff2550fifty, altitude, temp) * multiplier, 1)
 	} else if (TOWeight > 2200) {
 		//Use 2400 tables
-		out.takeoffRoll = round(findNumberFromTable(takeoff2400ground, altitude, temp) * multiplier)
-		out.takeoffFifty = round(findNumberFromTable(takeoff2400fifty, altitude, temp) * multiplier)
+		out.takeoffRoll = up(findNumberFromTable(takeoff2400ground, altitude, temp) * multiplier, 1)
+		out.takeoffFifty = up(findNumberFromTable(takeoff2400fifty, altitude, temp) * multiplier, 1)
 	} else {
 		//Use 2200 tables
-		out.takeoffRoll = round(findNumberFromTable(takeoff2200ground, altitude, temp) * multiplier)
-		out.takeoffFifty = round(findNumberFromTable(takeoff2200fifty, altitude, temp) * multiplier)
+		out.takeoffRoll = up(findNumberFromTable(takeoff2200ground, altitude, temp) * multiplier, 1)
+		out.takeoffFifty = up(findNumberFromTable(takeoff2200fifty, altitude, temp) * multiplier, 1)
 	}
 
 	return out
