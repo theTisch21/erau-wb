@@ -1,4 +1,5 @@
 import { round } from '$lib/round'
+import { WB } from '$lib/WBError'
 
 export function calculateWindMultiplier(wind: number): number {
 	let multi = 1
