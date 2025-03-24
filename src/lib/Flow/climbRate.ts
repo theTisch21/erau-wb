@@ -46,7 +46,7 @@ export function getClimbRate(altitude: number, temp: number): number {
 
 	if (Number.isNaN(altitude)) throw new WB(105, 'Climb altitude invalid', Component.PerfResult) //If invalid input is passed, err on the side of caution. TODO make this throw an error
 	if (altitude > 12000) {
-		throw new WB(106, 'Pressure altitude greater than 12,000ft', Component.PressureAltitude)
+		throw new WB(106, 'Pressure altitude greater than 12,000ft', Component.PerfResult)
 	}
 	if (altitude < -10000) {
 		throw new WB(
