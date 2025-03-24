@@ -390,11 +390,12 @@
 				Pilot's Operating Handbook and the ERAU Flight Operations Manual.
 			</p>
 			<p>
-				<strong>Please note:</strong> All numbers are rounded UP to 2 decimal places, except for the
-				data from ETA
+				<strong>Rounding:</strong> Most numbers in the table are rounded UP to 2 decimal place (except
+				ETA data). Performance numbers are rounded up to the nearest whole number. Climb rate and maneuvering
+				speed are rounded down.
 			</p>
 			<p>
-				<strong>Please note again:</strong> These numbers from ETA are up to date as of March 22,
+				<strong>ETA data accuracy:</strong> These numbers from ETA are up to date as of March 22,
 				2025, but may not be completely up to date. <br />Please double-check with the POH during
 				your preflight or check with the numbers on ETA to ensure accurate calculations.
 			</p>
