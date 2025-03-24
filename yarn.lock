@@ -45,6 +45,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@cypress/xpath@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "@cypress/xpath@npm:2.0.3"
+  checksum: 3d777eb991e2574c97630fefad7a9426c549cb999077540348e0df656f2ea654edcb20ab44190f9d44334e9a7e4d121d4622f6c82f434df8641ab4daf2d24b19
+  languageName: node
+  linkType: hard
+
 "@cypress/xvfb@npm:^1.2.4":
   version: 1.2.4
   resolution: "@cypress/xvfb@npm:1.2.4"
@@ -1660,6 +1667,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "erau-wb@workspace:."
   dependencies:
+    "@cypress/xpath": ^2.0.3
     "@sveltejs/adapter-auto": next
     "@sveltejs/adapter-node": ^1.0.0-next.100
     "@sveltejs/kit": ^1.0.7

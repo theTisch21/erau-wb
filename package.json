@@ -42,6 +42,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@cypress/xpath": "^2.0.3",
 		"@sveltejs/adapter-node": "^1.0.0-next.100"
 	},
 	"packageManager": "yarn@3.2.4"
