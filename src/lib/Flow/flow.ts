@@ -1,6 +1,6 @@
 import { calcLimits, type LimitResult } from './limitCalc'
 import { calculateTable, type TableInput, type TableOutput } from './table'
-import { round, roundToPrecision } from '../round'
+import { down, up } from '../round'
 import { calculatePerformanceData } from './toLandPerformance'
 import { getClimbRate } from './climbRate'
 import { WB } from '$lib/WBError'
@@ -43,17 +43,17 @@ export function flow(input: CompleteFlowInput): CompleteFlowOutput {
 	let maneuveringSpeed
 	// If changing aircraft, use new lnd weight
 	if (!calculatedTable.changeAircraft) {
-		maneuveringSpeed = round(Math.sqrt(calculatedTable.landing.weight / 2550) * 105, true)
+		maneuveringSpeed = down(Math.sqrt(calculatedTable.landing.weight / 2550) * 105, 1)
 	} else {
-		maneuveringSpeed = round(
+		maneuveringSpeed = down(
 			Math.sqrt(calculatedTable.changeAircraft.landing.weight / 2550) * 105,
-			true
+			1
 		)
 	}
 	if (input.altimiter > 35 || input.altimiter < 25) {
 		throw new WB(107, 'Invalid altimiter setting detected', Component.PressureAltitude)
 	}
-	const pressureAltitude = roundToPrecision(
+	const pressureAltitude = up(
 		(29.92 - Number(input.altimiter)) * 1000 + Number(input.fieldElevation),
 		1
 	)

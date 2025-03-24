@@ -4,7 +4,7 @@ let url = 'http://127.0.0.1:3000'
 
 import { decodeMetar } from '../../src/lib/Calculators/metar'
 import { doubleInterpolate } from '../../src/lib/interpolate'
-import { roundToPrecision, round } from '../../src/lib/round'
+import { up, down } from '../../src/lib/round'
 import { calculateTable, type TableInput, type TableOutput } from '../../src/lib/Flow/table'
 
 describe('Double interpolation', () => {
@@ -27,7 +27,7 @@ describe('Double interpolation', () => {
 			23
 		)
 		const e = 46.2861
-		expect(round(r)).eq(round(e))
+		expect(up(r)).eq(up(e))
 	})
 	it('2', () => {
 		//    1 2 3
@@ -41,7 +41,7 @@ describe('Double interpolation', () => {
 			2
 		)
 		const e = 5
-		expect(round(r)).eq(round(e))
+		expect(up(r)).eq(up(e))
 	})
 })
 
