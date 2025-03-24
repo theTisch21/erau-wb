@@ -588,6 +588,19 @@ describe('Override change in aircraft', () => {
 	})
 })
 
+describe('Floating point errors', () => {
+	beforeEach(() => {
+		//Refresh before each test to get a fresh sheet
+		cy.visit(url)
+		cy.wait(delay)
+	})
+	it('T-57 landing weight', () => {
+		cy.get('#aircraft-input').type('T-57')
+		cy.get('#land-weight').should('contain.text', '1960.3')
+		cy.get('#land-weight').should('not.contain.text', '1960.31')
+	})
+})
+
 describe('Example sheets', () => {
 	beforeEach(() => {
 		//Refresh before each test to get a fresh sheet
