@@ -221,7 +221,7 @@
 			if (a.toLowerCase().startsWith('t')) {
 				handleError(
 					new WB(
-						9999,
+						123,
 						"You are using a TEST aircraft! This aircraft's data is set and will never change. Do not use this for actual weight and balance!",
 						Component.Table
 					)
@@ -343,7 +343,7 @@
 		} else {
 			handleError(
 				new WB(
-					9999,
+					124,
 					'Unable to get temperature from METAR. Please add it manually',
 					Component.PerfTemp
 				),
@@ -355,7 +355,7 @@
 		} else {
 			handleError(
 				new WB(
-					9999,
+					125,
 					'Unable to get altimiter from METAR. Please add it manually',
 					Component.PressureAltitude
 				),

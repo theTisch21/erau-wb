@@ -474,7 +474,7 @@ export function calculatePerformanceData(
 	if (winds < -10) throw new WB(112, 'Tailwind cannot exceed 10kts per PIM 5-24', Component.Wind)
 	if (winds >= 90)
 		throw new WB(
-			113,
+			122,
 			'Headwind cannot exceed 89kts, takeoff/landing distances would be zero. I doubt ERAU will even let you fly',
 			Component.Wind
 		)

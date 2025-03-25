@@ -36,7 +36,7 @@ export function getClimbRate(altitude: number, temp: number): number {
 	//There's no data for 12000 and 40, so check for that
 	if (altitude > 10000 && temp > 20) {
 		throw new WB(
-			9999,
+			116,
 			'Pressure altitude exceeds 10,000ft and temperature 20°C. There is no data available for this range',
 			Component.PerfTemp
 		)
@@ -46,11 +46,11 @@ export function getClimbRate(altitude: number, temp: number): number {
 
 	if (Number.isNaN(altitude)) throw new WB(105, 'Climb altitude invalid', Component.PerfResult) //If invalid input is passed, err on the side of caution. TODO make this throw an error
 	if (altitude > 12000) {
-		throw new WB(106, 'Pressure altitude greater than 12,000ft', Component.PressureAltitude)
+		throw new WB(106, 'Pressure altitude greater than 12,000ft', Component.PerfResult)
 	}
 	if (altitude < -10000) {
 		throw new WB(
-			9999,
+			117,
 			'Pressure altitude less than negative 10,000ft, data likely not valid',
 			Component.PressureAltitude
 		)

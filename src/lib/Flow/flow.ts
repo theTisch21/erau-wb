@@ -59,7 +59,7 @@ export function flow(input: CompleteFlowInput): CompleteFlowOutput {
 	)
 	if (pressureAltitude > 12000)
 		throw new WB(
-			9999,
+			118,
 			'Pressure altitude greater than 12,000ft, performance data unavailable',
 			Component.PressureAltitude
 		)
@@ -71,13 +71,13 @@ export function flow(input: CompleteFlowInput): CompleteFlowOutput {
 	}
 	if (takeoffWeight < 0)
 		throw new WB(
-			9999,
+			119,
 			'Takeoff weight less than 0lbs, data likely invalid. Cannot continue.',
 			Component.Table
 		)
 	if (takeoffWeight > 10000)
 		throw new WB(
-			9999,
+			120,
 			'Takeoff weight greater than 10,000lbs, data likely invalid. Cannot continue.',
 			Component.Table
 		)
