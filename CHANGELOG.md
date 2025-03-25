@@ -1,3 +1,7 @@
+# v3.5.2 Rounding fixes
+
+This update fixes some rounding issues and floating point errors. Math is much more precise and rounds to more reasonable decimal places, and certain numbers round down when appropriate. In addition, this update assigns error codes to the WB9999 errors I hadn't assigned codes to yet.
+
 # v3.5.1 Disclaimer
 
 Adds a general disclaimer for the data provided.

@@ -377,7 +377,7 @@
 		<div id="header">
 			<h1>Welcome to Traffic Cone's ERAU Cessna 172 Weight and Balance Calculator!</h1>
 			<h2>
-				You are using V3.5.1 <a href="https://github.com/thetisch21/erau-wb/blob/main/CHANGELOG.md"
+				You are using V3.5.2 <a href="https://github.com/thetisch21/erau-wb/blob/main/CHANGELOG.md"
 					>What's new?</a
 				>
 			</h2>
@@ -390,7 +390,7 @@
 				Pilot's Operating Handbook and the ERAU Flight Operations Manual.
 			</p>
 			<p>
-				<strong>Rounding:</strong> Most numbers in the table are rounded UP to 2 decimal place (except
+				<strong>Rounding:</strong> Most numbers in the table are rounded UP to 2 decimal places (except
 				ETA data). Performance numbers are rounded up to the nearest whole number. Climb rate and maneuvering
 				speed are rounded down.
 			</p>
