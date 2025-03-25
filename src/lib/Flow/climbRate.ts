@@ -93,7 +93,7 @@ export function getClimbRate(altitude: number, temp: number): number {
 
 	if ((altitude / 1000) % 2 == 0) {
 		//If already an even thousand, no need to interpolate
-		return lower
+		return down(lower, 1)
 	}
 
 	return down(interpolate(lower, upper, (altitude - lowerAltitude) / 2000), 1)
