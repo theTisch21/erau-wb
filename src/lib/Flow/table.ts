@@ -63,6 +63,12 @@ export function calculateTable(input: TableInput): TableOutput {
 		arm: input.aircraft.arm,
 		moment: input.aircraft.moment
 	}
+	//Enables two digit precision for weight if needed, otherwise sets to one
+	const weightPrecision = (aircraft.weight * 10) % 1 == 0 ? 0.1 : 0.01
+
+	//Enables two digit precision for moment if needed, otherwise sets to one
+	const momentPrecision = aircraft.moment % 1 == 0 ? 0.1 : 0.01
+
 	const frontSeats: DataLine = {
 		weight: input.frontSeats,
 		arm: ARMS.frontSeats,
@@ -107,9 +113,9 @@ export function calculateTable(input: TableInput): TableOutput {
 	f = input.fuel.start
 	const rampFuel: DataFuelLine = {
 		gallons: f,
-		weight: up(f * 6),
+		weight: up(f * 6, weightPrecision),
 		arm: ARMS.fuel,
-		moment: up(f * 6 * ARMS.fuel)
+		moment: up(f * 6 * ARMS.fuel, momentPrecision)
 	}
 
 	//Ramp weight
@@ -125,17 +131,17 @@ export function calculateTable(input: TableInput): TableOutput {
 	f = input.fuel.taxiBurn * -1
 	const taxi: DataFuelLine = {
 		gallons: f,
-		weight: down(f * 6),
+		weight: down(f * 6, weightPrecision),
 		arm: ARMS.fuel,
-		moment: down(f * 6 * ARMS.fuel)
+		moment: down(f * 6 * ARMS.fuel, momentPrecision)
 	}
 
 	//Takeoff
 	w = ramp.weight + taxi.weight
 	m = ramp.moment + taxi.moment
 	const takeoff: DataLine = {
-		weight: up(w),
-		moment: up(m),
+		weight: up(w, weightPrecision),
+		moment: up(m, momentPrecision),
 		arm: arm(w, m)
 	}
 
@@ -143,17 +149,17 @@ export function calculateTable(input: TableInput): TableOutput {
 	f = input.fuel.flightBurn * -1
 	const flight: DataFuelLine = {
 		gallons: f,
-		weight: up(f * 6),
+		weight: up(f * 6, weightPrecision),
 		arm: ARMS.fuel,
-		moment: up(f * 6 * ARMS.fuel)
+		moment: up(f * 6 * ARMS.fuel, momentPrecision)
 	}
 
 	//Landing weight
 	w = takeoff.weight + flight.weight
 	m = takeoff.moment + flight.moment
 	const landing: DataLine = {
-		weight: up(w),
-		moment: up(m),
+		weight: up(w, weightPrecision),
+		moment: up(m, momentPrecision),
 		arm: arm(w, m)
 	}
 
@@ -178,14 +184,14 @@ export function calculateTable(input: TableInput): TableOutput {
 		//Changing
 		//Difference between aircraft
 		const diff: DataLine = {
-			weight: up(input.changeInAircraft.weight - input.aircraft.weight),
-			moment: up(input.changeInAircraft.moment - input.aircraft.moment),
+			weight: up(input.changeInAircraft.weight - input.aircraft.weight, weightPrecision),
+			moment: up(input.changeInAircraft.moment - input.aircraft.moment, momentPrecision),
 			arm: up(input.changeInAircraft.arm - input.aircraft.arm)
 		}
 
 		//Difference between takeoff
-		w = up(takeoff.weight + diff.weight)
-		m = up(takeoff.moment + diff.moment)
+		w = up(takeoff.weight + diff.weight, weightPrecision)
+		m = up(takeoff.moment + diff.moment, momentPrecision)
 		const chgTakeoff: DataLine = {
 			weight: w,
 			moment: m,
@@ -193,8 +199,8 @@ export function calculateTable(input: TableInput): TableOutput {
 		}
 
 		//Difference between landing
-		w = up(landing.weight + diff.weight)
-		m = up(landing.moment + diff.moment)
+		w = up(landing.weight + diff.weight, weightPrecision)
+		m = up(landing.moment + diff.moment, momentPrecision)
 		const chgLanding: DataLine = {
 			weight: w,
 			moment: m,
