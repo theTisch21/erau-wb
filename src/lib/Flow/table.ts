@@ -158,7 +158,7 @@ export function calculateTable(input: TableInput): TableOutput {
 	w = takeoff.weight + flight.weight
 	m = takeoff.moment + flight.moment
 	const landing: DataLine = {
-		weight: up(w, weightPrecision),
+		weight: up(w - 0.001, weightPrecision), //Hacky floating point solution
 		moment: up(m, momentPrecision),
 		arm: arm(w, m)
 	}
@@ -184,13 +184,13 @@ export function calculateTable(input: TableInput): TableOutput {
 		//Changing
 		//Difference between aircraft
 		const diff: DataLine = {
-			weight: up(input.changeInAircraft.weight - input.aircraft.weight, weightPrecision),
+			weight: up(input.changeInAircraft.weight - input.aircraft.weight - 0.001, weightPrecision), //Hacky floating point solution
 			moment: up(input.changeInAircraft.moment - input.aircraft.moment, momentPrecision),
 			arm: up(input.changeInAircraft.arm - input.aircraft.arm)
 		}
 
 		//Difference between takeoff
-		w = up(takeoff.weight + diff.weight, weightPrecision)
+		w = up(takeoff.weight + diff.weight - 0.001, weightPrecision) //Hacky floating point solution
 		m = up(takeoff.moment + diff.moment, momentPrecision)
 		const chgTakeoff: DataLine = {
 			weight: w,
@@ -199,7 +199,7 @@ export function calculateTable(input: TableInput): TableOutput {
 		}
 
 		//Difference between landing
-		w = up(landing.weight + diff.weight, weightPrecision)
+		w = up(landing.weight + diff.weight - 0.001, weightPrecision) //Hacky floating point solution
 		m = up(landing.moment + diff.moment, momentPrecision)
 		const chgLanding: DataLine = {
 			weight: w,
