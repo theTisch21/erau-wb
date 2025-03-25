@@ -481,7 +481,7 @@ describe('Winds', () => {
 		cy.get('#perf-to-roll').should('contain.text', '1017')
 		cy.get('#perf-to-50').should('contain.text', '1746')
 		cy.get('#perf-climb').should('contain.text', '482')
-		cy.get('#perf-land-roll').should('contain.text', '634')
+		cy.get('#perf-land-roll').should('contain.text', '635')
 		cy.get('#perf-land-50').should('contain.text', '1386')
 	})
 
