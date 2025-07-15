@@ -262,6 +262,13 @@ const list: Aircraft[] = [
 		moment: 70378
 	},
 	{
+		name: 'R-37',
+		tailNumber: 'N537ER',
+		weight: 1699.2,
+		arm: 41.4183,
+		moment: 70378
+	},
+	{
 		name: 'R-38',
 		tailNumber: 'N538ER',
 		weight: 1714.7,
@@ -276,6 +283,20 @@ const list: Aircraft[] = [
 		moment: 68261.29
 	},
 	{
+		name: 'R-40',
+		tailNumber: 'N540ER',
+		weight: 1712.6,
+		arm: 41.8463,
+		moment: 71666
+	},
+	{
+		name: 'R-41',
+		tailNumber: 'N541ER',
+		weight: 1706.3,
+		arm: 42.0196,
+		moment: 71698
+	},
+	{
 		name: 'R-42',
 		tailNumber: 'N542ER',
 		weight: 1714.7,
@@ -283,11 +304,25 @@ const list: Aircraft[] = [
 		moment: 70880
 	},
 	{
+		name: 'R-43',
+		tailNumber: 'N543ER',
+		weight: 1712.6,
+		arm: 41.8463,
+		moment: 71666
+	},
+	{
 		name: 'R-430',
 		tailNumber: 'N430ER',
 		weight: 1682.67,
 		arm: 40.4094,
 		moment: 67995.76
+	},
+	{
+		name: 'R-44',
+		tailNumber: 'N544ER',
+		weight: 1712.6,
+		arm: 41.8463,
+		moment: 71666
 	},
 	{
 		name: 'R-473',
@@ -316,6 +351,13 @@ const list: Aircraft[] = [
 		weight: 1681.25,
 		arm: 40.7976,
 		moment: 68590.99
+	},
+	{
+		name: 'R-499',
+		tailNumber: 'N499ER',
+		weight: 1680.87,
+		arm: 40.7539,
+		moment: 68502.09
 	},
 	{
 		name: 'R-50',
