@@ -37,7 +37,7 @@ jobs:
 
   Deploy:
     needs: Test
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Create SSH key
         run: |
