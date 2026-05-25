@@ -377,11 +377,15 @@
 		<div id="header">
 			<h1>Welcome to Traffic Cone's ERAU Cessna 172 Weight and Balance Calculator!</h1>
 			<h2>
-				You are using V3.5.2 <a href="https://github.com/thetisch21/erau-wb/blob/main/CHANGELOG.md"
+				You are using V3.5.3 <a href="https://github.com/thetisch21/erau-wb/blob/main/CHANGELOG.md"
 					>What's new?</a
 				>
 			</h2>
 			<p>Fill out the info below to calculate weight and balance for your aircraft!</p>
+			<p>
+				<strong>AI Disclosure:</strong> Generative AI has not been used in the creation of this
+				site. The core calculation logic will always be hand-made.
+			</p>
 			<p>
 				<strong>DISCLAIMER:</strong> These calculations are provided as reference, with no guarantee
 				of accuracy, and should be checked against your own calculations. You, as either the pilot in

@@ -1,3 +1,7 @@
+# v3.5.3 AI Disclosure
+
+This update simply adds an AI use disclosure to the top of the page. I take pride in the fact that this site was hand-made, the only place I'd consider using AI is in UI design. The core calculation logic will always be hand-made. But for now the whole site is AI free.
+
 # v3.5.2 Rounding fixes
 
 This update fixes some rounding issues and floating point errors. Math is much more precise and rounds to more reasonable decimal places, and certain numbers round down when appropriate. In addition, this update assigns error codes to the WB9999 errors I hadn't assigned codes to yet.
