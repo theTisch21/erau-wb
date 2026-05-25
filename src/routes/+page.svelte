@@ -383,8 +383,8 @@
 			</h2>
 			<p>Fill out the info below to calculate weight and balance for your aircraft!</p>
 			<p>
-				<strong>AI Disclosure:</strong> Generative AI has not been used in the creation of this
-				site. The core calculation logic will always be hand-made.
+				<strong>AI Disclosure:</strong> Generative AI has not been used in the creation of this site.
+				The core calculation logic will always be hand-made.
 			</p>
 			<p>
 				<strong>DISCLAIMER:</strong> These calculations are provided as reference, with no guarantee
