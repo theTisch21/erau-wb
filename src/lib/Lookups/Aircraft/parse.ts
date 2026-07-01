@@ -11,10 +11,7 @@ function trimAircraft(input: string): string | null {
 
 export async function parse() {
 	//Tab separated file in this format: Name, N#, Empty weight, Moment, Arm, Useful Load, Max Gross Weight
-	const input = `1GE	N791GE	1415	102318.4	72.3098	885	2300
-	2GE	N792GE	1413	102409.72	72.4768	887	2300
-	3GE	N793GE	1423	102377.48	71.9448	877	2300
-	R- 1	N912MA	1325.72	16460.72	12.4164	474.28	1800
+	const input = `R- 1	N912MA	1325.72	16460.72	12.4164	474.28	1800
 	R- 2	N602ER	1707.7	70137	41.071	850.3	2558
 	R- 3	N603ER	1712.4	69894	40.8164	845.6	2558
 	R- 4	N604ER	1707.7	70137	41.071	850.3	2558
