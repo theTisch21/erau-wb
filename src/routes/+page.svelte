@@ -399,8 +399,8 @@
 				speed are rounded down.
 			</p>
 			<p>
-				<strong>ETA data accuracy:</strong> These numbers from ETA are up to date as of July 15,
-				2025, but may not be completely up to date. <br />Please double-check with the POH during
+				<strong>ETA data accuracy:</strong> These numbers from ETA are up to date as of June 30,
+				2026, but may not be completely up to date. <br />Please double-check with the POH during
 				your preflight or check with the numbers on ETA to ensure accurate calculations.
 			</p>
 			<p>
