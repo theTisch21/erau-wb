@@ -556,11 +556,32 @@ const list: Aircraft[] = [
 		moment: 70137
 	},
 	{
+		name: 'R-80',
+		tailNumber: 'N780ER',
+		weight: 1712.8,
+		arm: 41.8963,
+		moment: 71760
+	},
+	{
+		name: 'R-81',
+		tailNumber: 'N681ER',
+		weight: 1712.8,
+		arm: 41.8963,
+		moment: 71760
+	},
+	{
 		name: 'R-82',
 		tailNumber: 'N4944S',
 		weight: 1881.28,
 		arm: 38.1025,
 		moment: 71681.5
+	},
+	{
+		name: 'R-83',
+		tailNumber: 'N783ER',
+		weight: 1712.8,
+		arm: 41.8963,
+		moment: 71760
 	},
 	{
 		name: 'R-90',
