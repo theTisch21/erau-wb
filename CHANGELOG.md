@@ -1,3 +1,7 @@
+# v3.5.4 PM2
+
+This update adds an ecosystem file for this server to be run with PM2. No user facing change, this is simply to make server administration easier and more reliable.
+
 # v3.5.3 AI Disclosure
 
 This update simply adds an AI use disclosure to the top of the page. I take pride in the fact that this site was hand-made, the only place I'd consider using AI is in UI design. The core calculation logic will always be hand-made. But for now the whole site is AI free.
